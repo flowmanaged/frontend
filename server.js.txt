@@ -1,0 +1,41 @@
+const express = require('express');
+const path = require('path');
+const cors = require('cors');
+
+const app = express();
+const PORT = 8080;
+
+app.use(cors({
+    origin: 'http://localhost:8080',
+    credentials: true
+}));
+
+app.use(express.static(path.join(__dirname)));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Akademia_integrated'));
+});
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Akademia_integrated'));
+});
+
+app.listen(PORT, () => {
+    console.log('Frontend Server Started!');
+    console.log('URL: http://localhost:' + PORT);
+});
+```
+
+3. Kliknij **Plik → Zapisz jako...**
+4. **Nazwa pliku:** `server.js` (dokładnie tak, z .js)
+5. **Kodowanie:** UTF-8
+6. **Typ pliku:** **"Wszystkie pliki (*.*)"** ← WAŻNE!
+7. Zapisz w folderze `C:\Users\ANETA\Desktop\frontend`
+
+### Krok 3: Sprawdź rozmiar
+Po zapisaniu plik **server.js** powinien mieć około **0.6 KB** (nie 0 KB!)
+
+### Krok 4: Uruchom ponownie
+W PowerShell wpisz:
+```
+npm start
