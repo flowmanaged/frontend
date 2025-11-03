@@ -1,0 +1,5376 @@
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef } = React;
+
+        const BookOpen = ({ className }) => <i data-lucide="book-open" className={className}></i>;
+        const Award = ({ className }) => <i data-lucide="award" className={className}></i>;
+        const CheckCircle = ({ className }) => <i data-lucide="check-circle" className={className}></i>;
+        const XCircle = ({ className }) => <i data-lucide="x-circle" className={className}></i>;
+        const Home = ({ className }) => <i data-lucide="home" className={className}></i>;
+        const Trophy = ({ className }) => <i data-lucide="trophy" className={className}></i>;
+        const ArrowRight = ({ className }) => <i data-lucide="arrow-right" className={className}></i>;
+        const Brain = ({ className }) => <i data-lucide="brain" className={className}></i>;
+        const Zap = ({ className }) => <i data-lucide="zap" className={className}></i>;
+        const Target = ({ className }) => <i data-lucide="target" className={className}></i>;
+        const Lock = ({ className }) => <i data-lucide="lock" className={className}></i>;
+        const Crown = ({ className }) => <i data-lucide="crown" className={className}></i>;
+        const X = ({ className }) => <i data-lucide="x" className={className}></i>;
+        const User = ({ className }) => <i data-lucide="user" className={className}></i>;
+        const Mail = ({ className }) => <i data-lucide="mail" className={className}></i>;
+        const CreditCard = ({ className }) => <i data-lucide="credit-card" className={className}></i>;
+        const Smartphone = ({ className }) => <i data-lucide="smartphone" className={className}></i>;
+        const Youtube = ({ className }) => <i data-lucide="youtube" className={className}></i>;
+        const FileText = ({ className }) => <i data-lucide="file-text" className={className}></i>;
+        const Users = ({ className }) => <i data-lucide="users" className={className}></i>;
+        const ShoppingCart = ({ className }) => <i data-lucide="shopping-cart" className={className}></i>;
+        const Key = ({ className }) => <i data-lucide="key" className={className}></i>;
+        const BarChart = ({ className }) => <i data-lucide="bar-chart-2" className={className}></i>;
+        const Settings = ({ className }) => <i data-lucide="settings" className={className}></i>;
+        const Tag = ({ className }) => <i data-lucide="tag" className={className}></i>;
+        const Activity = ({ className }) => <i data-lucide="activity" className={className}></i>;
+        const MessageSquare = ({ className }) => <i data-lucide="message-square" className={className}></i>;
+        const Shield = ({ className }) => <i data-lucide="shield" className={className}></i>;
+        const Edit = ({ className }) => <i data-lucide="edit" className={className}></i>;
+        const Trash = ({ className }) => <i data-lucide="trash-2" className={className}></i>;
+        const Check = ({ className }) => <i data-lucide="check" className={className}></i>;
+        const Plus = ({ className }) => <i data-lucide="plus" className={className}></i>;
+        const Download = ({ className }) => <i data-lucide="download" className={className}></i>;
+        const Search = ({ className }) => <i data-lucide="search" className={className}></i>;
+        const Filter = ({ className }) => <i data-lucide="filter" className={className}></i>;
+        const ChevronDown = ({ className }) => <i data-lucide="chevron-down" className={className}></i>;
+        const ChevronRight = ({ className }) => <i data-lucide="chevron-right" className={className}></i>;
+        const Menu = ({ className }) => <i data-lucide="menu" className={className}></i>;
+        const LogOut = ({ className }) => <i data-lucide="log-out" className={className}></i>;
+        const DollarSign = ({ className }) => <i data-lucide="dollar-sign" className={className}></i>;
+        const TrendingUp = ({ className }) => <i data-lucide="trending-up" className={className}></i>;
+        const Package = ({ className }) => <i data-lucide="package" className={className}></i>;
+        const Eye = ({ className }) => <i data-lucide="eye" className={className}></i>;
+        const EyeOff = ({ className }) => <i data-lucide="eye-off" className={className}></i>;
+        const AlertCircle = ({ className }) => <i data-lucide="alert-circle" className={className}></i>;
+
+        const App = () => {
+            const [currentView, setCurrentView] = useState('home');
+            const [currentSection, setCurrentSection] = useState(0);
+            const [quizAnswers, setQuizAnswers] = useState({});
+            const [showResults, setShowResults] = useState(false);
+            const [completedSections, setCompletedSections] = useState(new Set());
+            const [isPremium, setIsPremium] = useState(false);
+            const [showPremiumModal, setShowPremiumModal] = useState(false);
+            
+            // Nowe stany dla autoryzacji
+            const [showAuthModal, setShowAuthModal] = useState(false);
+            const [authView, setAuthView] = useState('login'); // 'login', 'register', 'forgot'
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [userEmail, setUserEmail] = useState('');
+            const [userRole, setUserRole] = useState('user'); // 'user' or 'admin'
+            
+            // Stany dla podstron informacyjnych
+            const [showTermsPage, setShowTermsPage] = useState(false);
+            const [showPrivacyPage, setShowPrivacyPage] = useState(false);
+
+            // Stany dla panelu administratora
+            const [adminView, setAdminView] = useState('dashboard'); // 'dashboard', 'users', 'purchases', 'access', 'content', 'reports', 'promotions', 'settings', 'logs', 'communication'
+            const [adminSidebarOpen, setAdminSidebarOpen] = useState(true);
+            const [selectedUser, setSelectedUser] = useState(null);
+            const [searchQuery, setSearchQuery] = useState('');
+            const [filterStatus, setFilterStatus] = useState('all');
+
+            // Nowe stany dla procesu płatności
+            const [paymentStep, setPaymentStep] = useState('overview'); // 'overview', 'payment', 'processing', 'success'
+            const [paymentMethod, setPaymentMethod] = useState('blik'); // 'blik', 'paypal'
+            const [processingPayment, setProcessingPayment] = useState(false);
+            const [toast, setToast] = useState(null);
+            const [premiumExpiryDate, setPremiumExpiryDate] = useState(null);
+
+            // Funkcja sprawdzająca czy Premium jest aktywne
+            const checkPremiumStatus = () => {
+                if (!isPremium) return false;
+                if (!premiumExpiryDate) return true; // Dla starych użytkowników bez daty wygaśnięcia
+                
+                const now = new Date();
+                const expiry = new Date(premiumExpiryDate);
+                
+                if (now > expiry) {
+                    setIsPremium(false);
+                    setPremiumExpiryDate(null);
+                    showToast('Twój dostęp Premium wygasł. Odnów aby kontynuować!', 'error');
+                    return false;
+                }
+                return true;
+            };
+
+            // Funkcja wyświetlająca toast
+            const showToast = (message, type = 'success') => {
+                setToast({ message, type });
+                setTimeout(() => setToast(null), 3000);
+            };
+
+            // Sprawdzanie statusu Premium przy każdej zmianie widoku
+            React.useEffect(() => {
+                if (isPremium) {
+                    checkPremiumStatus();
+                }
+            }, [currentView, isPremium]);
+
+            React.useEffect(() => {
+                lucide.createIcons();
+            });
+
+            const sections = [
+                // FREE CONTENT
+                {
+                    id: 1,
+                    title: "Wprowadzenie do Analizy Biznesowej",
+                    icon: "📊",
+                    color: "from-blue-500 to-cyan-500",
+                    isPremium: false,
+                    content: `Analiza biznesowa to dyscyplina polegająca na identyfikowaniu potrzeb biznesowych organizacji i określaniu rozwiązań problemów biznesowych. Rozwiązania te często obejmują rozwój systemów informatycznych, usprawnienia procesów, zmiany organizacyjne lub planowanie strategiczne.
+
+**Business Analyst (BA)** - osoba odpowiedzialna za analizowanie struktury biznesowej organizacji, dokumentowanie jej procesów biznesowych i systemów, ocenianie modeli biznesowych oraz ich integrację z technologią.
+
+**Stakeholder** - każda osoba lub grupa, która może wpływać na projekt lub być nim dotknięta.
+
+**Wymaganie** - formalne stwierdzenie potrzeby biznesowej, które musi być spełnione przez rozwiązanie.`
+                },
+                {
+                    id: 2,
+                    title: "Rola i Kompetencje BA",
+                    icon: "👤",
+                    color: "from-purple-500 to-pink-500",
+                    isPremium: false,
+                    content: `**Główne obowiązki BA:**
+• Identyfikacja i dokumentowanie wymagań biznesowych
+• Analiza procesów biznesowych i ich optymalizacja
+• Komunikacja między biznesem a IT
+• Tworzenie dokumentacji projektowej
+• Prowadzenie warsztatów i wywiadów ze stakeholderami
+• Walidacja rozwiązań i testowanie akceptacyjne
+
+**Kompetencje twarde:**
+• Znajomość metodyk (Agile, Waterfall, SCRUM)
+• Umiejętność modelowania procesów (BPMN, UML)
+• Narzędzia analityczne (MS Visio, Jira, Confluence)
+• Analiza danych i SQL
+
+**Kompetencje miękkie:**
+• Komunikacja interpersonalna
+• Myślenie analityczne i krytyczne
+• Negocjacje i mediacja
+• Zarządzanie czasem`
+                },
+                {
+                    id: 3,
+                    title: "Proces Analizy Biznesowej",
+                    icon: "🔄",
+                    color: "from-green-500 to-teal-500",
+                    isPremium: false,
+                    content: `**Etapy procesu analizy biznesowej:**
+
+1. **Planowanie analizy biznesowej**
+   • Określenie zakresu analizy
+   • Identyfikacja stakeholderów
+   • Wybór metodyki i narzędzi
+   • Określenie harmonogramu
+
+2. **Elicitacja wymagań**
+   • Wywiady ze stakeholderami
+   • Warsztaty grupowe
+   • Obserwacja procesów
+   • Analiza dokumentacji
+   • Prototypowanie
+
+3. **Analiza i modelowanie**
+   • Analiza zebranych informacji
+   • Tworzenie modeli procesów
+   • Identyfikacja luk i możliwości
+   • Priorytetyzacja wymagań
+
+4. **Dokumentowanie i walidacja**
+   • Tworzenie dokumentacji wymagań
+   • Przegląd z zespołem
+   • Zatwierdzanie przez stakeholderów
+
+5. **Implementacja i weryfikacja**
+   • Wsparcie dla zespołu deweloperskiego
+   • Testy akceptacyjne
+   • Weryfikacja dostarczonych rozwiązań`
+                },
+                // PREMIUM CONTENT
+                {
+                    id: 4,
+                    title: "Techniki Elicitacji Wymagań",
+                    icon: "💬",
+                    color: "from-amber-500 to-orange-500",
+                    isPremium: true,
+                    content: `**Wywiady strukturyzowane:**
+• Przygotowana lista pytań
+• Konsekwentna kolejność
+• Porównywanie odpowiedzi
+• Idealne dla zbierania faktów
+
+**Wywiady niestrukturyzowane:**
+• Swobodna rozmowa
+• Elastyczne dostosowanie
+• Odkrywanie nowych perspektyw
+• Budowanie relacji
+
+**Warsztaty grupowe (Workshops):**
+• Angażowanie wielu stakeholderów jednocześnie
+• Szybkie osiąganie konsensusu
+• Facylitacja dyskusji
+• Techniki: brainstorming, mind mapping, story mapping
+
+**Obserwacja:**
+• Obserwacja użytkowników w naturalnym środowisku
+• Identyfikacja nieświadomych potrzeb
+• Zrozumienie rzeczywistego przepływu pracy
+
+**Analiza dokumentacji:**
+• Przegląd istniejących procedur
+• Analiza raportów i metryk
+• Identyfikacja standardów i regulacji
+
+**Prototypowanie:**
+• Wizualizacja rozwiązań
+• Szybkie sprawdzanie pomysłów
+• Iteracyjne doskonalenie
+• Paper prototypes, wireframes, mockupy`
+                },
+                {
+                    id: 5,
+                    title: "Modelowanie Procesów - BPMN",
+                    icon: "📐",
+                    color: "from-rose-500 to-red-500",
+                    isPremium: true,
+                    content: `**BPMN (Business Process Model and Notation)** to standardowa notacja do modelowania procesów biznesowych.
+
+**Podstawowe elementy BPMN:**
+
+**Zdarzenia (Events):**
+• Start event - początek procesu
+• End event - zakończenie procesu
+• Intermediate event - zdarzenia w trakcie procesu
+
+**Aktywności (Activities):**
+• Task - pojedyncze zadanie
+• Sub-process - zagnieżdżony proces
+• Call activity - wywołanie innego procesu
+
+**Bramy (Gateways):**
+• Exclusive gateway (XOR) - jedna ścieżka
+• Parallel gateway (AND) - równoległe ścieżki
+• Inclusive gateway (OR) - jedna lub więcej ścieżek
+
+**Przepływy (Flows):**
+• Sequence flow - kolejność wykonania
+• Message flow - wymiana komunikatów
+• Association - powiązania dodatkowe
+
+**Swimlanes:**
+• Pool - organizacja/system
+• Lane - rola/dział w organizacji
+
+**Dobre praktyki:**
+• Zachowanie prostoty i czytelności
+• Używanie odpowiednich nazw
+• Konsekwentna notacja
+• Właściwe poziomy szczegółowości`
+                },
+                {
+                    id: 6,
+                    title: "User Stories i Acceptance Criteria",
+                    icon: "📝",
+                    color: "from-violet-500 to-purple-500",
+                    isPremium: true,
+                    content: `**User Story** to krótki, prosty opis funkcjonalności z perspektywy użytkownika.
+
+**Format INVEST:**
+• **I**ndependent - niezależna
+• **N**egotiable - negocjowalna
+• **V**aluable - wartościowa
+• **E**stimable - oszacowalna
+• **S**mall - mała
+• **T**estable - testowalna
+
+**Szablon User Story:**
+"Jako [rola użytkownika]
+Chcę [wykonać akcję]
+Aby [osiągnąć cel/korzyść]"
+
+**Przykład:**
+"Jako klient sklepu internetowego
+Chcę móc filtrować produkty według ceny
+Aby szybko znaleźć produkty w moim budżecie"
+
+**Acceptance Criteria (Kryteria Akceptacji):**
+Konkretne warunki, które muszą być spełnione, aby user story uznać za ukończoną.
+
+**Format Given-When-Then:**
+• **Given** - kontekst/warunek początkowy
+• **When** - akcja użytkownika
+• **Then** - oczekiwany rezultat
+
+**Przykład:**
+Given jestem na stronie z listą produktów
+When wybieram filtr cenowy "100-500 zł"
+Then widzę tylko produkty w tym przedziale cenowym
+
+**Dobre praktyki:**
+• Kryteria muszą być jednoznaczne i testowalne
+• Uwzględnianie zarówno happy path jak i edge cases
+• Zaangażowanie zespołu w definiowanie kryteriów
+• Aktualizacja kryteriów w trakcie pracy nad story`
+                },
+                {
+                    id: 7,
+                    title: "Diagramy UML w Analizie Biznesowej",
+                    icon: "🔷",
+                    color: "from-sky-500 to-blue-500",
+                    isPremium: true,
+                    content: `**UML (Unified Modeling Language)** to standardowy język modelowania systemów.
+
+**Diagram przypadków użycia (Use Case Diagram):**
+• Pokazuje interakcje między aktorami a systemem
+• Identyfikuje główne funkcjonalności
+• Elementy: aktorzy, use cases, relacje (include, extend)
+
+**Diagram aktywności (Activity Diagram):**
+• Przedstawia przepływ pracy
+• Sekwencja działań i decyzji
+• Podobny do flowchart
+• Użyteczny dla złożonych procesów biznesowych
+
+**Diagram sekwencji (Sequence Diagram):**
+• Pokazuje interakcje między obiektami w czasie
+• Kolejność wymiany komunikatów
+• Helpful dla zrozumienia przepływu danych
+• Identyfikacja problemów z integracją
+
+**Diagram klas (Class Diagram):**
+• Struktura systemu
+• Relacje między klasami
+• Atrybuty i metody
+• Użyteczny dla komunikacji z zespołem IT
+
+**Diagram stanów (State Diagram):**
+• Możliwe stany obiektu
+• Przejścia między stanami
+• Zdarzenia wywołujące zmiany
+• Przykład: stany zamówienia (nowe, płatne, wysłane, dostarczone)
+
+**Kiedy używać których diagramów:**
+• Use Case - na początku projektu, mapowanie funkcjonalności
+• Activity - dla złożonych procesów biznesowych
+• Sequence - dla szczegółowych scenariuszy i integracji
+• Class - dla struktury danych i modelu domenowego
+• State - dla obiektów z jasno określonymi stanami`
+                },
+                {
+                    id: 8,
+                    title: "Zarządzanie Wymaganiami",
+                    icon: "📋",
+                    color: "from-emerald-500 to-green-500",
+                    isPremium: true,
+                    content: `**Zarządzanie wymaganiami** to systematyczne podejście do elicitacji, analizy, dokumentowania i utrzymywania wymagań.
+
+**Typy wymagań:**
+
+1. **Wymagania biznesowe (Business Requirements)**
+   • High-level cele organizacji
+   • Powody realizacji projektu
+   • Oczekiwane korzyści biznesowe
+
+2. **Wymagania użytkownika (User Requirements)**
+   • Potrzeby konkretnych grup użytkowników
+   • User stories i use cases
+   • Opisują "co" użytkownik chce osiągnąć
+
+3. **Wymagania funkcjonalne (Functional Requirements)**
+   • Szczegółowe opisy funkcjonalności systemu
+   • Zachowanie systemu w określonych warunkach
+   • Input, processing, output
+
+4. **Wymagania niefunkcjonalne (Non-Functional Requirements)**
+   • Wydajność (performance)
+   • Bezpieczeństwo (security)
+   • Skalowalność (scalability)
+   • Użyteczność (usability)
+   • Niezawodność (reliability)
+
+**Atrybuty wymagań:**
+• Unikalny identyfikator
+• Priorytet (MoSCoW: Must/Should/Could/Won't)
+• Status (proposed, approved, implemented)
+• Źródło (stakeholder)
+• Powiązania z innymi wymaganiami
+
+**Techniki priorytetyzacji:**
+• **MoSCoW** - Must have, Should have, Could have, Won't have
+• **Kano Model** - Basic, Performance, Excitement features
+• **Value vs. Effort Matrix** - Mapowanie wartości biznesowej vs wysiłku
+• **Cost of Delay** - Koszt opóźnienia dostarczenia funkcjonalności
+
+**Narzędzia do zarządzania wymaganiami:**
+• Jira
+• Azure DevOps
+• IBM Rational DOORS
+• Confluence
+• Excel/Google Sheets (dla mniejszych projektów)
+
+**Requirements Traceability Matrix (RTM):**
+Narzędzie do śledzenia wymagań od źródła do implementacji:
+• Wymaganie biznesowe → Wymaganie użytkownika → Wymaganie funkcjonalne → Test case → Implementacja`
+                },
+                {
+                    id: 9,
+                    title: "Gap Analysis i Process Improvement",
+                    icon: "🎯",
+                    color: "from-cyan-500 to-teal-500",
+                    isPremium: true,
+                    content: `**Gap Analysis** to technika identyfikowania różnic między stanem obecnym a stanem docelowym.
+
+**Proces przeprowadzania Gap Analysis:**
+
+1. **Określenie stanu obecnego (AS-IS)**
+   • Mapowanie istniejących procesów
+   • Identyfikacja problemów i wąskich gardeł
+   • Pomiar obecnej wydajności (KPI)
+   • Zbieranie danych z różnych źródeł
+
+2. **Zdefiniowanie stanu docelowego (TO-BE)**
+   • Określenie celów biznesowych
+   • Wizja przyszłego procesu
+   • Oczekiwane korzyści i metryki sukcesu
+   • Best practices z branży
+
+3. **Analiza luk (Gaps)**
+   • Porównanie AS-IS vs TO-BE
+   • Identyfikacja różnic
+   • Analiza przyczyn źródłowych (Root Cause Analysis)
+   • Oszacowanie wpływu biznesowego
+
+4. **Plan działania**
+   • Propozycje rozwiązań
+   • Priorytetyzacja inicjatyw
+   • Harmonogram wdrożenia
+   • Oszacowanie zasobów i budżetu
+
+**Techniki usprawniania procesów:**
+
+**Lean:**
+• Eliminacja marnotrawstwa (waste)
+• Value Stream Mapping
+• Kaizen - ciągłe doskonalenie
+• 5S - organizacja miejsca pracy
+
+**Six Sigma:**
+• Redukcja zmienności procesów
+• DMAIC (Define, Measure, Analyze, Improve, Control)
+• Podejście oparte na danych
+• Osiąganie 99.99966% bezbłędności
+
+**Business Process Reengineering (BPR):**
+• Radykalne przeprojektowanie procesów
+• Koncentracja na wynikach, nie zadaniach
+• Wykorzystanie technologii
+• Dramatyczna poprawa wydajności
+
+**Kluczowe metryki procesów:**
+• Cycle Time - czas realizacji procesu
+• Throughput - ilość przetworzonych jednostek
+• Error Rate - wskaźnik błędów
+• Cost per Transaction - koszt pojedynczej transakcji
+• Customer Satisfaction - satysfakcja klienta
+
+**Narzędzia wizualizacji:**
+• Process maps (flowcharts)
+• Value Stream Maps
+• Swimlane diagrams
+• Spaghetti diagrams`
+                },
+                {
+                    id: 10,
+                    title: "Data Analysis dla Business Analyst",
+                    icon: "📊",
+                    color: "from-pink-500 to-rose-500",
+                    isPremium: true,
+                    content: `**Analiza danych** to kluczowa umiejętność BA do odkrywania insights i wspierania decyzji biznesowych.
+
+**Podstawowe techniki analizy danych:**
+
+**1. Analiza deskryptywna (Descriptive Analytics)**
+   • Co się wydarzyło?
+   • Statystyki opisowe: średnia, mediana, odchylenie standardowe
+   • Trendy historyczne
+   • Dashboardy i raporty
+
+**2. Analiza diagnostyczna (Diagnostic Analytics)**
+   • Dlaczego to się wydarzyło?
+   • Analiza przyczyn źródłowych
+   • Korelacje i powiązania
+   • Drill-down analysis
+
+**3. Analiza predykcyjna (Predictive Analytics)**
+   • Co prawdopodobnie się wydarzy?
+   • Prognozowanie trendów
+   • Modele statystyczne
+   • Machine learning basics
+
+**4. Analiza preskryptywna (Prescriptive Analytics)**
+   • Co powinniśmy zrobić?
+   • Rekomendacje działań
+   • Optymalizacja decyzji
+   • Symulacje scenariuszy
+
+**Narzędzia dla BA:**
+• **Excel/Google Sheets** - podstawowa analiza, pivot tables, wizualizacje
+• **SQL** - zapytania do baz danych
+• **Power BI/Tableau** - dashboardy i wizualizacje
+• **Python/R** - zaawansowana analiza (pandas, numpy)
+• **Google Analytics** - analiza danych webowych
+
+**Kluczowe koncepcje SQL dla BA:**
+\`\`\`sql
+-- Podstawowe zapytanie
+SELECT column1, column2
+FROM table_name
+WHERE condition
+GROUP BY column1
+HAVING group_condition
+ORDER BY column1 DESC;
+
+-- Złączenia tabel
+SELECT o.order_id, c.customer_name
+FROM orders o
+JOIN customers c ON o.customer_id = c.id;
+
+-- Agregacje
+SELECT category, COUNT(*), AVG(price)
+FROM products
+GROUP BY category;
+\`\`\`
+
+**Wizualizacja danych - dobre praktyki:**
+• Wybór właściwego typu wykresu:
+  - Bar chart - porównania kategorii
+  - Line chart - trendy w czasie
+  - Pie chart - proporcje (unikać >5 kategorii)
+  - Scatter plot - korelacje
+  - Heat map - macierze danych
+• Prosty i czytelny design
+• Właściwe oznaczenia osi i legendy
+• Unikanie 3D i zbędnych efektów
+• Konsekwentne kolory
+• Kontekst i interpretacja danych
+
+**KPI (Key Performance Indicators):**
+• Mierzalne wartości pokazujące sukces
+• SMART: Specific, Measurable, Achievable, Relevant, Time-bound
+• Przykłady:
+  - Conversion Rate
+  - Customer Acquisition Cost (CAC)
+  - Customer Lifetime Value (CLV)
+  - Net Promoter Score (NPS)
+  - Churn Rate`
+                },
+                {
+                    id: 11,
+                    title: "Stakeholder Management",
+                    icon: "👥",
+                    color: "from-indigo-500 to-purple-500",
+                    isPremium: true,
+                    content: `**Zarządzanie stakeholderami** to identyfikacja, analiza i angażowanie osób wpływających na projekt lub nim dotkniętych.
+
+**Proces zarządzania stakeholderami:**
+
+**1. Identyfikacja stakeholderów**
+Kto może wpływać na projekt lub być nim dotknięty?
+• Sponsorzy projektu
+• Użytkownicy końcowi
+• Zespół projektowy
+• Menedżment
+• Zespoły IT
+• Klienci zewnętrzni
+• Dostawcy
+• Regulatorzy
+
+**2. Analiza stakeholderów**
+
+**Power/Interest Matrix:**
+\`\`\`
+High Power    | Manage Closely      | Keep Satisfied
+              | (key players)       | (important but
+              |                     |  less interested)
+--------------+---------------------+------------------
+Low Power     | Monitor             | Keep Informed
+              | (minimal effort)    | (interested but
+              |                     |  less powerful)
+              +---------------------+------------------
+              Low Interest          High Interest
+\`\`\`
+
+**Atrybuty do analizowania:**
+• Poziom wpływu na projekt
+• Poziom zainteresowania projektem
+• Oczekiwania i potrzeby
+• Potencjalne obawy i ryzyka
+• Preferowane kanały komunikacji
+• Poziom wsparcia lub oporu
+
+**3. Strategie angażowania**
+
+**Dla różnych poziomów wsparcia:**
+• **Unaware** (nieświadomi) → Inform
+• **Resistant** (opierający się) → Consult, Address concerns
+• **Neutral** (neutralni) → Consult, Involve
+• **Supportive** (wspierający) → Involve
+• **Leading** (liderzy zmiany) → Collaborate
+
+**4. Komunikacja ze stakeholderami**
+
+**Techniki efektywnej komunikacji:**
+• Dostosowanie przekazu do odbiorcy (technical vs business language)
+• Wybór właściwego kanału (email, meeting, prezentacja)
+• Aktywne słuchanie
+• Regularne aktualizacje
+• Zarządzanie oczekiwaniami
+• Transparentność i uczciwość
+
+**Typy spotkań:**
+• **Kickoff meetings** - rozpoczęcie projektu
+• **Status updates** - regularne aktualizacje postępu
+• **Workshops** - wspólna praca nad rozwiązaniami
+• **Requirements reviews** - przeglądy wymagań
+• **Demos** - prezentacje rozwiązań
+• **Retrospectives** - lekcje wynoszone z projektu
+
+**Zarządzanie konfliktami:**
+• Identyfikacja źródła konfliktu
+• Zrozumienie perspektyw wszystkich stron
+• Techniki negocjacji i mediacji
+• Win-win solutions
+• Eskalacja gdy potrzebna
+
+**Dokumentowanie stakeholderów:**
+Rejestr stakeholderów powinien zawierać:
+• Imię i nazwisko
+• Rola i organizacja
+• Poziom wpływu/zainteresowania
+• Oczekiwania i potrzeby
+• Komunikacja (częstotliwość, kanał)
+• Uwagi i historia interakcji
+
+**Dobre praktyki:**
+• Wczesne angażowanie kluczowych stakeholderów
+• Regularna i przejrzysta komunikacja
+• Zarządzanie oczekiwaniami
+• Budowanie relacji i zaufania
+• Dokumentowanie decyzji i uzgodnień
+• Elastyczność w podejściu do różnych osobowości`
+                },
+                {
+                    id: 12,
+                    title: "Change Management w projektach BA",
+                    icon: "🔄",
+                    color: "from-yellow-500 to-amber-500",
+                    isPremium: true,
+                    content: `**Change Management** to strukturalne podejście do przejścia od stanu obecnego do stanu docelowego, ze szczególnym uwzględnieniem ludzkiego aspektu zmian.
+
+**Dlaczego Change Management jest ważne?**
+• 70% projektów transformacyjnych kończy się niepowodzeniem z powodu oporu wobec zmian
+• Technologia to tylko 30% sukcesu - ludzie to 70%
+• Właściwie zarządzana zmiana zwiększa szanse powodzenia projektu
+
+**Model ADKAR (Prosci):**
+
+**A - Awareness** (Świadomość)
+• Zrozumienie potrzeby zmiany
+• Komunikacja "dlaczego" zmiana jest potrzebna
+• Przedstawienie ryzyk niezmienienia się
+
+**D - Desire** (Chęć)
+• Osobista motywacja do wspierania zmiany
+• Adresowanie pytania "co ja z tego będę miał?"
+• Zaangażowanie liderów
+
+**K - Knowledge** (Wiedza)
+• Jak zmienić się
+• Szkolenia i warsztaty
+• Dokumentacja i materiały pomocnicze
+
+**A - Ability** (Umiejętność)
+• Demonstracja nowych umiejętności
+• Praktyka i coaching
+• Usuwanie barier
+
+**R - Reinforcement** (Wzmocnienie)
+• Utrzymanie zmiany w dłuższym okresie
+• Uznanie i nagrody
+• Feedback loops
+
+**Kotter's 8-Step Change Model:**
+
+1. **Create urgency** - stwórz poczucie pilności
+2. **Build coalition** - zbuduj koalicję przewodzącą
+3. **Form vision** - stwórz wizję i strategię
+4. **Communicate vision** - komunikuj wizję
+5. **Empower action** - usuń bariery
+6. **Create quick wins** - generuj szybkie wygrane
+7. **Build on change** - buduj na zmianach
+8. **Anchor changes** - zakotwicz zmiany w kulturze
+
+**Typy oporu wobec zmian:**
+
+**Logiczny opór:**
+• Niezgoda z logiką zmiany
+• Inne priorytety
+• Obawy o koszty i czas
+• Adresowanie: dane, fakty, ROI, case studies
+
+**Psychologiczny opór:**
+• Strach przed nieznanym
+• Utrata kontroli
+• Niskie zaufanie
+• Adresowanie: empatia, wsparcie, zaangażowanie
+
+**Socjologiczny opór:**
+• Normy grupowe
+• Zmiana relacji
+• Polityka organizacyjna
+• Adresowanie: praca z influencerami, budowanie konsensusu
+
+**Strategie radzenia z oporem:**
+• **Education & Communication** - informuj i edukuj
+• **Participation & Involvement** - angażuj opierających się
+• **Facilitation & Support** - oferuj wsparcie i szkolenia
+• **Negotiation & Agreement** - negocjuj i zawieraj kompromisy
+• **Manipulation & Co-optation** - influencuj kluczowych graczy
+• **Explicit & Implicit Coercion** - ostateczność, tylko gdy konieczne
+
+**Rola BA w Change Management:**
+• Analiza wpływu zmian (Impact Analysis)
+• Identyfikacja grup dotkniętych zmianą
+• Opracowanie strategii komunikacji
+• Wsparcie w treningach i onboardingu
+• Monitorowanie adopcji i zbieranie feedbacku
+• Identyfikacja i adresowanie barier
+
+**Change Impact Assessment:**
+Ocena wpływu zmiany na:
+• Procesy biznesowe
+• Role i odpowiedzialności
+• Systemy i narzędzia
+• Umiejętności i kompetencje
+• Kulturę organizacyjną
+• Strukturę organizacyjną
+
+**Metryki sukcesu Change Management:**
+• Adoption Rate - wskaźnik adopcji nowego rozwiązania
+• Utilization Rate - jak intensywnie używane
+• Proficiency - poziom biegłości użytkowników
+• Employee Satisfaction - satysfakcja pracowników
+• Business Results - wyniki biznesowe (ROI, efficiency gains)
+
+**Komunikacja w Change Management:**
+• **Co** się zmienia
+• **Dlaczego** się zmienia
+• **Kiedy** się zmienia
+• **Jak** to wpłynie na odbiorców
+• **Co** trzeba zrobić
+• **Gdzie** szukać pomocy
+
+**Najlepsze praktyki:**
+• Rozpocznij od "dlaczego"
+• Angażuj ludzi wcześnie i często
+• Identyfikuj i wspieraj change champions
+• Świętuj małe sukcesy
+• Bądź przejrzysty i uczciwy
+• Słuchaj obaw i adresuj je
+• Daj ludziom czas na adaptację
+• Mierz i dostosowuj strategię`
+                },
+                {
+                    id: 13,
+                    title: "Agile BA vs Waterfall BA",
+                    icon: "🌊",
+                    color: "from-blue-500 to-indigo-500",
+                    isPremium: true,
+                    content: `**Porównanie metodyk i roli BA w różnych podejściach do zarządzania projektami.**
+
+**Waterfall (Model kaskadowy):**
+
+**Charakterystyka:**
+• Sekwencyjne fazy projektu
+• Każda faza musi być zakończona przed rozpoczęciem kolejnej
+• Wymagania określone na początku
+• Późne dostarczenie produktu
+• Szczegółowa dokumentacja
+• Mniejsza elastyczność
+
+**Fazy Waterfall:**
+1. Requirements gathering
+2. Design
+3. Implementation
+4. Testing
+5. Deployment
+6. Maintenance
+
+**Rola BA w Waterfall:**
+• Zbieranie wszystkich wymagań na początku
+• Tworzenie kompleksowej dokumentacji (BRD, FRD)
+• Requirements sign-off
+• Walidacja podczas testów akceptacyjnych
+• Mniejsza interakcja podczas development
+
+**Zalety dla BA:**
+• Czas na dokładną analizę
+• Wszystko udokumentowane
+• Jasny zakres projektu
+• Mniej spotkań w trakcie development
+
+**Wady dla BA:**
+• Zmiana wymagań kosztowna
+• Późne wykrywanie problemów
+• Długi czas do zobaczenia wartości
+• Ryzyko niedopasowania do rzeczywistych potrzeb
+
+---
+
+**Agile:**
+
+**Charakterystyka:**
+• Iteracyjne i przyrostowe dostarczanie
+• Elastyczność i adaptacja do zmian
+• Częsta komunikacja i współpraca
+• Wczesne i częste dostarczanie wartości
+• Working software over comprehensive documentation
+• Customer collaboration over contract negotiation
+
+**Popularne frameworki:**
+• **Scrum** - sprints, ceremonies, roles (Product Owner, Scrum Master, Team)
+• **Kanban** - continuous flow, visualization, WIP limits
+• **SAFe** - scaled agile dla dużych organizacji
+
+**Rola BA w Agile:**
+
+**W Scrumie:**
+• Często łączona z Product Ownerem lub wspierająca PO
+• Przygotowywanie user stories dla backlogu
+• Definiowanie acceptance criteria
+• Dostępność podczas sprintu dla zespołu
+• Uczestnictwo w ceremonies (planning, review, retro)
+• Story refinement
+
+**Kluczowe umiejętności:**
+• Szybka analiza i dokumentowanie
+• Adaptacja do zmian
+• Facilitation workshops
+• Priorytyzacja backlogu
+• Współpraca z zespołem technicznym
+• Komunikacja z stakeholderami
+
+**Agile ceremonies dla BA:**
+
+**Sprint Planning:**
+• Doprecyzowanie user stories
+• Odpowiadanie na pytania zespołu
+• Pomoc w estymacji
+
+**Daily Stand-up:**
+• Opcjonalnie - usuwanie blokerów
+• Dostępność dla pytań
+
+**Sprint Review:**
+• Demonstracja funkcjonalności stakeholderom
+• Zbieranie feedbacku
+• Walidacja acceptance criteria
+
+**Sprint Retrospective:**
+• Udział w dyskusji o poprawie procesów
+• Identyfikacja problemów z wymaganiami
+
+**Backlog Refinement:**
+• Szczegółowe omawianie przyszłych stories
+• Rozpisywanie epic na stories
+• Definiowanie acceptance criteria
+• Estymacja
+
+---
+
+**Hybrid Approach (Water-Scrum-Fall):**
+
+Organizacje często stosują podejście hybrydowe:
+• Planning w stylu waterfall
+• Development w Agile/Scrum
+• Deployment według harmonogramu waterfall
+
+**Rola BA w Hybrid:**
+• Elastyczność w dostosowaniu do różnych części projektu
+• Komunikacja między waterfall stakeholderami a agile teams
+• Dokumentacja dostosowana do potrzeb
+
+---
+
+**Porównanie kluczowych aspektów:**
+
+| Aspekt | Waterfall BA | Agile BA |
+|--------|--------------|----------|
+| Dokumentacja | Szczegółowa upfront | Minimalna, just-in-time |
+| Wymagania | Wszystkie na początku | Ewolucyjne, iteracyjne |
+| Zmiana wymagań | Kosztowna i trudna | Oczekiwana i mile widziana |
+| Interakcja z zespołem | Przekazanie po analizie | Ciągła współpraca |
+| Walidacja | Pod koniec projektu | Każdy sprint |
+| User Stories | Nie używane | Podstawowe narzędzie |
+| Dostępność stakeholderów | Początkowo, później na request | Regularnie każdy sprint |
+
+---
+
+**Kiedy stosować Waterfall:**
+• Wymagania jasne i stabilne
+• Projekty regulowane (compliance)
+• Fixed budget, scope, timeline
+• Niskie ryzyko zmiany wymagań
+• Przykłady: infrastruktura, compliance projects
+
+**Kiedy stosować Agile:**
+• Wymagania ewolucyjne i niepewne
+• Potrzeba szybkiego time-to-market
+• Możliwość regularnego feedbacku
+• Wysokie ryzyko zmiany wymagań
+• Przykłady: software startups, innowacyjne produkty
+
+**Najlepsze praktyki dla BA:**
+• Poznaj i dostosuj się do metodyki organizacji
+• Rozwijaj umiejętności potrzebne w danym podejściu
+• Zachowaj core BA skills niezależnie od metodyki
+• Bądź elastyczny i gotowy na hybrid approaches
+• Focus na dostarczaniu wartości biznesowej
+• Efektywna komunikacja niezależnie od frameworka`
+                },
+                {
+                    id: 14,
+                    title: "Metody badawcze i User Research",
+                    icon: "🔍",
+                    color: "from-teal-500 to-cyan-500",
+                    isPremium: true,
+                    content: `**User Research** to systematyczne badanie użytkowników w celu zrozumienia ich potrzeb, zachowań i motywacji.
+
+**Typy metod badawczych:**
+
+**1. Metody Jakościowe (Qualitative)**
+Cel: Zrozumieć "dlaczego" i "jak"
+
+**User Interviews (Wywiady):**
+• One-on-one rozmowy z użytkownikami
+• Dogłębne zrozumienie potrzeb
+• Open-ended questions
+• 5-8 uczestników zwykle wystarcza
+• Przykładowe pytania:
+  - "Opowiedz o ostatnim razem gdy..."
+  - "Jakie masz największe frustracje z..."
+  - "Jak idealnie wyglądałby..."
+
+**Contextual Inquiry:**
+• Obserwacja użytkowników w naturalnym środowisku
+• Kombinacja obserwacji i wywiadu
+• Zrozumienie rzeczywistego context of use
+• Master-apprentice relationship
+
+**Focus Groups:**
+• Grupowa dyskusja (6-10 osób)
+• Odkrywanie różnorodnych perspektyw
+• Dynamika grupowa - pros and cons
+• Wymaga doświadczonego moderatora
+
+**Usability Testing:**
+• Obserwacja użytkowników wykonujących zadania
+• Think-aloud protocol
+• Identyfikacja problemów z użytecznością
+• 5 uczestników znajdzie 85% problemów (Nielsen)
+
+**Card Sorting:**
+• Użytkownicy organizują elementy w kategorie
+• Open card sort - tworzą własne kategorie
+• Closed card sort - przypisują do istniejących kategorii
+• Pomaga w określeniu architektury informacji
+
+---
+
+**2. Metody Ilościowe (Quantitative)**
+Cel: Zmierzyć "ile" i "co"
+
+**Surveys/Ankiety:**
+• Zbieranie danych od dużej liczby respondentów
+• Structured questions
+• Analiza statystyczna
+• Typy pytań: multiple choice, likert scale, ranking
+• Best practices:
+  - Krótkie i jasne pytania
+  - Unikanie leading questions
+  - Logiczny flow
+  - 10-15 pytań maksimum
+
+**A/B Testing:**
+• Porównanie dwóch wersji
+• Statistically significant results
+• Metrics: conversion rate, click-through rate
+• Controlled experiment
+
+**Analytics:**
+• Google Analytics, Mixpanel, Amplitude
+• User behavior data
+• Funnel analysis
+• Heatmaps (Hotjar, Crazy Egg)
+• Session recordings
+
+**Metrics i KPIs:**
+• Task success rate
+• Time on task
+• Error rate
+• Navigation path analysis
+• Click-through rate (CTR)
+• Conversion rate
+
+---
+
+**Research Process:**
+
+**1. Planning Research**
+• Określenie research questions
+• Wybór odpowiednich metod
+• Rekrutacja uczestników
+• Przygotowanie materials (discussion guides, tasks)
+
+**2. Conducting Research**
+• Zbieranie danych
+• Recording i notatki
+• Zachowanie obiektywizmu
+• Budowanie rapport z uczestnikami
+
+**3. Analysis**
+• Transkrypcja (dla wywiadów)
+• Identyfikacja patterns i themes
+• Affinity mapping
+• Quantitative analysis (dla danych liczbowych)
+
+**4. Synthesis i Reporting**
+• Key findings
+• Insights i recommendations
+• Personas
+• User journey maps
+• Executive summary
+
+---
+
+**User Personas:**
+Fikcyjne, ale oparte na badaniach reprezentacje typowych użytkowników.
+
+**Co zawiera dobra persona:**
+• Imię i zdjęcie (przypomina że to prawdziwa osoba)
+• Demografia (wiek, lokalizacja, wykształcenie)
+• Rola i odpowiedzialności
+• Cele i motywacje
+• Frustracje i pain points
+• Zachowania i preferencje
+• Cytaty z badań
+• Scenariusze użycia
+
+**Przykład:**
+"Jan Kowalski, 35 lat
+Menedżer Projektów w firmie IT
+Cele: Efektywne zarządzanie zespołem, terminowe dostarczanie projektów
+Frustracje: Zbyt wiele narzędzi, brak integracji, trudność w śledzeniu postępów
+Quote: 'Potrzebuję prostego sposobu na zobaczenie całego obrazu projektu bez przełączania się między 5 aplikacjami'"
+
+---
+
+**User Journey Map:**
+Wizualizacja doświadczenia użytkownika w czasie.
+
+**Elementy Journey Map:**
+• Persona
+• Scenario
+• Phases/Stages
+• Actions - co użytkownik robi
+• Thoughts - co użytkownik myśli
+• Emotions - jak się czuje (emotional curve)
+• Touchpoints - punkty kontaktu
+• Pain points - problemy
+• Opportunities - szanse na usprawnienie
+
+---
+
+**Jobs To Be Done (JTBD):**
+Framework zrozumienia dlaczego ludzie "zatrudniają" produkty.
+
+**Format:**
+"When [situation], I want to [motivation], so I can [expected outcome]"
+
+**Przykład:**
+"When I'm rushing to work in the morning, I want to grab a quick, filling meal, so I can have energy without being late"
+
+**Focusing on:**
+• Job (zadanie do wykonania)
+• Not demographics
+• Circumstances (context)
+• Functional, emotional, social dimensions
+
+---
+
+**Best Practices:**
+
+**Dla wywiadów:**
+• Zadawaj open-ended questions
+• Słuchaj więcej niż mówisz (80/20 rule)
+• Pozwól na ciszę - nie przerywaj
+• Pytaj "dlaczego" 5 razy (5 Whys)
+• Unikaj leading questions
+• Nagrywaj (za zgodą) dla późniejszej analizy
+
+**Dla usability testing:**
+• Przygotuj realistyczne scenariusze
+• Nie pomagaj - obserwuj
+• Think-aloud protocol
+• 5 uczestników dla pierwszej rundy
+• Iterate i testuj ponownie
+
+**Dla surveys:**
+• Testuj ankietę przed wysłaniem
+• Incentivize completion
+• Keep it short
+• Mobile-friendly
+• Wyraźny progress indicator
+
+**Ethical considerations:**
+• Informed consent
+• Privacy i data protection
+• Anonimizacja danych
+• Transparentność co do celu badania
+• Kompensacja za czas uczestników
+
+**Continuous Research:**
+Research to nie jednorazowe działanie:
+• Regular touchpoints z użytkownikami
+• Włączenie research do każdego sprintu
+• Research repository dla insights
+• Research democratization - całemu zespołowi dostęp do findings`
+                },
+                {
+                    id: 15,
+                    title: "Product Roadmapping i Vision",
+                    icon: "🗺️",
+                    color: "from-orange-500 to-red-500",
+                    isPremium: true,
+                    content: `**Product Roadmap** to strategiczny plan pokazujący wizję, kierunek i postęp produktu w czasie.
+
+**Product Vision:**
+Aspiracyjny opis przyszłości produktu - "North Star" dla zespołu.
+
+**Komponenty Product Vision:**
+• **For** (target customer) - dla kogo
+• **Who** (needs/opportunity) - jaki problem rozwiązujemy
+• **The product is** (category) - czym jest produkt
+• **That** (key benefit) - główna korzyść
+• **Unlike** (konkurencja) - czym różnimy się
+• **Our product** (primary differentiation) - nasza unikalna wartość
+
+**Przykład:**
+"For busy professionals who need to manage multiple projects efficiently, ProjectMaster is a project management tool that provides real-time visibility and collaboration. Unlike traditional PM tools that are complex and overwhelming, our product is intuitive, AI-powered, and requires minimal setup."
+
+---
+
+**Typy Roadmap:**
+
+**1. Product Roadmap (External)**
+Dla klientów i partnerów:
+• High-level features
+• Timelines (quarters, not dates)
+• Korzyści biznesowe
+• Mniej szczegółów
+• Cele: zarządzanie oczekiwaniami, budowanie excitement
+
+**2. Internal Product Roadmap**
+Dla zespołu i organizacji:
+• Więcej szczegółów technicznych
+• Dependencies
+• Resources requirements
+• Risk factors
+• Metrics i success criteria
+
+**3. Technology Roadmap**
+Dla zespołu technicznego:
+• Technical debt
+• Infrastructure upgrades
+• Platform improvements
+• Scalability initiatives
+• Security enhancements
+
+**4. Go-to-Market Roadmap**
+Dla marketing i sales:
+• Launch timelines
+• Marketing campaigns
+• Sales enablement
+• Customer communications
+• Partner integrations
+
+---
+
+**Elementy Roadmap:**
+
+**Theme-based Roadmap:**
+Zamiast konkretnych features, organizacja wokół tematów biznesowych:
+• Improve onboarding experience
+• Increase platform performance
+• Enhance collaboration features
+
+**Zalety:**
+• Większa elastyczność
+• Focus na outcomes, not outputs
+• Łatwiejsza komunikacja z biznesem
+• Mniej commitment do specifics
+
+**Now-Next-Later Framework:**
+• **Now** (0-3 miesiące) - co aktualnie robimy
+• **Next** (3-6 miesięcy) - co planujemy
+• **Later** (6-12 miesięcy) - co rozważamy
+
+---
+
+**Priorytetyzacja dla Roadmap:**
+
+**RICE Framework:**
+• **Reach** - ilu użytkowników to dotknie
+• **Impact** - jak mocno (3=massive, 2=high, 1=medium, 0.5=low, 0.25=minimal)
+• **Confidence** - poziom pewności (100%=high, 80%=medium, 50%=low)
+• **Effort** - person-months
+• Score = (Reach × Impact × Confidence) / Effort
+
+**Value vs Effort Matrix:**
+\`\`\`
+High Value  | Quick Wins    | Major Projects
+            | (do first)    | (plan carefully)
+------------+---------------+------------------
+Low Value   | Fill-ins      | Time Sinks
+            | (when free)   | (avoid)
+            +---------------+------------------
+            Low Effort      High Effort
+\`\`\`
+
+**ICE Scoring:**
+• **Impact** - wpływ na cel (1-10)
+• **Confidence** - poziom pewności (1-10)
+• **Ease** - łatwość implementacji (1-10)
+• Score = (Impact + Confidence + Ease) / 3
+
+**Kano Model:**
+• **Must-haves** (Basic/Expected) - bez nich produkt bezużyteczny
+• **Performance** (Linear) - im więcej tym lepiej
+• **Delighters** (Excitement) - wow factor, unexpected
+
+**Cost of Delay:**
+Wartość tracona przez odroczenie feature/projektu:
+• Urgency
+• User/business value
+• Time criticality
+• Risk reduction
+• Przykład: CD3 (Cost of Delay Divided by Duration)
+
+---
+
+**OKRs (Objectives and Key Results):**
+Framework do alignment i focus.
+
+**Objective:**
+• Qualitative
+• Inspirujący
+• Time-bound
+• Przykład: "Become the #1 choice for project management in startup community"
+
+**Key Results:**
+• Quantitative
+• Measurable
+• Specific
+• Przykład:
+  - Increase NPS from 45 to 65
+  - Achieve 100k active users
+  - Reduce churn rate from 5% to 3%
+
+**Connecting Roadmap to OKRs:**
+• Każdy initiative na roadmap powinien wspierać konkretny Key Result
+• Transparentność jak features przyczyniają się do celów
+• Regular review i pivot jeśli coś nie działa
+
+---
+
+**Roadmap Creation Process:**
+
+**1. Input Gathering:**
+• Customer feedback i research
+• Competitive analysis
+• Stakeholder requests
+• Technical debt
+• Team ideas
+• Market trends
+• Analytics data
+
+**2. Prioritization:**
+• Zastosowanie frameworka (RICE, ICE)
+• Balansowanie short-term vs long-term
+• Strategic alignment
+• Resource constraints
+
+**3. Building Roadmap:**
+• Określenie themes
+• Timeline (quarters)
+• Dependencies
+• Success metrics
+• Risks
+
+**4. Validation:**
+• Review z stakeholderami
+• Technical feasibility check
+• Resource availability confirmation
+
+**5. Communication:**
+• Different versions dla różnych audiences
+• Regular updates
+• Transparency o zmianach
+
+**6. Maintenance:**
+• Quarterly reviews
+• Pivot based on learnings
+• Adding new items
+• Removing deprioritized items
+
+---
+
+**Roadmap Communication:**
+
+**Best Practices:**
+• Explain rationale za decyzjami
+• Be transparent o trade-offs
+• Regular updates (quarterly)
+• Make it accessible (Confluence, ProductBoard, Aha!)
+• Visual format
+• Include "Not on roadmap" items też (manage expectations)
+
+**What to avoid:**
+• Committing do exact dates zbyt wcześnie
+• Overwhelm ze szczegółami
+• Brak flexibility dla emergent opportunities
+• Ignorowanie feedback
+• Build for build's sake (feature factories)
+
+---
+
+**Product-Market Fit:**
+Moment gdy produkt doskonale spełnia potrzeby rynku.
+
+**Indicators:**
+• Organic growth
+• High retention rate
+• Word-of-mouth referrals
+• Users struggle if product removed (40% rule)
+• Decreasing CAC, increasing LTV
+
+**Sean Ellis test:**
+Survey question: "How would you feel if you could no longer use the product?"
+• Very disappointed (>40% = PMF achieved)
+• Somewhat disappointed
+• Not disappointed
+
+---
+
+**Metrics dla Product Success:**
+
+**Acquisition:**
+• Number of sign-ups
+• Conversion rate
+• Customer Acquisition Cost (CAC)
+• Traffic sources
+
+**Activation:**
+• Time to first value
+• Onboarding completion rate
+• Feature adoption
+
+**Retention:**
+• Daily/Monthly Active Users (DAU/MAU)
+• Churn rate
+• Cohort retention curves
+
+**Revenue:**
+• Monthly Recurring Revenue (MRR)
+• Average Revenue Per User (ARPU)
+• Customer Lifetime Value (CLV)
+• CLV:CAC ratio (should be > 3:1)
+
+**Referral:**
+• Net Promoter Score (NPS)
+• Referral rate
+• Viral coefficient
+
+**North Star Metric:**
+Single metric that best captures core value for customers:
+• Spotify: Time spent listening
+• Airbnb: Nights booked
+• Slack: Messages sent
+• Facebook: Daily Active Users
+
+**Instrumentation:**
+• Set up proper analytics
+• Define events to track
+• Dashboard dla real-time monitoring
+• Regular review cycles`
+                },
+                {
+                    id: 16,
+                    title: "API Integration i Technical Documentation",
+                    icon: "🔌",
+                    color: "from-violet-500 to-fuchsia-500",
+                    isPremium: true,
+                    content: `**API (Application Programming Interface)** - zestaw reguł i protokołów umożliwiający komunikację między systemami.
+
+**Dlaczego BA powinien rozumieć API:**
+• Integracje między systemami
+• Komunikacja z zespołem technicznym
+• Definiowanie wymagań integracyjnych
+• Rozumienie ograniczeń i możliwości
+• Analiza wydajności i skalowalności
+
+---
+
+**Typy API:**
+
+**REST (Representational State Transfer):**
+Najpopularniejszy styl API dla web services.
+
+**Charakterystyka:**
+• Stateless - każde żądanie zawiera wszystkie potrzebne informacje
+• Client-Server architecture
+• Cacheable responses
+• Uniform interface
+
+**HTTP Methods (CRUD operations):**
+• **GET** - odczyt danych (READ)
+  - GET /api/users - lista użytkowników
+  - GET /api/users/123 - konkretny użytkownik
+• **POST** - tworzenie nowego zasobu (CREATE)
+  - POST /api/users - utwórz nowego użytkownika
+• **PUT/PATCH** - aktualizacja (UPDATE)
+  - PUT /api/users/123 - zastąp całego użytkownika
+  - PATCH /api/users/123 - zaktualizuj częściowo
+• **DELETE** - usunięcie (DELETE)
+  - DELETE /api/users/123 - usuń użytkownika
+
+**HTTP Status Codes:**
+• **2xx Success:**
+  - 200 OK - żądanie pomyślne
+  - 201 Created - zasób utworzony
+  - 204 No Content - sukces, brak treści do zwrócenia
+• **4xx Client Errors:**
+  - 400 Bad Request - nieprawidłowe żądanie
+  - 401 Unauthorized - brak autoryzacji
+  - 403 Forbidden - brak uprawnień
+  - 404 Not Found - zasób nie istnieje
+  - 422 Unprocessable Entity - validation error
+• **5xx Server Errors:**
+  - 500 Internal Server Error - błąd serwera
+  - 503 Service Unavailable - serwis niedostępny
+
+**RESTful API Example:**
+\`\`\`
+GET /api/orders?status=pending&page=1&limit=20
+Response:
+{
+  "data": [
+    {
+      "id": "ORD-001",
+      "customer": "Jan Kowalski",
+      "total": 299.99,
+      "status": "pending",
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "total": 150
+  }
+}
+\`\`\`
+
+---
+
+**GraphQL:**
+Query language alternatywa dla REST.
+
+**Zalety:**
+• Client określa dokładnie jakie dane potrzebuje
+• Single endpoint
+• No over-fetching ani under-fetching
+• Strongly typed schema
+
+**Przykład:**
+\`\`\`graphql
+query {
+  user(id: "123") {
+    name
+    email
+    orders {
+      id
+      total
+      status
+    }
+  }
+}
+\`\`\`
+
+---
+
+**SOAP (Simple Object Access Protocol):**
+Starszy, bardziej formalny protokół.
+
+**Charakterystyka:**
+• XML-based
+• Strict contract (WSDL)
+• Built-in error handling
+• Często w enterprise systems
+
+---
+
+**Webhooks:**
+"Reverse API" - system wysyła dane gdy coś się wydarzy.
+
+**Use cases:**
+• Payment completed notification
+• Order status updated
+• New user registered
+
+**Example:**
+\`\`\`json
+POST https://yourapp.com/webhooks/payment
+{
+  "event": "payment.completed",
+  "order_id": "ORD-001",
+  "amount": 299.99,
+  "timestamp": "2024-01-15T10:30:00Z"
+}
+\`\`\`
+
+---
+
+**API Authentication i Security:**
+
+**API Keys:**
+• Simple token in header/query
+• Nie przesyłać przez niezabezpieczone połączenia
+
+**OAuth 2.0:**
+• Authorization framework
+• Access tokens i refresh tokens
+• Scopes - poziomy dostępu
+• Used by Google, Facebook, GitHub
+
+**JWT (JSON Web Tokens):**
+• Self-contained tokens
+• Contains user info i permissions
+• Signed for security
+• Stateless authentication
+
+**Rate Limiting:**
+• Ograniczenie liczby requestów
+• Przykład: 1000 requests/hour
+• Headers: X-RateLimit-Remaining, X-RateLimit-Reset
+
+---
+
+**API Documentation dla BA:**
+
+**Co dokumentować:**
+
+**1. Endpoint Description:**
+• Cel endpointu
+• Business logic
+• Permissions required
+• Rate limits
+
+**2. Request Specification:**
+\`\`\`
+POST /api/orders
+
+Headers:
+Authorization: Bearer {token}
+Content-Type: application/json
+
+Request Body:
+{
+  "customer_id": "string (required)",
+  "items": [
+    {
+      "product_id": "string (required)",
+      "quantity": "integer (required, min: 1)"
+    }
+  ],
+  "shipping_address": {
+    "street": "string (required)",
+    "city": "string (required)",
+    "postal_code": "string (required)"
+  }
+}
+\`\`\`
+
+**3. Response Specification:**
+\`\`\`
+Success (201 Created):
+{
+  "order_id": "ORD-12345",
+  "status": "pending",
+  "total": 299.99,
+  "estimated_delivery": "2024-01-20"
+}
+
+Error (400 Bad Request):
+{
+  "error": "validation_error",
+  "message": "Invalid product_id",
+  "field": "items[0].product_id"
+}
+\`\`\`
+
+**4. Business Rules:**
+• Validation rules
+• Business logic constraints
+• Dependencies na inne systemy
+• Edge cases
+
+**5. Error Handling:**
+• Możliwe error codes
+• Error messages
+• Recovery procedures
+• Support contact
+
+---
+
+**Integration Requirements Template:**
+
+\`\`\`
+Integration: Payment Gateway (Stripe)
+
+Purpose:
+Process customer payments for orders
+
+Systems Involved:
+• Our e-commerce platform
+• Stripe API v2
+• Internal inventory system
+
+Flow:
+1. User submits payment info
+2. Frontend tokenizes card (Stripe.js)
+3. Backend calls Stripe API to charge
+4. Stripe sends webhook on success
+5. Update order status
+6. Trigger inventory deduction
+7. Send confirmation email
+
+API Endpoints Used:
+• POST /v1/payment_intents (create payment)
+• GET /v1/payment_intents/:id (check status)
+• Webhook: payment_intent.succeeded
+
+Data Mapping:
+Our System          →  Stripe
+order_id            →  metadata.order_id
+customer_email      →  receipt_email
+total_amount        →  amount (cents)
+
+Error Scenarios:
+• Card declined → Show user error, don't create order
+• Network timeout → Retry with idempotency key
+• Webhook delivery fails → Poll API for status
+
+Security:
+• PCI DSS compliance - no storing card data
+• API keys in environment variables
+• Webhook signature verification
+
+Testing:
+• Use Stripe test mode
+• Test cards for different scenarios
+• Webhook testing with Stripe CLI
+
+Performance:
+• Average response time: < 2 seconds
+• Handle up to 100 transactions/minute
+• Retry logic for failed webhooks
+\`\`\`
+
+---
+
+**Integration Challenges i Solutions:**
+
+**Challenge: Data Format Mismatch**
+Solution:
+• Data transformation layer
+• Mapping document
+• ETL process
+
+**Challenge: System Availability**
+Solution:
+• Retry logic
+• Circuit breaker pattern
+• Fallback mechanisms
+• Timeout settings
+
+**Challenge: Performance**
+Solution:
+• Async processing
+• Caching
+• Batch operations
+• Rate limiting compliance
+
+**Challenge: Error Handling**
+Solution:
+• Comprehensive logging
+• Error monitoring (Sentry, Rollbar)
+• Alerting system
+• Dead letter queue
+
+---
+
+**Tools dla API Testing i Documentation:**
+
+**Postman:**
+• Test API calls
+• Collections
+• Environment variables
+• Automated testing
+
+**Swagger/OpenAPI:**
+• API specification standard
+• Auto-generated documentation
+• Interactive API explorer
+• Code generation
+
+**cURL:**
+• Command-line tool
+• Simple testing
+• Scripts
+
+---
+
+**BA Role w API Projects:**
+
+**Requirements Phase:**
+• Zrozumienie business need dla integracji
+• Definicja use cases
+• Określenie data flow
+• Identyfikacja stakeholders
+
+**Analysis Phase:**
+• API evaluation (build vs buy)
+• Vendor comparison
+• Cost-benefit analysis
+• Risk assessment
+
+**Design Phase:**
+• Data mapping
+• Error handling scenarios
+• Security requirements
+• Performance requirements
+
+**Implementation Phase:**
+• UAT test cases
+• Acceptance criteria validation
+• Communication między teams
+
+**Post-Implementation:**
+• Monitoring i metrics
+• Issue tracking
+• Documentation updates
+• Continuous improvement
+
+---
+
+**Key Metrics dla Integration:**
+
+• **Availability** - uptime percentage (99.9%+)
+• **Response Time** - average latency
+• **Error Rate** - percentage of failed requests
+• **Throughput** - requests per second
+• **Data Accuracy** - correctness of synced data`
+                },
+                {
+                    id: 17,
+                    title: "Risk Management w Projektach",
+                    icon: "⚠️",
+                    color: "from-red-500 to-orange-500",
+                    isPremium: true,
+                    content: `**Risk Management** to systematyczne identyfikowanie, analizowanie i odpowiadanie na ryzyka projektowe.
+
+**"Risk" = Uncertainty that matters**
+• Może mieć pozytywny (opportunities) lub negatywny (threats) wpływ
+• Nie to samo co "issue" - issue już się wydarzyło
+• Proaktywne zarządzanie vs reaktywne gaszenie pożarów
+
+---
+
+**Risk Management Process:**
+
+**1. Risk Identification**
+Identyfikacja potencjalnych ryzyk.
+
+**Techniki:**
+• **Brainstorming** - sesje z zespołem
+• **Interviews** - rozmowy ze stakeholderami
+• **Checklists** - oparte na przeszłych projektach
+• **SWOT Analysis** - Strengths, Weaknesses, Opportunities, Threats
+• **Assumption Analysis** - co zakładamy że jest prawdą?
+• **Root Cause Analysis** - co może pójść nie tak?
+
+**Kategorie ryzyk:**
+• **Technical risks** - technologia, integracja, performance
+• **Project management risks** - scope creep, timeline, resources
+• **Organizational risks** - priorities, politics, change resistance
+• **External risks** - vendors, regulations, market changes
+• **Business risks** - ROI, competition, customer adoption
+
+**Przykłady ryzyk:**
+• Key developer może odejść
+• API vendor może zmienić pricing
+• Stakeholder może zmienić wymagania
+• Integracja może być trudniejsza niż oczekiwano
+• Users mogą nie przyjąć nowego rozwiązania
+
+---
+
+**2. Risk Analysis**
+
+**Qualitative Analysis:**
+Ocena prawdopodobieństwa i wpływu.
+
+**Probability Scale:**
+• **Very Low (1)** - < 10% szansy
+• **Low (2)** - 10-30%
+• **Medium (3)** - 30-50%
+• **High (4)** - 50-70%
+• **Very High (5)** - > 70%
+
+**Impact Scale:**
+• **Very Low (1)** - minimalny wpływ
+• **Low (2)** - niewielki wpływ
+• **Medium (3)** - umiarkowany wpływ
+• **High (4)** - znaczący wpływ
+• **Very High (5)** - krytyczny wpływ
+
+**Risk Score = Probability × Impact**
+
+**Risk Matrix:**
+\`\`\`
+             IMPACT
+        1    2    3    4    5
+      ┌────┬────┬────┬────┬────┐
+    5 │ 5  │ 10 │ 15 │ 20 │ 25 │
+      ├────┼────┼────┼────┼────┤
+P   4 │ 4  │ 8  │ 12 │ 16 │ 20 │
+R     ├────┼────┼────┼────┼────┤
+O   3 │ 3  │ 6  │ 9  │ 12 │ 15 │
+B     ├────┼────┼────┼────┼────┤
+    2 │ 2  │ 4  │ 6  │ 8  │ 10 │
+      ├────┼────┼────┼────┼────┤
+    1 │ 1  │ 2  │ 3  │ 4  │ 5  │
+      └────┴────┴────┴────┴────┘
+
+Low Risk: 1-5 (Green)
+Medium Risk: 6-12 (Yellow)
+High Risk: 15-25 (Red)
+\`\`\`
+
+**Quantitative Analysis:**
+Dla ważnych projektów - numerical analysis.
+• Expected Monetary Value (EMV) = Probability × Impact (in $)
+• Decision tree analysis
+• Monte Carlo simulation
+
+---
+
+**3. Risk Response Planning**
+
+**Response Strategies:**
+
+**For Negative Risks (Threats):**
+
+**Avoid:**
+• Eliminate ryzyko całkowicie
+• Zmiana planu projektu
+• Przykład: Zrezygnować z ryzykownej technologii
+
+**Mitigate:**
+• Redukcja prawdopodobieństwa lub wpływu
+• Najpopularniejsza strategia
+• Przykład: Training dla zespołu, proof of concept
+
+**Transfer:**
+• Przerzucenie ryzyka na inną stronę
+• Insurance, outsourcing, warranties
+• Przykład: Vendor SLA, insurance
+
+**Accept:**
+• Świadoma decyzja o braku akcji
+• Active acceptance - plan kontyngencji
+• Passive acceptance - deal with it if happens
+• Dla low priority risks
+
+**For Positive Risks (Opportunities):**
+
+**Exploit:**
+• Zapewnić że opportunity się zmaterializuje
+• Przykład: Assign best resources
+
+**Enhance:**
+• Zwiększ prawdopodobieństwo lub impact
+• Przykład: Marketing campaign
+
+**Share:**
+• Partnership, joint venture
+• Przykład: Revenue sharing model
+
+**Accept:**
+• Nie podejmować żadnej akcji
+
+---
+
+**4. Risk Monitoring i Control**
+
+**Ongoing Activities:**
+• Regular risk reviews (np. weekly)
+• Update risk register
+• Track risk triggers (warning signs)
+• Implement response plans when needed
+• Identify new risks
+• Close resolved risks
+
+**Risk Triggers (Early Warning Signs):**
+Wskaźniki że ryzyko może się zmaterializować:
+• Missed intermediate milestones
+• Quality issues
+• Team morale dropping
+• Budget variance
+• Stakeholder disengagement
+
+---
+
+**Risk Register (Risk Log):**
+
+Template do dokumentowania ryzyk:
+
+\`\`\`
+Risk ID: R-001
+Category: Technical
+Description: API vendor może zmienić pricing model
+Probability: Medium (3)
+Impact: High (4)
+Risk Score: 12 (HIGH)
+Triggers: 
+  - Vendor financial troubles
+  - Industry pricing changes
+Owner: Product Manager
+Status: Active
+
+Response Strategy: Mitigate
+Response Plan:
+  1. Negotiate multi-year contract
+  2. Build abstraction layer
+  3. Identify alternative vendors
+  4. Budget contingency 20%
+
+Contingency Plan:
+  If price increase > 50%:
+  - Evaluate vendor switch
+  - Negotiate based on volume
+  - Consider building in-house
+
+Last Updated: 2024-01-15
+Next Review: 2024-02-15
+\`\`\`
+
+---
+
+**BA Role w Risk Management:**
+
+**Requirements Phase:**
+• Identify ambiguity risks
+• Unclear requirements
+• Conflicting stakeholder needs
+• Scope creep risks
+
+**Analysis Phase:**
+• Complexity risks
+• Integration challenges
+• Data quality issues
+• Performance concerns
+
+**Communication:**
+• Transparent communication o ryzykach
+• Don't hide bad news
+• Escalation when needed
+• Regular updates
+
+**Facilitation:**
+• Risk workshops
+• Bringing right people together
+• Documenting risks
+• Tracking i reporting
+
+---
+
+**Common Project Risks:**
+
+**Scope Risks:**
+• Scope creep - nieustanne dodawanie features
+• Gold plating - zbędne perfekcjonizm
+• Unclear requirements
+• Mitigation: Strong change management, clear documentation
+
+**Timeline Risks:**
+• Unrealistic estimates
+• Dependencies delays
+• Resource unavailability
+• Mitigation: Buffer time, critical path analysis, daily standups
+
+**Resource Risks:**
+• Key person dependency
+• Skill gaps
+• Team conflicts
+• Mitigation: Knowledge sharing, cross-training, team building
+
+**Stakeholder Risks:**
+• Lack of engagement
+• Conflicting priorities
+• Change resistance
+• Mitigation: Regular communication, early involvement, change management
+
+**Technology Risks:**
+• New technology uncertainty
+• Integration complexity
+• Performance issues
+• Mitigation: POC, architecture review, load testing
+
+**Vendor Risks:**
+• Vendor reliability
+• Service quality
+• Price changes
+• Mitigation: SLAs, backup vendors, contract terms
+
+---
+
+**Risk Communication:**
+
+**Different Audiences:**
+
+**For Executives:**
+• High-level summary
+• Business impact
+• Mitigation costs vs risk costs
+• Decision points
+
+**For Project Team:**
+• Detailed risk descriptions
+• Action items
+• Responsibilities
+• Timelines
+
+**For Stakeholders:**
+• Relevant risks to them
+• How it affects their area
+• What they can do to help
+
+**Risk Report Template:**
+\`\`\`
+Executive Risk Summary - Project X
+
+RED Risks (High Priority):
+1. API Integration Complexity (Score: 20)
+   • Impact: 2-week delay, $50K additional cost
+   • Mitigation: POC in progress, backup vendor identified
+   • Owner: Tech Lead
+   • Status: Under control
+
+YELLOW Risks (Medium Priority):
+[Similar format]
+
+GREEN Risks (Low Priority):
+[Similar format]
+
+New Risks This Week: 1
+Closed Risks: 2
+Escalations Needed: None
+
+Next Steps:
+• POC completion by Friday
+• Stakeholder review meeting scheduled
+\`\`\`
+
+---
+
+**Risk Best Practices:**
+
+• **Start early** - don't wait for problems
+• **Make it routine** - regular risk reviews
+• **Be honest** - don't sugarcoat
+• **Prioritize** - focus na highest risks
+• **Document** - maintain risk register
+• **Review past projects** - learn from history
+• **Involve team** - diverse perspectives
+• **Update regularly** - risks evolve
+• **Celebrate** - when risks are mitigated
+• **Learn** - post-mortem on materialized risks
+
+**Anti-patterns to Avoid:**
+• Risk theater - dokumentowanie bez akcji
+• Blame culture - hiding risks
+• Risk paralysis - analysis paralysis
+• Ignoring low probability/high impact
+• One-time exercise - not ongoing
+• BA as sole risk manager - team responsibility`
+                },
+                {
+                    id: 18,
+                    title: "Financial Analysis dla BA",
+                    icon: "💰",
+                    color: "from-green-500 to-emerald-500",
+                    isPremium: true,
+                    content: `**Business Analyst** często musi przygotowywać business cases i analizy finansowe uzasadniające inwestycje.
+
+---
+
+**Business Case:**
+
+Dokument uzasadniający projekt z perspektywy biznesowej.
+
+**Struktura Business Case:**
+
+**1. Executive Summary**
+• Streszczenie dla top management
+• Kluczowe punkty: problem, rozwiązanie, koszty, korzyści, rekomendacja
+• 1-2 strony maksimum
+
+**2. Problem Statement**
+• Jaki problem rozwiązujemy
+• Current state i pain points
+• Business impact problemu
+• Cost of doing nothing
+
+**3. Proposed Solution**
+• Opis rozwiązania
+• Jak rozwiązuje problem
+• Alternatywne opcje rozważone
+• Uzasadnienie wybranej opcji
+
+**4. Cost-Benefit Analysis**
+• Wszystkie koszty (one-time + recurring)
+• Wszystkie korzyści (tangible + intangible)
+• Porównanie kosztów vs korzyści
+
+**5. Financial Analysis**
+• ROI, NPV, Payback Period
+• Assumptions i risk factors
+• Sensitivity analysis
+
+**6. Implementation Plan**
+• Timeline
+• Resource requirements
+• Dependencies
+• Major milestones
+
+**7. Risks and Mitigation**
+• Key risks
+• Mitigation strategies
+• Contingency plans
+
+**8. Recommendation**
+• Clear recommendation (go/no-go)
+• Next steps
+• Decision criteria
+
+---
+
+**Cost Analysis:**
+
+**Types of Costs:**
+
+**One-Time Costs (CAPEX - Capital Expenditure):**
+• Software licenses (perpetual)
+• Hardware purchase
+• Implementation services
+• Migration costs
+• Training costs
+• Initial setup
+
+**Recurring Costs (OPEX - Operational Expenditure):**
+• Subscription fees (SaaS)
+• Maintenance & support
+• Cloud infrastructure
+• Staff salaries
+• Ongoing training
+
+**Hidden/Indirect Costs:**
+• Opportunity cost - co moglibyśmy robić zamiast tego
+• Productivity loss podczas wdrożenia
+• Change management
+• Integration efforts
+• Data migration complexity
+
+**Example Cost Breakdown:**
+\`\`\`
+CRM Implementation Project
+
+One-Time Costs:
+• Software license (50 users)      €25,000
+• Implementation services          €40,000
+• Data migration                   €15,000
+• Training (3 sessions)            €10,000
+• Hardware upgrades                €5,000
+Total One-Time:                    €95,000
+
+Annual Recurring Costs:
+• Maintenance & support            €5,000/yr
+• Additional storage               €2,000/yr
+• System administrator (20%)       €15,000/yr
+Total Annual:                      €22,000/yr
+
+5-Year Total Cost:                 €205,000
+\`\`\`
+
+---
+
+**Benefit Analysis:**
+
+**Types of Benefits:**
+
+**Tangible (Measurable) Benefits:**
+• Cost savings
+• Revenue increase
+• Time savings (quantified)
+• Error reduction (quantified)
+• Resource optimization
+
+**Intangible Benefits:**
+• Improved customer satisfaction
+• Better decision-making
+• Enhanced brand image
+• Employee morale
+• Competitive advantage
+• Compliance & risk mitigation
+
+**Quantifying Benefits:**
+
+**Cost Savings Example:**
+\`\`\`
+Manual Process:
+• 5 employees × 2 hours/day × 220 days/year = 2,200 hours
+• 2,200 hours × €30/hour = €66,000/year
+• Error correction: €10,000/year
+Total Cost: €76,000/year
+
+Automated Process:
+• System cost: €22,000/year
+• 1 employee × 0.5 hours/day × 220 days = 110 hours
+• 110 hours × €30/hour = €3,300/year
+Total Cost: €25,300/year
+
+Annual Savings: €50,700
+\`\`\`
+
+**Revenue Increase Example:**
+\`\`\`
+Improved Sales Process:
+• Current conversion rate: 5%
+• Expected new rate: 7%
+• Monthly leads: 1,000
+• Average deal value: €5,000
+
+Current Revenue: 1,000 × 0.05 × €5,000 × 12 = €3,000,000
+Projected Revenue: 1,000 × 0.07 × €5,000 × 12 = €4,200,000
+Additional Revenue: €1,200,000/year
+\`\`\`
+
+---
+
+**Financial Metrics:**
+
+**ROI (Return on Investment):**
+\`\`\`
+ROI = (Total Benefits - Total Costs) / Total Costs × 100%
+
+Example:
+5-Year Benefits: €300,000
+5-Year Costs: €205,000
+ROI = (€300,000 - €205,000) / €205,000 × 100% = 46.3%
+\`\`\`
+
+**Interpretation:**
+• ROI > 0% = Project profitable
+• Higher ROI = Better investment
+• Compare with company hurdle rate (minimum acceptable ROI)
+
+**Payback Period:**
+Czas zwrotu inwestycji.
+
+\`\`\`
+Simple Payback = Initial Investment / Annual Net Benefit
+
+Example:
+Initial Investment: €95,000
+Annual Net Benefit: €50,700 - €22,000 = €28,700
+Payback Period = €95,000 / €28,700 = 3.3 years
+\`\`\`
+
+**NPV (Net Present Value):**
+Uwzględnia wartość pieniądza w czasie.
+
+\`\`\`
+NPV = Σ (Benefit - Cost) / (1 + r)^t
+
+Where:
+r = discount rate (typically 8-12%)
+t = year (0, 1, 2, 3...)
+
+Example (discount rate 10%):
+Year 0: -€95,000 (initial investment)
+Year 1: €28,700 / 1.10^1 = €26,091
+Year 2: €28,700 / 1.10^2 = €23,719
+Year 3: €28,700 / 1.10^3 = €21,563
+Year 4: €28,700 / 1.10^4 = €19,603
+Year 5: €28,700 / 1.10^5 = €17,821
+
+NPV = -€95,000 + €26,091 + €23,719 + €21,563 + €19,603 + €17,821
+NPV = €13,797
+\`\`\`
+
+**Interpretation:**
+• NPV > 0 = Project adds value
+• NPV < 0 = Project destroys value
+• Compare multiple projects - wybierz highest NPV
+
+**IRR (Internal Rate of Return):**
+Discount rate przy którym NPV = 0.
+
+• IRR > Cost of capital = Good investment
+• Higher IRR = Better project
+• Complex calculation - use Excel IRR function
+
+---
+
+**Break-Even Analysis:**
+
+Punkt w którym total revenue = total costs.
+
+\`\`\`
+Break-Even Point = Fixed Costs / (Price - Variable Cost per unit)
+
+Example - New Service:
+Fixed Costs: €50,000/year (salary, office, software)
+Price per service: €500
+Variable Cost per service: €200 (materials, outsourcing)
+
+Break-Even = €50,000 / (€500 - €200) = 167 units
+
+Need to sell 167 services to break even.
+\`\`\`
+
+---
+
+**Sensitivity Analysis:**
+
+Analiza jak zmiany w założeniach wpływają na wyniki.
+
+\`\`\`
+Base Case ROI: 46%
+
+Sensitivity Analysis:
+If benefits are 20% lower:
+ROI = (€240,000 - €205,000) / €205,000 = 17%
+
+If costs are 20% higher:
+ROI = (€300,000 - €246,000) / €246,000 = 22%
+
+If implementation takes 6 months longer:
+Additional cost: €20,000
+ROI = (€300,000 - €225,000) / €225,000 = 33%
+\`\`\`
+
+**Scenario Analysis:**
+Best Case, Most Likely, Worst Case scenarios.
+
+---
+
+**Tools dla Financial Analysis:**
+
+**Excel/Google Sheets:**
+• NPV function: =NPV(rate, value1, value2,...)
+• IRR function: =IRR(values)
+• PMT function for loan payments
+• Pivot tables for data analysis
+• Charts for visualization
+
+**Templates:**
+• Business case templates
+• ROI calculators
+• Cost-benefit analysis worksheets
+• Payback period calculators
+
+---
+
+**Presenting Financial Analysis:**
+
+**For CFO/Finance:**
+• Detailed calculations
+• NPV, IRR, sensitivity analysis
+• Risk-adjusted returns
+• Compliance & audit trail
+
+**For CEO/Board:**
+• Executive summary
+• Key metrics only
+• Visual charts
+• Strategic alignment
+• Comparison with alternatives
+
+**For Department Heads:**
+• Impact na ich obszar
+• Resource requirements
+• Timeline
+• Change management
+
+**Visualization Tips:**
+• Use charts for trends and comparisons
+• Waterfall charts dla cost breakdowns
+• Dashboard format dla KPIs
+• Color coding: green (good), red (bad), yellow (neutral)
+• Annotations for key insights
+
+---
+
+**Common Pitfalls:**
+
+• **Overestimating benefits** - be conservative
+• **Underestimating costs** - include hidden costs
+• **Ignoring time value of money** - use NPV, not simple ROI
+• **Focusing only na tangibles** - intangibles matter too
+• **Not updating** - revisit post-implementation
+• **Cherry-picking data** - be honest about risks
+• **Overly complex** - keep it simple for executives
+
+**Best Practices:**
+• Involve finance team early
+• Use historical data where possible
+• Document all assumptions
+• Include sensitivity analysis
+• Be conservative in estimates
+• Show multiple scenarios
+• Update regularly
+• Track actual vs projected post-implementation`
+                }
+            ];
+
+            const quizQuestions = [
+                // FREE QUESTIONS
+                {
+                    id: 1,
+                    question: "Co to jest stakeholder?",
+                    options: [
+                        "Osoba zarządzająca projektem",
+                        "Każda osoba lub grupa mogąca wpływać na projekt lub być nim dotknięta",
+                        "Tylko klienci końcowi",
+                        "Wyłącznie członkowie zespołu projektowego"
+                    ],
+                    correct: 1,
+                    isPremium: false
+                },
+                {
+                    id: 2,
+                    question: "Która z poniższych NIE jest kompetencją mięką Business Analista?",
+                    options: [
+                        "Komunikacja interpersonalna",
+                        "Znajomość SQL",
+                        "Myślenie analityczne",
+                        "Negocjacje"
+                    ],
+                    correct: 1,
+                    isPremium: false
+                },
+                {
+                    id: 3,
+                    question: "Która faza NIE należy do procesu analizy biznesowej?",
+                    options: [
+                        "Planowanie analizy biznesowej",
+                        "Elicitacja wymagań",
+                        "Programowanie aplikacji",
+                        "Dokumentowanie i walidacja"
+                    ],
+                    correct: 2,
+                    isPremium: false
+                },
+                // PREMIUM QUESTIONS
+                {
+                    id: 4,
+                    question: "Która technika elicitacji jest najlepsza do odkrywania nieświadomych potrzeb użytkowników?",
+                    options: [
+                        "Wywiady strukturyzowane",
+                        "Analiza dokumentacji",
+                        "Obserwacja użytkowników",
+                        "Ankiety online"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 5,
+                    question: "W BPMN, który element reprezentuje pojedyncze zadanie?",
+                    options: [
+                        "Gateway",
+                        "Event",
+                        "Task",
+                        "Flow"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 6,
+                    question: "Jaki format ma User Story według standardu?",
+                    options: [
+                        "Jako [rola] chcę [akcja] aby [cel]",
+                        "Funkcjonalność: [opis]",
+                        "Wymaganie: System musi [akcja]",
+                        "Use Case: [nazwa] - [opis]"
+                    ],
+                    correct: 0,
+                    isPremium: true
+                },
+                {
+                    id: 7,
+                    question: "Który diagram UML pokazuje interakcje między obiektami w czasie?",
+                    options: [
+                        "Diagram przypadków użycia",
+                        "Diagram klas",
+                        "Diagram sekwencji",
+                        "Diagram aktywności"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 8,
+                    question: "Co oznacza 'M' w metodzie priorytetyzacji MoSCoW?",
+                    options: [
+                        "Maybe have",
+                        "Must have",
+                        "Might have",
+                        "Mandatory have"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                },
+                {
+                    id: 9,
+                    question: "Gap Analysis to:",
+                    options: [
+                        "Analiza luk w dokumentacji",
+                        "Identyfikacja różnic między stanem obecnym a docelowym",
+                        "Analiza błędów w systemie",
+                        "Ocena kompetencji zespołu"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                },
+                {
+                    id: 10,
+                    question: "Która metoda SQL służy do łączenia tabel?",
+                    options: [
+                        "SELECT",
+                        "WHERE",
+                        "JOIN",
+                        "GROUP BY"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 11,
+                    question: "W Power/Interest Matrix, stakeholderzy o wysokim wpływie i wysokim zainteresowaniu powinni być:",
+                    options: [
+                        "Monitorowani minimalnym wysiłkiem",
+                        "Informowani regularnie",
+                        "Zarządzani blisko jako kluczowi gracze",
+                        "Trzymani w zadowoleniu"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 12,
+                    question: "Które 'A' w modelu ADKAR oznacza zdolność do wykonania zmiany?",
+                    options: [
+                        "Pierwsze A (Awareness)",
+                        "Drugie A (Ability)",
+                        "Trzecie A (nie ma trzeciego)",
+                        "ADKAR nie zawiera Ability"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                },
+                {
+                    id: 13,
+                    question: "W Agile/Scrum, która ceremonia służy do przeglądu i doprecyzowania backlogu?",
+                    options: [
+                        "Daily Stand-up",
+                        "Sprint Planning",
+                        "Backlog Refinement",
+                        "Sprint Review"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 14,
+                    question: "Która technika research jest JAKOŚCIOWA?",
+                    options: [
+                        "Ankiety z dużą próbą",
+                        "A/B Testing",
+                        "Google Analytics",
+                        "User Interviews"
+                    ],
+                    correct: 3,
+                    isPremium: true
+                },
+                {
+                    id: 15,
+                    question: "Framework RICE służy do:",
+                    options: [
+                        "Analizy ryzyka",
+                        "Priorytetyzacji funkcjonalności",
+                        "Zarządzania wymaganiami",
+                        "Testowania użyteczności"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                },
+                {
+                    id: 16,
+                    question: "Która metoda HTTP służy do TWORZENIA nowego zasobu?",
+                    options: [
+                        "GET",
+                        "POST",
+                        "PUT",
+                        "DELETE"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                },
+                {
+                    id: 17,
+                    question: "HTTP status code 404 oznacza:",
+                    options: [
+                        "Sukces",
+                        "Unauthorized",
+                        "Not Found",
+                        "Internal Server Error"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 18,
+                    question: "W zarządzaniu ryzykiem, strategia 'Mitigate' to:",
+                    options: [
+                        "Całkowite wyeliminowanie ryzyka",
+                        "Redukcja prawdopodobieństwa lub wpływu",
+                        "Przeniesienie ryzyka na inną stronę",
+                        "Akceptacja ryzyka bez działania"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                },
+                {
+                    id: 19,
+                    question: "Risk Score oblicza się jako:",
+                    options: [
+                        "Probability + Impact",
+                        "Probability - Impact",
+                        "Probability × Impact",
+                        "Probability / Impact"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 20,
+                    question: "ROI (Return on Investment) to:",
+                    options: [
+                        "Całkowite koszty projektu",
+                        "Czas zwrotu inwestycji",
+                        "(Korzyści - Koszty) / Koszty × 100%",
+                        "Wartość bieżąca netto"
+                    ],
+                    correct: 2,
+                    isPremium: true
+                },
+                {
+                    id: 21,
+                    question: "Payback Period to:",
+                    options: [
+                        "Czas potrzebny na zwrot początkowej inwestycji",
+                        "Całkowity okres trwania projektu",
+                        "Czas do osiągnięcia maksymalnych korzyści",
+                        "Okres na spłatę długu"
+                    ],
+                    correct: 0,
+                    isPremium: true
+                },
+                {
+                    id: 22,
+                    question: "NPV > 0 oznacza:",
+                    options: [
+                        "Projekt jest nieopłacalny",
+                        "Projekt dodaje wartość",
+                        "Projekt jest neutralny",
+                        "Projekt jest ryzykowny"
+                    ],
+                    correct: 1,
+                    isPremium: true
+                }
+            ];
+
+            // Dane mockowe dla panelu administratora
+            const mockUsers = [
+                { id: 1, email: 'jan.kowalski@example.com', name: 'Jan Kowalski', role: 'user', isPremium: true, premiumExpiry: '2025-12-31', registeredDate: '2024-01-15', lastLogin: '2024-10-28', status: 'active', completedSections: 15, quizScore: 85 },
+                { id: 2, email: 'anna.nowak@example.com', name: 'Anna Nowak', role: 'user', isPremium: false, premiumExpiry: null, registeredDate: '2024-02-20', lastLogin: '2024-10-29', status: 'active', completedSections: 8, quizScore: 72 },
+                { id: 3, email: 'admin@example.com', name: 'Administrator', role: 'admin', isPremium: true, premiumExpiry: '2099-12-31', registeredDate: '2023-01-01', lastLogin: '2024-10-29', status: 'active', completedSections: 18, quizScore: 100 },
+                { id: 4, email: 'piotr.wisniewski@example.com', name: 'Piotr Wiśniewski', role: 'user', isPremium: true, premiumExpiry: '2025-06-30', registeredDate: '2024-03-10', lastLogin: '2024-10-25', status: 'active', completedSections: 12, quizScore: 78 },
+                { id: 5, email: 'maria.kowalczyk@example.com', name: 'Maria Kowalczyk', role: 'user', isPremium: false, premiumExpiry: null, registeredDate: '2024-04-05', lastLogin: '2024-10-29', status: 'active', completedSections: 5, quizScore: 65 },
+                { id: 6, email: 'tomasz.lewandowski@example.com', name: 'Tomasz Lewandowski', role: 'user', isPremium: true, premiumExpiry: '2025-11-15', registeredDate: '2024-05-12', lastLogin: '2024-10-20', status: 'active', completedSections: 18, quizScore: 92 },
+                { id: 7, email: 'katarzyna.wojcik@example.com', name: 'Katarzyna Wójcik', role: 'user', isPremium: false, premiumExpiry: null, registeredDate: '2024-06-18', lastLogin: '2024-09-15', status: 'inactive', completedSections: 3, quizScore: 55 },
+                { id: 8, email: 'michal.kaminski@example.com', name: 'Michał Kamiński', role: 'user', isPremium: true, premiumExpiry: '2026-01-10', registeredDate: '2024-07-22', lastLogin: '2024-10-28', status: 'active', completedSections: 14, quizScore: 88 },
+            ];
+
+            const mockPurchases = [
+                { id: 'TRX001', userId: 1, userName: 'Jan Kowalski', userEmail: 'jan.kowalski@example.com', product: 'Premium 12 miesięcy', amount: 299.00, currency: 'PLN', status: 'completed', paymentMethod: 'BLIK', date: '2024-01-15T10:30:00', transactionId: 'BLIK_20240115103045' },
+                { id: 'TRX002', userId: 4, userName: 'Piotr Wiśniewski', userEmail: 'piotr.wisniewski@example.com', product: 'Premium 6 miesięcy', amount: 199.00, currency: 'PLN', status: 'completed', paymentMethod: 'PayPal', date: '2024-03-10T14:20:00', transactionId: 'PAYPAL_20240310142015' },
+                { id: 'TRX003', userId: 6, userName: 'Tomasz Lewandowski', userEmail: 'tomasz.lewandowski@example.com', product: 'Premium 12 miesięcy', amount: 299.00, currency: 'PLN', status: 'completed', paymentMethod: 'BLIK', date: '2024-05-12T09:15:00', transactionId: 'BLIK_20240512091530' },
+                { id: 'TRX004', userId: 8, userName: 'Michał Kamiński', userEmail: 'michal.kaminski@example.com', product: 'Premium 12 miesięcy', amount: 299.00, currency: 'PLN', status: 'completed', paymentMethod: 'BLIK', date: '2024-07-22T16:45:00', transactionId: 'BLIK_20240722164520' },
+                { id: 'TRX005', userId: 2, userName: 'Anna Nowak', userEmail: 'anna.nowak@example.com', product: 'Premium 3 miesiące', amount: 99.00, currency: 'PLN', status: 'pending', paymentMethod: 'BLIK', date: '2024-10-29T11:00:00', transactionId: 'BLIK_20241029110045' },
+                { id: 'TRX006', userId: 5, userName: 'Maria Kowalczyk', userEmail: 'maria.kowalczyk@example.com', product: 'Premium 6 miesięcy', amount: 199.00, currency: 'PLN', status: 'failed', paymentMethod: 'PayPal', date: '2024-10-28T13:30:00', transactionId: 'PAYPAL_20241028133015' },
+            ];
+
+            const mockActivityLogs = [
+                { id: 1, userId: 1, userName: 'Jan Kowalski', action: 'Login', details: 'Użytkownik zalogował się do systemu', timestamp: '2024-10-28T08:30:00', ip: '192.168.1.100', userAgent: 'Chrome/Windows' },
+                { id: 2, userId: 2, userName: 'Anna Nowak', action: 'Section Completed', details: 'Ukończono sekcję: Wprowadzenie do Analizy Biznesowej', timestamp: '2024-10-29T09:15:00', ip: '192.168.1.105', userAgent: 'Safari/MacOS' },
+                { id: 3, userId: 4, userName: 'Piotr Wiśniewski', action: 'Quiz Attempted', details: 'Rozwiązano quiz: wynik 78%', timestamp: '2024-10-25T14:20:00', ip: '192.168.1.110', userAgent: 'Firefox/Linux' },
+                { id: 4, userId: 8, userName: 'Michał Kamiński', action: 'Premium Purchase', details: 'Zakupiono Premium 12 miesięcy za 299 PLN', timestamp: '2024-10-28T16:45:00', ip: '192.168.1.120', userAgent: 'Chrome/Windows' },
+                { id: 5, userId: 3, userName: 'Administrator', action: 'Admin Access', details: 'Dostęp do panelu administratora', timestamp: '2024-10-29T10:00:00', ip: '192.168.1.1', userAgent: 'Chrome/Windows' },
+                { id: 6, userId: 5, userName: 'Maria Kowalczyk', action: 'Login', details: 'Użytkownik zalogował się do systemu', timestamp: '2024-10-29T11:30:00', ip: '192.168.1.115', userAgent: 'Chrome/Android' },
+            ];
+
+            const mockPromoCodes = [
+                { id: 1, code: 'STARTUP2024', discount: 20, type: 'percentage', status: 'active', usageCount: 45, usageLimit: 100, validFrom: '2024-01-01', validTo: '2024-12-31', createdBy: 'Administrator' },
+                { id: 2, code: 'SUMMER50', discount: 50, type: 'fixed', status: 'active', usageCount: 23, usageLimit: 50, validFrom: '2024-06-01', validTo: '2024-08-31', createdBy: 'Administrator' },
+                { id: 3, code: 'WELCOME10', discount: 10, type: 'percentage', status: 'active', usageCount: 156, usageLimit: null, validFrom: '2024-01-01', validTo: '2025-12-31', createdBy: 'Administrator' },
+                { id: 4, code: 'BLACKFRIDAY', discount: 30, type: 'percentage', status: 'expired', usageCount: 89, usageLimit: 200, validFrom: '2023-11-20', validTo: '2023-11-30', createdBy: 'Administrator' },
+            ];
+
+            const Footer = () => (
+                <div className="mt-12 text-center text-sm text-white/50 pb-8">
+                    <div className="flex items-center justify-center gap-6 mb-4">
+                        <a 
+                            href="https://www.youtube.com/@flowmanaged" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-2 hover:text-white/80 transition-colors"
+                        >
+                            <Youtube className="w-5 h-5" />
+                            <span>YouTube</span>
+                        </a>
+                        <span className="text-white/30">•</span>
+                        <button 
+                            onClick={() => setShowPrivacyPage(true)}
+                            className="flex items-center gap-2 hover:text-white/80 transition-colors"
+                        >
+                            <FileText className="w-5 h-5" />
+                            <span>Polityka Prywatności</span>
+                        </button>
+                    </div>
+                    <p className="mb-2">© 2024 Platforma Edukacyjna Business Analysis</p>
+                    <p>Wszystkie prawa zastrzeżone</p>
+                </div>
+            );
+
+            // Komponent strony Regulaminu
+            const TermsPage = () => (
+                <div className="min-h-screen p-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="glass rounded-3xl p-8">
+                            <button
+                                onClick={() => setShowTermsPage(false)}
+                                className="mb-6 text-white/70 hover:text-white transition-colors flex items-center gap-2"
+                            >
+                                ← Powrót
+                            </button>
+                            <h1 className="text-4xl font-bold text-white mb-6">Regulamin korzystania z serwisu</h1>
+                            
+                            <div className="prose prose-invert max-w-none text-white/90">
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§1 Postanowienia ogólne</h2>
+                                <p>
+                                    1. Niniejszy regulamin określa zasady korzystania z platformy edukacyjnej Business Analysis.<br/>
+                                    2. Właścicielem i operatorem serwisu jest Flowmanaged.<br/>
+                                    3. Korzystanie z serwisu oznacza akceptację niniejszego regulaminu.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§2 Definicje</h2>
+                                <p>
+                                    1. <strong>Serwis</strong> - platforma edukacyjna dostępna pod adresem serwisu.<br/>
+                                    2. <strong>Użytkownik</strong> - osoba korzystająca z serwisu.<br/>
+                                    3. <strong>Konto</strong> - zbiór zasobów i ustawień utworzony dla Użytkownika.<br/>
+                                    4. <strong>Treści</strong> - materiały edukacyjne, quizy i inne zasoby dostępne w serwisie.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§3 Rejestracja i konto</h2>
+                                <p>
+                                    1. Do korzystania z pełnych funkcji serwisu wymagana jest rejestracja.<br/>
+                                    2. Użytkownik zobowiązany jest do podania prawdziwego adresu email.<br/>
+                                    3. Użytkownik odpowiada za zachowanie poufności danych dostępowych do konta.<br/>
+                                    4. Zabronione jest udostępnianie konta innym osobom.<br/>
+                                    5. Użytkownik może w każdej chwili usunąć swoje konto kontaktując się z administratorem.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§4 Usługi i dostęp</h2>
+                                <p>
+                                    1. Serwis oferuje darmowe i płatne (Premium) treści edukacyjne.<br/>
+                                    2. Treści Premium dostępne są po wykupieniu odpowiedniego pakietu.<br/>
+                                    3. Administrator zastrzega sobie prawo do zmiany zakresu treści darmowych i płatnych.<br/>
+                                    4. Dostęp do serwisu może być czasowo ograniczony z przyczyn technicznych.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§5 Prawa autorskie</h2>
+                                <p>
+                                    1. Wszystkie treści w serwisie są chronione prawem autorskim.<br/>
+                                    2. Zabronione jest kopiowanie, rozpowszechnianie i publiczne udostępnianie treści bez zgody.<br/>
+                                    3. Materiały można wykorzystywać wyłącznie do celów osobistych i edukacyjnych.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§6 Odpowiedzialność</h2>
+                                <p>
+                                    1. Administrator nie ponosi odpowiedzialności za decyzje podejmowane na podstawie materiałów z serwisu.<br/>
+                                    2. Materiały mają charakter wyłącznie edukacyjny i informacyjny.<br/>
+                                    3. Administrator nie gwarantuje ciągłości działania serwisu.<br/>
+                                    4. Użytkownik korzysta z serwisu na własną odpowiedzialność.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§7 Płatności i subskrypcje</h2>
+                                <p>
+                                    1. Ceny pakietów Premium określone są w serwisie i mogą ulec zmianie.<br/>
+                                    2. Płatności realizowane są przez bezpieczne systemy płatności.<br/>
+                                    3. Użytkownik może anulować subskrypcję w dowolnym momencie.<br/>
+                                    4. Zwrot środków możliwy jest zgodnie z obowiązującymi przepisami prawa.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§8 Zmiany regulaminu</h2>
+                                <p>
+                                    1. Administrator zastrzega sobie prawo do zmiany regulaminu.<br/>
+                                    2. Użytkownicy zostaną powiadomieni o zmianach z 7-dniowym wyprzedzeniem.<br/>
+                                    3. Kontynuowanie korzystania z serwisu po zmianie regulaminu oznacza jego akceptację.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§9 Postanowienia końcowe</h2>
+                                <p>
+                                    1. W sprawach nieuregulowanych regulaminem stosuje się przepisy prawa polskiego.<br/>
+                                    2. Spory rozstrzygane będą przez sąd właściwy dla siedziby administratora.<br/>
+                                    3. Regulamin wchodzi w życie z dniem publikacji.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">§10 Kontakt</h2>
+                                <p>
+                                    W sprawach związanych z regulaminem prosimy o kontakt:<br/>
+                                    Email: <a href="mailto:flowmanaged@gmail.com" className="text-purple-400 hover:text-purple-300">flowmanaged@gmail.com</a>
+                                </p>
+
+                                <p className="mt-8 text-white/60 text-sm">
+                                    Data ostatniej aktualizacji: 28 października 2024
+                                </p>
+                            </div>
+                        </div>
+                        <Footer />
+                    </div>
+                </div>
+            );
+
+            // Komponent strony Polityki Prywatności
+            const PrivacyPage = () => (
+                <div className="min-h-screen p-6">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="glass rounded-3xl p-8">
+                            <button
+                                onClick={() => setShowPrivacyPage(false)}
+                                className="mb-6 text-white/70 hover:text-white transition-colors flex items-center gap-2"
+                            >
+                                ← Powrót
+                            </button>
+                            <h1 className="text-4xl font-bold text-white mb-6">Polityka Prywatności</h1>
+                            
+                            <div className="prose prose-invert max-w-none text-white/90">
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">1. Administrator danych</h2>
+                                <p>
+                                    Administratorem Twoich danych osobowych jest <strong>Flowmanaged</strong>.<br/>
+                                    Kontakt: <a href="mailto:flowmanaged@gmail.com" className="text-purple-400 hover:text-purple-300">flowmanaged@gmail.com</a>
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">2. Cele przetwarzania danych</h2>
+                                <p>Twoje dane osobowe przetwarzamy w następujących celach:</p>
+                                <ul className="list-disc pl-6 space-y-2">
+                                    <li>Realizacja lub zawarcie umowy z Klientem (art. 6 ust. 1 lit. b RODO)</li>
+                                    <li>Rozliczeń, księgowości i sprawozdawczości finansowej (art. 6 ust. 1 lit. c RODO)</li>
+                                    <li>Spełnienia innych obowiązków prawnych ciążących na administratorze (art. 6 ust. 1 lit. c RODO)</li>
+                                    <li>Celów wskazanych w treści udzielonych zgód (art. 6 ust. 1 lit. a RODO)</li>
+                                    <li>Ustalenia, dochodzenia i obrony roszczeń (art. 6 ust. 1 lit. f RODO)</li>
+                                    <li>Celów statystycznych i analitycznych (art. 6 ust. 1 lit. f RODO)</li>
+                                    <li>Marketingu bezpośredniego usług i produktów (art. 6 ust. 1 lit. f RODO)</li>
+                                </ul>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">3. Rodzaje przetwarzanych danych</h2>
+                                <p>Przetwarzamy następujące kategorie danych osobowych:</p>
+                                <ul className="list-disc pl-6 space-y-2">
+                                    <li>Dane identyfikacyjne (imię, nazwisko)</li>
+                                    <li>Dane kontaktowe (adres email)</li>
+                                    <li>Dane dotyczące korzystania z platformy (postępy w nauce, wyniki quizów)</li>
+                                    <li>Dane o transakcjach (w przypadku zakupu wersji Premium)</li>
+                                    <li>Dane techniczne (adres IP, typ przeglądarki, system operacyjny)</li>
+                                </ul>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">4. Odbiorcy danych</h2>
+                                <p>Twoje dane osobowe mogą być przekazywane następującym kategoriom odbiorców:</p>
+                                <ul className="list-disc pl-6 space-y-2">
+                                    <li>Podmioty świadczące usługi IT i hostingu</li>
+                                    <li>Podmioty świadczące usługi płatnicze</li>
+                                    <li>Podmioty świadczące usługi księgowe i prawne</li>
+                                    <li>Organy państwowe w przypadkach przewidzianych prawem</li>
+                                </ul>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">5. Okres przechowywania danych</h2>
+                                <p>
+                                    Twoje dane osobowe będą przechowywane przez okres niezbędny do realizacji celów przetwarzania,<br/>
+                                    a po tym czasie przez okres oraz w zakresie wymaganym przez przepisy prawa lub dla zabezpieczenia<br/>
+                                    ewentualnych roszczeń.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">6. Twoje prawa</h2>
+                                <p>W związku z przetwarzaniem danych osobowych przysługują Ci następujące prawa:</p>
+                                <ul className="list-disc pl-6 space-y-2">
+                                    <li><strong>Prawo dostępu</strong> - możesz uzyskać informację czy i jakie dane osobowe są przetwarzane</li>
+                                    <li><strong>Prawo do kopii danych</strong> - możesz otrzymać kopię swoich danych</li>
+                                    <li><strong>Prawo do sprostowania</strong> - możesz żądać poprawienia nieprawidłowych danych</li>
+                                    <li><strong>Prawo do usunięcia</strong> - możesz żądać usunięcia danych ("prawo do bycia zapomnianym")</li>
+                                    <li><strong>Prawo do ograniczenia przetwarzania</strong> - możesz żądać ograniczenia przetwarzania danych</li>
+                                    <li><strong>Prawo do przenoszenia danych</strong> - możesz otrzymać dane w ustrukturyzowanym formacie</li>
+                                    <li><strong>Prawo do cofnięcia zgody</strong> - możesz w dowolnym momencie cofnąć zgodę</li>
+                                    <li><strong>Prawo do sprzeciwu</strong> - możesz wnieść sprzeciw wobec przetwarzania danych</li>
+                                </ul>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">7. Prawo do wniesienia skargi</h2>
+                                <p>
+                                    Masz prawo wnieść skargę do organu nadzorczego - Prezesa Urzędu Ochrony Danych Osobowych,<br/>
+                                    jeśli uważasz, że przetwarzanie Twoich danych osobowych narusza przepisy RODO.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">8. Cookies i technologie śledzące</h2>
+                                <p>
+                                    Nasza strona używa plików cookies i podobnych technologii w celu zapewnienia prawidłowego<br/>
+                                    funkcjonowania serwisu, analizy ruchu oraz personalizacji treści. Możesz zarządzać ustawieniami<br/>
+                                    cookies w swojej przeglądarce.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">9. Bezpieczeństwo danych</h2>
+                                <p>
+                                    Stosujemy odpowiednie środki techniczne i organizacyjne zapewniające bezpieczeństwo<br/>
+                                    przetwarzanych danych osobowych, w tym ochronę przed ich nieuprawnionym lub niezgodnym<br/>
+                                    z prawem przetwarzaniem oraz przypadkową utratą, zniszczeniem lub uszkodzeniem.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">10. Zmiany polityki prywatności</h2>
+                                <p>
+                                    Zastrzegamy sobie prawo do wprowadzania zmian w niniejszej polityce prywatności.<br/>
+                                    O wszelkich zmianach będziemy informować użytkowników poprzez komunikat w serwisie.
+                                </p>
+
+                                <h2 className="text-2xl font-bold text-white mt-6 mb-4">11. Kontakt w sprawach prywatności</h2>
+                                <p>
+                                    W przypadku pytań dotyczących przetwarzania danych osobowych oraz realizacji przysługujących<br/>
+                                    Ci praw, prosimy o kontakt:<br/>
+                                    Email: <a href="mailto:flowmanaged@gmail.com" className="text-purple-400 hover:text-purple-300">flowmanaged@gmail.com</a>
+                                </p>
+
+                                <p className="mt-8 text-white/60 text-sm">
+                                    Data ostatniej aktualizacji: 28 października 2024
+                                </p>
+                            </div>
+                        </div>
+                        <Footer />
+                    </div>
+                </div>
+            );
+
+            const AuthModal = () => {
+                const [email, setEmail] = useState('');
+                const [password, setPassword] = useState('');
+                const [confirmPassword, setConfirmPassword] = useState('');
+                const [acceptTerms, setAcceptTerms] = useState(false);
+                const [message, setMessage] = useState('');
+
+                const handleLogin = (e) => {
+                    e.preventDefault();
+                    if (!email || !password) {
+                        setMessage('Proszę wypełnić wszystkie pola');
+                        return;
+                    }
+                    // Symulacja logowania - sprawdzanie czy to admin
+                    console.log('Logowanie:', email);
+                    setMessage('Logowanie pomyślne!');
+                    setTimeout(() => {
+                        setIsLoggedIn(true);
+                        setUserEmail(email);
+                        // Sprawdź czy to konto admina
+                        if (email.toLowerCase() === 'admin@example.com') {
+                            setUserRole('admin');
+                            showToast('Zalogowano jako Administrator', 'success');
+                        } else {
+                            setUserRole('user');
+                            showToast('Zalogowano pomyślnie', 'success');
+                        }
+                        setShowAuthModal(false);
+                        setMessage('');
+                    }, 1000);
+                };
+
+                const handleRegister = (e) => {
+                    e.preventDefault();
+                    if (!email || !password || !confirmPassword) {
+                        setMessage('Proszę wypełnić wszystkie pola');
+                        return;
+                    }
+                    if (password !== confirmPassword) {
+                        setMessage('Hasła nie są zgodne');
+                        return;
+                    }
+                    if (!acceptTerms) {
+                        setMessage('Musisz zaakceptować regulamin');
+                        return;
+                    }
+                    // Symulacja rejestracji i wysłania maila
+                    console.log('Rejestracja:', email);
+                    console.log('Wysyłanie maila potwierdzającego na:', email);
+                    console.log('Mail zawiera link: https://twojserwis.pl/confirm?token=abc123');
+                    setMessage('Konto utworzone! Sprawdź swoją skrzynkę email w celu potwierdzenia.');
+                    setTimeout(() => {
+                        setAuthView('login');
+                        setMessage('');
+                    }, 3000);
+                };
+
+                const handleForgotPassword = (e) => {
+                    e.preventDefault();
+                    if (!email) {
+                        setMessage('Proszę podać adres email');
+                        return;
+                    }
+                    // Symulacja wysłania maila z linkiem do resetu hasła
+                    console.log('Wysyłanie maila resetującego hasło na:', email);
+                    console.log('Mail zawiera link: https://twojserwis.pl/reset-password?token=xyz789');
+                    setMessage('Link do resetowania hasła został wysłany na Twój email.');
+                    setTimeout(() => {
+                        setAuthView('login');
+                        setMessage('');
+                    }, 3000);
+                };
+
+                return (
+                    <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
+                        <div className="auth-modal-content glass rounded-2xl p-4 sm:p-6 md:p-8 max-w-sm sm:max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-between items-center mb-4 sm:mb-6">
+                                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                                    {authView === 'login' && 'Logowanie'}
+                                    {authView === 'register' && 'Rejestracja'}
+                                    {authView === 'forgot' && 'Resetowanie hasła'}
+                                </h2>
+                                <button 
+                                    onClick={() => setShowAuthModal(false)}
+                                    className="text-white/70 hover:text-white transition-colors flex-shrink-0"
+                                >
+                                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                                </button>
+                            </div>
+
+                            {message && (
+                                <div className={`mb-3 sm:mb-4 p-2 sm:p-3 rounded-lg text-xs sm:text-sm ${message.includes('pomyślne') || message.includes('utworzone') || message.includes('wysłany') ? 'bg-green-500/20 border border-green-500' : 'bg-red-500/20 border border-red-500'}`}>
+                                    <p className="text-white">{message}</p>
+                                </div>
+                            )}
+
+                            {authView === 'login' && (
+                                <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
+                                    <div>
+                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Email</label>
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            placeholder="twoj@email.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Hasło</label>
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 sm:py-3 rounded-xl text-sm sm:text-base hover:shadow-lg transition-all"
+                                    >
+                                        Zaloguj się
+                                    </button>
+                                    <div className="flex justify-between mt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setAuthView('forgot'); setMessage(''); }}
+                                            className="text-sm text-purple-300 hover:text-purple-200 transition-colors"
+                                        >
+                                            Zapomniałem hasła
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => { setAuthView('register'); setMessage(''); }}
+                                            className="text-sm text-purple-300 hover:text-purple-200 transition-colors"
+                                        >
+                                            Zarejestruj się
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+
+                            {authView === 'register' && (
+                                <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
+                                    <div>
+                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Email</label>
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            placeholder="twoj@email.com"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Hasło</label>
+                                        <input
+                                            type="password"
+                                            value={password}
+                                            onChange={(e) => setPassword(e.target.value)}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Powtórz hasło</label>
+                                        <input
+                                            type="password"
+                                            value={confirmPassword}
+                                            onChange={(e) => setConfirmPassword(e.target.value)}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+                                    <div className="space-y-3">
+                                        <label className="flex items-start gap-2 cursor-pointer">
+                                            <input
+                                                type="checkbox"
+                                                checked={acceptTerms}
+                                                onChange={(e) => setAcceptTerms(e.target.checked)}
+                                                className="mt-1 w-4 h-4 rounded border-white/20 bg-white/10 text-purple-500 focus:ring-purple-500"
+                                            />
+                                            <span className="text-white/90 text-sm">
+                                                Akceptuję{' '}
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setShowAuthModal(false);
+                                                        setShowTermsPage(true);
+                                                    }}
+                                                    className="text-purple-300 hover:text-purple-200 underline"
+                                                >
+                                                    regulamin korzystania z serwisu
+                                                </button>
+                                            </span>
+                                        </label>
+                                        
+                                        <div className="text-xs text-white/70 leading-relaxed bg-white/5 rounded-lg p-3 border border-white/10">
+                                            Administratorem danych osobowych jest <strong className="text-white/90">"Flowmanaged"</strong>. Możesz się z nami skontaktować przez adres e-mail:{' '}
+                                            <a href="mailto:flowmanaged@gmail.com" className="text-purple-300 hover:text-purple-200">
+                                                flowmanaged@gmail.com
+                                            </a>
+                                            . Dane przetwarzamy w celu realizacji lub zawarcia umowy z Klientem, rozliczeń, księgowości i sprawozdawczości finansowej, spełnienia innych obowiązków prawnych, w celach wskazanych w treści zgód, do ustalenia, dochodzenia i obrony roszczeń oraz w celach statystycznych. W sytuacjach przewidzianych prawem, przysługują Ci prawa do: dostępu do swoich danych, otrzymania ich kopii, sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia, cofnięcia zgody oraz wniesienia sprzeciwu wobec przetwarzania danych. Pełne informacje w{' '}
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setShowAuthModal(false);
+                                                    setShowPrivacyPage(true);
+                                                }}
+                                                className="text-purple-300 hover:text-purple-200 underline"
+                                            >
+                                                polityce prywatności
+                                            </button>
+                                            .
+                                        </div>
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 sm:py-3 rounded-xl text-sm sm:text-base hover:shadow-lg transition-all"
+                                    >
+                                        Zarejestruj się
+                                    </button>
+                                    <div className="text-center mt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setAuthView('login'); setMessage(''); }}
+                                            className="text-sm text-purple-300 hover:text-purple-200 transition-colors"
+                                        >
+                                            Masz już konto? Zaloguj się
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+
+                            {authView === 'forgot' && (
+                                <form onSubmit={handleForgotPassword} className="space-y-3 sm:space-y-4">
+                                    <p className="text-white/70 text-sm mb-4">
+                                        Podaj swój adres email, a wyślemy Ci link do ustawienia nowego hasła.
+                                    </p>
+                                    <div>
+                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Email</label>
+                                        <input
+                                            type="email"
+                                            value={email}
+                                            onChange={(e) => setEmail(e.target.value)}
+                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            placeholder="twoj@email.com"
+                                        />
+                                    </div>
+                                    <button
+                                        type="submit"
+                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 sm:py-3 rounded-xl text-sm sm:text-base hover:shadow-lg transition-all"
+                                    >
+                                        Wyślij link resetujący
+                                    </button>
+                                    <div className="text-center mt-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => { setAuthView('login'); setMessage(''); }}
+                                            className="text-sm text-purple-300 hover:text-purple-200 transition-colors"
+                                        >
+                                            Powrót do logowania
+                                        </button>
+                                    </div>
+                                </form>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+            const PremiumModal = () => {
+                const [blikCode, setBlikCode] = useState('');
+
+                const handlePaymentSubmit = async (e) => {
+                    e.preventDefault();
+                    
+                    // Walidacja
+                    if (paymentMethod === 'blik') {
+                        const cleanCode = blikCode.replace(/\s/g, '');
+                        if (cleanCode.length !== 6 || !/^\d+$/.test(cleanCode)) {
+                            showToast('Kod BLIK musi składać się z 6 cyfr', 'error');
+                            return;
+                        }
+                    }
+
+                    setProcessingPayment(true);
+                    setPaymentStep('processing');
+
+                    // Symulacja przetwarzania płatności (2 sekundy)
+                    setTimeout(() => {
+                        // Ustawienie daty wygaśnięcia Premium (90 dni od teraz)
+                        const expiryDate = new Date();
+                        expiryDate.setDate(expiryDate.getDate() + 90);
+                        
+                        setIsPremium(true);
+                        setPremiumExpiryDate(expiryDate.toISOString());
+                        setProcessingPayment(false);
+                        setPaymentStep('success');
+                        
+                        showToast('🎉 Gratulacje! Masz dostęp Premium na 90 dni!', 'success');
+                        
+                        // Automatyczne zamknięcie po 3 sekundach
+                        setTimeout(() => {
+                            setShowPremiumModal(false);
+                            setPaymentStep('overview');
+                            setBlikCode('');
+                        }, 3000);
+                    }, 2000);
+                };
+
+                const formatBlikCode = (value) => {
+                    const cleaned = value.replace(/\D/g, '');
+                    const limited = cleaned.slice(0, 6);
+                    if (limited.length > 3) {
+                        return limited.slice(0, 3) + ' ' + limited.slice(3);
+                    }
+                    return limited;
+                };
+
+                const getRemainingDays = () => {
+                    if (!premiumExpiryDate) return 90;
+                    const now = new Date();
+                    const expiry = new Date(premiumExpiryDate);
+                    const diffTime = expiry - now;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    return Math.max(0, diffDays);
+                };
+
+                return (
+                    <div 
+                        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
+                        onClick={() => !processingPayment && setShowPremiumModal(false)}
+                    >
+                        <div 
+                            className="glass rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto" 
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* KROK 1: Przegląd oferty */}
+                            {paymentStep === 'overview' && (
+                                <>
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div>
+                                            <h2 className="text-3xl font-bold text-white mb-2">🌟 Przejdź na Premium</h2>
+                                            <p className="text-white/70">Odblokuj pełną moc platformy edukacyjnej</p>
+                                        </div>
+                                        <button 
+                                            onClick={() => setShowPremiumModal(false)} 
+                                            className="text-white/70 hover:text-white transition-colors"
+                                        >
+                                            <X className="w-6 h-6" />
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="grid md:grid-cols-2 gap-6 mb-8">
+                                        <div className="bg-white/5 rounded-2xl p-6">
+                                            <h3 className="text-xl font-bold text-white mb-4">Wersja Darmowa</h3>
+                                            <ul className="space-y-3">
+                                                <li className="flex items-start gap-2 text-white/70">
+                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>3 podstawowe sekcje</span>
+                                                </li>
+                                                <li className="flex items-start gap-2 text-white/70">
+                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span>3 pytania quizowe</span>
+                                                </li>
+                                                <li className="flex items-start gap-2 text-white/70">
+                                                    <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                                                    <span>Brak zaawansowanych tematów</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        
+                                        <div className="bg-gradient-to-br from-yellow-400/20 to-orange-500/20 border-2 border-yellow-400 rounded-2xl p-6">
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Crown className="w-6 h-6 text-yellow-400" />
+                                                <h3 className="text-xl font-bold text-white">Premium</h3>
+                                            </div>
+                                            <div className="bg-gradient-to-r from-yellow-400/30 to-orange-500/30 rounded-xl p-4 mb-4 border border-yellow-400/50">
+                                                <div className="text-center">
+                                                    <div className="text-4xl font-bold text-white mb-1">299 PLN</div>
+                                                    <div className="text-yellow-200 font-medium text-sm">Dostęp na 90 dni</div>
+                                                </div>
+                                            </div>
+                                            <ul className="space-y-3 mb-6">
+                                                <li className="flex items-start gap-2 text-white">
+                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span className="font-medium">15 kompleksowych sekcji</span>
+                                                </li>
+                                                <li className="flex items-start gap-2 text-white">
+                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span className="font-medium">19 dodatkowych pytań</span>
+                                                </li>
+                                                <li className="flex items-start gap-2 text-white">
+                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span className="font-medium">Zaawansowane techniki i narzędzia</span>
+                                                </li>
+                                                <li className="flex items-start gap-2 text-white">
+                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                                    <span className="font-medium">Case studies i przykłady</span>
+                                                </li>
+                                            </ul>
+                                            {isLoggedIn ? (
+                                                <button 
+                                                    onClick={() => setPaymentStep('payment')}
+                                                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 rounded-xl hover:shadow-2xl transition-all"
+                                                >
+                                                    🚀 Przejdź do płatności
+                                                </button>
+                                            ) : (
+                                                <button 
+                                                    onClick={() => {
+                                                        setShowPremiumModal(false);
+                                                        setShowAuthModal(true);
+                                                    }}
+                                                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 rounded-xl hover:shadow-2xl transition-all"
+                                                >
+                                                    🔐 Zaloguj się aby kupić
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-white/5 rounded-2xl p-6">
+                                        <h3 className="text-lg font-bold text-white mb-3">📚 Co zyskujesz w Premium:</h3>
+                                        <div className="grid md:grid-cols-2 gap-3 text-sm text-white/70">
+                                            <div>• BPMN i modelowanie procesów</div>
+                                            <div>• API i dokumentacja techniczna</div>
+                                            <div>• Zarządzanie stakeholderami</div>
+                                            <div>• Analiza finansowa projektów</div>
+                                            <div>• Change Management</div>
+                                            <div>• User Research metodyki</div>
+                                            <div>• Agile vs Waterfall</div>
+                                            <div>• Risk Management</div>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {/* KROK 2: Wybór metody płatności i formularz */}
+                            {paymentStep === 'payment' && (
+                                <>
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-bold text-white">Płatność</h2>
+                                        <button 
+                                            onClick={() => setPaymentStep('overview')} 
+                                            className="text-white/60 hover:text-white transition-colors"
+                                        >
+                                            ← Powrót
+                                        </button>
+                                    </div>
+
+                                    {/* Wybór metody płatności */}
+                                    <div className="grid grid-cols-2 gap-4 mb-6">
+                                        <button
+                                            onClick={() => setPaymentMethod('blik')}
+                                            className={`payment-method-card p-6 rounded-xl border-2 transition-all ${
+                                                paymentMethod === 'blik' 
+                                                    ? 'selected border-purple-500 bg-purple-500/15' 
+                                                    : 'border-white/20 bg-white/5'
+                                            }`}
+                                        >
+                                            <Smartphone className="w-10 h-10 text-white mx-auto mb-3" />
+                                            <div className="text-white font-medium text-center">BLIK</div>
+                                            <div className="text-white/60 text-xs text-center mt-1">Kod z aplikacji</div>
+                                        </button>
+
+                                        <button
+                                            onClick={() => setPaymentMethod('paypal')}
+                                            className={`payment-method-card p-6 rounded-xl border-2 transition-all ${
+                                                paymentMethod === 'paypal' 
+                                                    ? 'selected border-purple-500 bg-purple-500/15' 
+                                                    : 'border-white/20 bg-white/5'
+                                            }`}
+                                        >
+                                            <div className="text-4xl mb-3 text-center">💳</div>
+                                            <div className="text-white font-medium text-center">PayPal</div>
+                                            <div className="text-white/60 text-xs text-center mt-1">Szybka płatność</div>
+                                        </button>
+                                    </div>
+
+                                    {/* Formularz płatności */}
+                                    <form onSubmit={handlePaymentSubmit} className="space-y-6">
+                                        {paymentMethod === 'blik' && (
+                                            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                                                <label className="block text-white/90 mb-3 text-lg font-semibold text-center">
+                                                    Wprowadź kod BLIK
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    value={blikCode}
+                                                    onChange={(e) => setBlikCode(formatBlikCode(e.target.value))}
+                                                    placeholder="000 000"
+                                                    required
+                                                    maxLength="7"
+                                                    className="w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 text-center text-3xl tracking-widest font-mono"
+                                                />
+                                                <p className="text-white/60 text-sm mt-3 text-center">
+                                                    📱 Wygeneruj kod w aplikacji bankowej
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {paymentMethod === 'paypal' && (
+                                            <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center">
+                                                <div className="text-6xl mb-4">💳</div>
+                                                <h3 className="text-white text-lg font-semibold mb-2">
+                                                    Przekierowanie do PayPal
+                                                </h3>
+                                                <p className="text-white/70 text-sm mb-4">
+                                                    Po kliknięciu przycisku zostaniesz przekierowany do bezpiecznej strony płatności PayPal
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* Podsumowanie */}
+                                        <div className="border-t border-white/20 pt-6">
+                                            <div className="flex justify-between text-white mb-3">
+                                                <span className="text-lg">Dostęp Premium (90 dni)</span>
+                                                <span className="font-bold text-xl">299 PLN</span>
+                                            </div>
+                                            <div className="flex justify-between text-white/60 text-sm mb-4">
+                                                <span>VAT (23%)</span>
+                                                <span>55,88 PLN</span>
+                                            </div>
+                                            <div className="bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-lg p-3 mb-4">
+                                                <div className="flex justify-between text-white font-bold">
+                                                    <span>Do zapłaty:</span>
+                                                    <span className="text-xl">299 PLN</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button
+                                            type="submit"
+                                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-4 rounded-xl hover:shadow-2xl transition-all text-lg"
+                                        >
+                                            {paymentMethod === 'blik' ? '💳 Zapłać BLIK - 299 PLN' : '🔐 Zapłać przez PayPal - 299 PLN'}
+                                        </button>
+
+                                        <p className="text-white/40 text-xs text-center">
+                                            🔒 Płatność jest bezpieczna i szyfrowana
+                                        </p>
+                                    </form>
+                                </>
+                            )}
+
+                            {/* KROK 3: Przetwarzanie płatności */}
+                            {paymentStep === 'processing' && (
+                                <div className="text-center py-16">
+                                    <div className="spinner mx-auto mb-6"></div>
+                                    <h3 className="text-2xl font-bold text-white mb-3">
+                                        Przetwarzanie płatności...
+                                    </h3>
+                                    <p className="text-white/60 text-lg">
+                                        Proszę czekać, nie zamykaj okna
+                                    </p>
+                                    {paymentMethod === 'blik' && (
+                                        <p className="text-white/80 text-sm mt-4">
+                                            📱 Potwierdź płatność w aplikacji bankowej
+                                        </p>
+                                    )}
+                                </div>
+                            )}
+
+                            {/* KROK 4: Sukces */}
+                            {paymentStep === 'success' && (
+                                <div className="text-center py-16">
+                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center mx-auto mb-6 animate-pulse">
+                                        <CheckCircle className="w-12 h-12 text-white" />
+                                    </div>
+                                    <h3 className="text-3xl font-bold text-white mb-3">
+                                        🎉 Gratulacje!
+                                    </h3>
+                                    <p className="text-white/80 text-lg mb-2">
+                                        Masz teraz dostęp Premium!
+                                    </p>
+                                    <p className="text-white/60 mb-6">
+                                        Dostęp aktywny przez <span className="text-yellow-400 font-bold">90 dni</span>
+                                    </p>
+                                    <div className="inline-block bg-white/10 rounded-xl px-6 py-3 border border-white/20">
+                                        <div className="text-white/70 text-sm mb-1">Dostęp wygasa:</div>
+                                        <div className="text-white font-bold">
+                                            {premiumExpiryDate && new Date(premiumExpiryDate).toLocaleDateString('pl-PL')}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            };
+
+
+            const HomePage = () => (
+                <div className="min-h-screen p-6">
+                    <div className="max-w-6xl mx-auto">
+                        {/* Header z przyciskiem Zaloguj się */}
+                        <div className="flex justify-between items-center mb-8">
+                            <div></div>
+                            {!isLoggedIn ? (
+                                <button
+                                    onClick={() => {
+                                        setShowAuthModal(true);
+                                        setAuthView('login');
+                                    }}
+                                    className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:shadow-lg transition-all"
+                                >
+                                    <User className="w-4 h-4" />
+                                    Zaloguj się
+                                </button>
+                            ) : (
+                                <div className="flex items-center gap-4">
+                                    <span className="text-white/70 text-sm">Zalogowany: {userEmail}</span>
+                                    {userRole === 'admin' && (
+                                        <button
+                                            onClick={() => setCurrentView('admin')}
+                                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:shadow-lg transition-all text-sm font-medium pulse-glow"
+                                        >
+                                            <Shield className="w-4 h-4" />
+                                            Panel Admina
+                                        </button>
+                                    )}
+                                    <button
+                                        onClick={() => {
+                                            setIsLoggedIn(false);
+                                            setUserEmail('');
+                                            setUserRole('user');
+                                        }}
+                                        className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all text-sm"
+                                    >
+                                        Wyloguj
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="text-center mb-12">
+                            <div className="inline-block mb-4">
+                                <Brain className="w-20 h-20 text-purple-400" />
+                            </div>
+                            <h1 className="text-5xl md:text-6xl font-black text-white mb-4 gradient-text">
+                                Analiza Biznesowa
+                            </h1>
+                            <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8">
+                                Kompleksowy przewodnik po świecie Business Analysis - od podstaw po zaawansowane techniki
+                            </p>
+                            {isPremium ? (
+                                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border-2 border-yellow-400 rounded-full mb-8">
+                                    <Crown className="w-5 h-5 text-yellow-400" />
+                                    <span className="text-yellow-100 font-bold">Premium Active</span>
+                                    {premiumExpiryDate && (
+                                        <span className="text-yellow-200 text-sm ml-2">
+                                            • {(() => {
+                                                const now = new Date();
+                                                const expiry = new Date(premiumExpiryDate);
+                                                const diffTime = expiry - now;
+                                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                                return diffDays > 0 ? `${diffDays} dni pozostało` : 'Wygasł';
+                                            })()} dni
+                                        </span>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border border-yellow-400 rounded-full mb-8">
+                                    <Crown className="w-5 h-5 text-yellow-400" />
+                                    <span className="text-yellow-100 font-medium">Dostępne: 3 sekcje darmowe + 15 Premium</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-6 mb-12">
+                            <div className="glass rounded-2xl p-8 card-hover">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center mb-4">
+                                    <BookOpen className="w-6 h-6 text-white" />
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-3">18 Sekcji Edukacyjnych</h3>
+                                <p className="text-white/70">
+                                    Od podstaw do zaawansowanych technik - kompletna wiedza w jednym miejscu
+                                </p>
+                            </div>
+
+                            <div className="glass rounded-2xl p-8 card-hover">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center mb-4">
+                                    <Target className="w-6 h-6 text-white" />
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-3">22 Pytania Quizowe</h3>
+                                <p className="text-white/70">
+                                    Sprawdź swoją wiedzę i zdobądź praktyczne umiejętności
+                                </p>
+                            </div>
+
+                            <div className="glass rounded-2xl p-8 card-hover">
+                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-teal-500 flex items-center justify-center mb-4">
+                                    <Zap className="w-6 h-6 text-white" />
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-3">Interaktywna Nauka</h3>
+                                <p className="text-white/70">
+                                    Praktyczne przykłady i case studies z prawdziwych projektów
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="glass rounded-3xl p-8 mb-12">
+                            <h2 className="text-3xl font-bold text-white mb-6 text-center">🎯 Co się nauczysz?</h2>
+                            <div className="grid md:grid-cols-2 gap-4">
+                                {[
+                                    { title: "Podstawy BA", desc: "Rola, kompetencje i proces analizy biznesowej", free: true },
+                                    { title: "Elicitacja wymagań", desc: "Techniki zbierania i dokumentowania wymagań", free: false },
+                                    { title: "Modelowanie BPMN", desc: "Notacja i praktyczne zastosowania", free: false },
+                                    { title: "User Stories", desc: "Pisanie i priorytetyzacja w Agile", free: false },
+                                    { title: "Zarządzanie stakeholderami", desc: "Komunikacja i budowanie relacji", free: false },
+                                    { title: "Change Management", desc: "Prowadzenie zmian w organizacji", free: false },
+                                    { title: "Analiza danych", desc: "SQL, wizualizacje i KPI", free: false },
+                                    { title: "Risk Management", desc: "Identyfikacja i mitygacja ryzyk", free: false }
+                                ].map((item, index) => (
+                                    <div key={index} className="flex items-start gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="font-semibold text-white">{item.title}</h3>
+                                                {!item.free && !isPremium && (
+                                                    <Lock className="w-3 h-3 text-yellow-400" />
+                                                )}
+                                            </div>
+                                            <p className="text-sm text-white/70">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <button
+                                onClick={() => setCurrentView('sections')}
+                                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-lg px-8 py-4 rounded-2xl hover:shadow-2xl transition-all flex items-center justify-center gap-2"
+                            >
+                                Rozpocznij naukę <ArrowRight className="w-5 h-5" />
+                            </button>
+                            <button
+                                onClick={() => setCurrentView('quiz')}
+                                className="glass text-white font-bold text-lg px-8 py-4 rounded-2xl hover:bg-white/20 transition-all flex items-center justify-center gap-2"
+                            >
+                                <Trophy className="w-5 h-5" />
+                                Sprawdź wiedzę
+                            </button>
+                        </div>
+
+                        {!isPremium && (
+                            <div className="mt-12 text-center">
+                                <button
+                                    onClick={() => setShowPremiumModal(true)}
+                                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold rounded-2xl hover:shadow-2xl transition-all"
+                                >
+                                    <Crown className="w-6 h-6" />
+                                    Odblokuj pełen dostęp Premium
+                                </button>
+                            </div>
+                        )}
+
+                        <Footer />
+                    </div>
+                </div>
+            );
+
+            const SectionsView = () => {
+                const contentRef = useRef(null);
+                const availableSections = sections.filter(s => !s.isPremium || isPremium);
+                const lockedCount = sections.filter(s => s.isPremium && !isPremium).length;
+
+                const handleSectionClick = (index) => {
+                    setCurrentSection(index);
+                    // Scroll do zawartości po krótkiej chwili
+                    setTimeout(() => {
+                        if (contentRef.current) {
+                            contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }
+                    }, 100);
+                };
+
+                return (
+                    <div className="min-h-screen p-6">
+                        <div className="max-w-4xl mx-auto">
+                            {/* Header z przyciskiem Zaloguj się */}
+                            <div className="flex justify-between items-center mb-8">
+                                <button
+                                    onClick={() => setCurrentView('home')}
+                                    className="glass px-6 py-3 rounded-xl text-white font-medium hover:bg-white/20 transition-all flex items-center gap-2"
+                                >
+                                    <Home className="w-5 h-5" />
+                                    Strona główna
+                                </button>
+                                {!isLoggedIn ? (
+                                    <button
+                                        onClick={() => {
+                                            setShowAuthModal(true);
+                                            setAuthView('login');
+                                        }}
+                                        className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:shadow-lg transition-all"
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Zaloguj się
+                                    </button>
+                                ) : (
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-white/70 text-sm">Zalogowany: {userEmail}</span>
+                                        <button
+                                            onClick={() => {
+                                                setIsLoggedIn(false);
+                                                setUserEmail('');
+                                            }}
+                                            className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all text-sm"
+                                        >
+                                            Wyloguj
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="glass rounded-3xl p-8 mb-8">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h1 className="text-3xl font-bold text-white">Materiały Edukacyjne</h1>
+                                    <div className="flex gap-2">
+                                        <button
+                                            onClick={() => setCurrentView('quiz')}
+                                            className="glass px-4 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition-all flex items-center gap-2"
+                                        >
+                                            <Trophy className="w-5 h-5" />
+                                            Quiz
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="grid gap-4">
+                                    {availableSections.map((section, index) => (
+                                        <button
+                                            key={section.id}
+                                            onClick={() => handleSectionClick(index)}
+                                            className={`text-left p-6 rounded-2xl transition-all ${
+                                                currentSection === index
+                                                    ? `bg-gradient-to-r ${section.color} shadow-2xl scale-[1.02]`
+                                                    : 'glass hover:scale-[1.01]'
+                                            }`}
+                                        >
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <div className="text-4xl">{section.icon}</div>
+                                                    <div>
+                                                        <div className="flex items-center gap-2">
+                                                            <h3 className="text-xl font-bold text-white">{section.title}</h3>
+                                                            {section.isPremium && (
+                                                                <Crown className="w-5 h-5 text-yellow-400" />
+                                                            )}
+                                                        </div>
+                                                        <p className="text-white/70 text-sm">Sekcja {section.id} z {sections.length}</p>
+                                                    </div>
+                                                </div>
+                                                {completedSections.has(section.id) && (
+                                                    <CheckCircle className="w-8 h-8 text-green-400" />
+                                                )}
+                                            </div>
+                                        </button>
+                                    ))}
+                                    
+                                    {!isPremium && lockedCount > 0 && (
+                                        <div className="p-6 rounded-2xl bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border-2 border-yellow-400">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-4">
+                                                    <Lock className="w-8 h-8 text-yellow-400" />
+                                                    <div>
+                                                        <h3 className="text-xl font-bold text-white">+{lockedCount} sekcji Premium</h3>
+                                                        <p className="text-white/70 text-sm">Odblokuj pełen dostęp do zaawansowanych materiałów</p>
+                                                    </div>
+                                                </div>
+                                                <button
+                                                    onClick={() => setShowPremiumModal(true)}
+                                                    className="px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold rounded-xl hover:shadow-lg transition-all whitespace-nowrap"
+                                                >
+                                                    Przejdź na Premium
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {availableSections[currentSection] && (
+                                <div ref={contentRef} className="glass rounded-3xl p-8 mb-8 scroll-mt-8">
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="text-5xl">{availableSections[currentSection].icon}</div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h2 className="text-3xl font-bold text-white">{availableSections[currentSection].title}</h2>
+                                                {availableSections[currentSection].isPremium && (
+                                                    <Crown className="w-6 h-6 text-yellow-400" />
+                                                )}
+                                            </div>
+                                            <p className="text-white/60">Sekcja {availableSections[currentSection].id}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="prose prose-invert max-w-none">
+                                        <div className="text-white/90 leading-relaxed whitespace-pre-line text-base">
+                                            {availableSections[currentSection].content}
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-8 pt-6 border-t border-white/10 flex justify-between">
+                                        <button
+                                            onClick={() => {
+                                                if (currentSection > 0) handleSectionClick(currentSection - 1);
+                                            }}
+                                            disabled={currentSection === 0}
+                                            className="glass px-6 py-3 rounded-xl text-white font-medium hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                        >
+                                            ← Poprzednia
+                                        </button>
+                                        
+                                        <button
+                                            onClick={() => {
+                                                const newCompleted = new Set(completedSections);
+                                                newCompleted.add(availableSections[currentSection].id);
+                                                setCompletedSections(newCompleted);
+                                            }}
+                                            className="bg-gradient-to-r from-green-500 to-emerald-500 px-6 py-3 rounded-xl text-white font-bold hover:shadow-xl transition-all flex items-center gap-2"
+                                        >
+                                            <CheckCircle className="w-5 h-5" />
+                                            Oznacz jako ukończone
+                                        </button>
+
+                                        <button
+                                            onClick={() => {
+                                                if (currentSection < availableSections.length - 1) {
+                                                    handleSectionClick(currentSection + 1);
+                                                }
+                                            }}
+                                            disabled={currentSection === availableSections.length - 1}
+                                            className="glass px-6 py-3 rounded-xl text-white font-medium hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
+                                        >
+                                            Następna →
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+                            <Footer />
+                        </div>
+                    </div>
+                );
+            };
+
+            const QuizView = () => {
+                const availableQuestions = quizQuestions.filter(q => !q.isPremium || isPremium);
+                const lockedCount = quizQuestions.filter(q => q.isPremium && !isPremium).length;
+
+                const score = availableQuestions.reduce((acc, q) => {
+                    return acc + (quizAnswers[q.id] === q.correct ? 1 : 0);
+                }, 0);
+
+                const getScoreData = () => {
+                    const percentage = (score / availableQuestions.length) * 100;
+                    if (percentage >= 90) return { level: 'Ekspert! 🌟', bg: 'from-yellow-400 to-orange-500' };
+                    if (percentage >= 75) return { level: 'Bardzo dobrze! 🚀', bg: 'from-green-500 to-emerald-500' };
+                    if (percentage >= 60) return { level: 'Dobrze! 📚', bg: 'from-blue-500 to-cyan-500' };
+                    return { level: 'Spróbuj ponownie 💪', bg: 'from-purple-500 to-pink-500' };
+                };
+
+                const scoreData = getScoreData();
+
+                return (
+                    <div className="min-h-screen p-6">
+                        <div className="max-w-4xl mx-auto">
+                            {/* Header z przyciskiem Zaloguj się */}
+                            <div className="flex justify-between items-center mb-8">
+                                <button
+                                    onClick={() => setCurrentView('home')}
+                                    className="glass px-6 py-3 rounded-xl text-white font-medium hover:bg-white/20 transition-all flex items-center gap-2"
+                                >
+                                    <Home className="w-5 h-5" />
+                                    Strona główna
+                                </button>
+                                {!isLoggedIn ? (
+                                    <button
+                                        onClick={() => {
+                                            setShowAuthModal(true);
+                                            setAuthView('login');
+                                        }}
+                                        className="flex items-center gap-2 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-medium rounded-xl hover:shadow-lg transition-all"
+                                    >
+                                        <User className="w-4 h-4" />
+                                        Zaloguj się
+                                    </button>
+                                ) : (
+                                    <div className="flex items-center gap-4">
+                                        <span className="text-white/70 text-sm">Zalogowany: {userEmail}</span>
+                                        <button
+                                            onClick={() => {
+                                                setIsLoggedIn(false);
+                                                setUserEmail('');
+                                            }}
+                                            className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all text-sm"
+                                        >
+                                            Wyloguj
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="glass rounded-3xl p-8 mb-8">
+                                <div className="flex justify-between items-center mb-6">
+                                    <div>
+                                        <h1 className="text-3xl font-bold text-white mb-2">Quiz Wiedzy</h1>
+                                        <p className="text-white/70">Sprawdź swoją wiedzę z analizy biznesowej</p>
+                                    </div>
+                                    <button
+                                        onClick={() => setCurrentView('sections')}
+                                        className="glass px-4 py-2 rounded-xl text-white font-medium hover:bg-white/20 transition-all flex items-center gap-2"
+                                    >
+                                        <BookOpen className="w-5 h-5" />
+                                        Nauka
+                                    </button>
+                                </div>
+
+                                {!isPremium && lockedCount > 0 && (
+                                    <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border border-yellow-400">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <Lock className="w-6 h-6 text-yellow-400" />
+                                                <span className="text-white font-medium">+{lockedCount} pytań dostępnych w wersji Premium</span>
+                                            </div>
+                                            <button
+                                                onClick={() => setShowPremiumModal(true)}
+                                                className="px-4 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold rounded-lg hover:shadow-lg transition-all text-sm"
+                                            >
+                                                Odblokuj
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!showResults ? (
+                                    <div className="space-y-6">
+                                        {availableQuestions.map((q, index) => (
+                                            <div key={q.id} className="glass rounded-2xl p-6">
+                                                <div className="flex items-start gap-3 mb-4">
+                                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
+                                                        <span className="text-white font-bold text-sm">{index + 1}</span>
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center gap-2 mb-3">
+                                                            <h3 className="text-base font-semibold text-white">{q.question}</h3>
+                                                            {q.isPremium && (
+                                                                <Crown className="w-4 h-4 text-yellow-400" />
+                                                            )}
+                                                        </div>
+                                                        <div className="space-y-2">
+                                                            {q.options.map((option, optIndex) => (
+                                                                <button
+                                                                    key={optIndex}
+                                                                    onClick={() => setQuizAnswers({...quizAnswers, [q.id]: optIndex})}
+                                                                    className={`w-full text-left p-3 rounded-lg border-2 transition-all text-sm ${
+                                                                        quizAnswers[q.id] === optIndex
+                                                                            ? 'border-purple-500 bg-purple-500/20'
+                                                                            : 'border-white/10 bg-white/5 hover:border-white/30 hover:bg-white/10'
+                                                                    }`}
+                                                                >
+                                                                    <span className="text-white/90">{option}</span>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                        <button
+                                            onClick={() => setShowResults(true)}
+                                            disabled={Object.keys(quizAnswers).length < availableQuestions.length}
+                                            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-base py-4 rounded-2xl hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                                        >
+                                            {Object.keys(quizAnswers).length < availableQuestions.length
+                                                ? `Odpowiedz na wszystkie pytania (${Object.keys(quizAnswers).length}/${availableQuestions.length})`
+                                                : 'Zobacz wyniki 🎯'}
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-3 sm:space-y-4">
+                                        <div className={`glass rounded-2xl p-8 text-center`}>
+                                            <div className={`inline-block w-16 h-16 rounded-full bg-gradient-to-br ${scoreData.bg} flex items-center justify-center mb-4`}>
+                                                <Trophy className="w-8 h-8 text-white" />
+                                            </div>
+                                            <h2 className="text-3xl font-bold text-white mb-3">Twój wynik</h2>
+                                            <div className="text-5xl font-bold text-white mb-3">
+                                                {score}/{availableQuestions.length}
+                                            </div>
+                                            <div className={`inline-block px-4 py-2 rounded-full bg-gradient-to-r ${scoreData.bg} text-white text-base font-bold mb-3`}>
+                                                {scoreData.level}
+                                            </div>
+                                            <p className="text-white/70 text-sm max-w-md mx-auto">
+                                                {score >= availableQuestions.length * 0.9 && "Niesamowite! Jesteś prawdziwym ekspertem! 🌟"}
+                                                {score >= availableQuestions.length * 0.75 && score < availableQuestions.length * 0.9 && "Świetna robota! Masz solidną wiedzę! 🚀"}
+                                                {score >= availableQuestions.length * 0.6 && score < availableQuestions.length * 0.75 && "Dobry wynik! Jeszcze trochę nauki! 📚"}
+                                                {score < availableQuestions.length * 0.6 && "Spróbuj ponownie po powtórce materiału! 💪"}
+                                            </p>
+                                            {!isPremium && (
+                                                <button 
+                                                    onClick={() => setShowPremiumModal(true)}
+                                                    className="mt-4 px-6 py-2 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-xl font-medium text-sm hover:shadow-lg transition-all"
+                                                >
+                                                    🔓 Odblokuj +{quizQuestions.filter(q => q.isPremium).length} pytań Premium
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        {availableQuestions.map((q, index) => {
+                                            const userAnswer = quizAnswers[q.id];
+                                            const isCorrect = userAnswer === q.correct;
+                                            return (
+                                                <div key={q.id} className={`glass rounded-2xl p-6 border-l-4 ${
+                                                    isCorrect ? 'border-emerald-500' : 'border-red-500'
+                                                }`}>
+                                                    <div className="flex items-start gap-3 mb-4">
+                                                        {isCorrect ? (
+                                                            <CheckCircle className="w-6 h-6 text-emerald-400 flex-shrink-0" />
+                                                        ) : (
+                                                            <XCircle className="w-6 h-6 text-red-400 flex-shrink-0" />
+                                                        )}
+                                                        <div className="flex-1">
+                                                            <h3 className="text-base font-semibold text-white mb-3">
+                                                                Pytanie {index + 1}: {q.question}
+                                                            </h3>
+                                                            <div className="space-y-2">
+                                                                {q.options.map((option, optIndex) => (
+                                                                    <div
+                                                                        key={optIndex}
+                                                                        className={`p-3 rounded-lg text-sm ${
+                                                                            optIndex === q.correct
+                                                                                ? 'bg-emerald-500/20 border-2 border-emerald-500'
+                                                                                : optIndex === userAnswer && !isCorrect
+                                                                                ? 'bg-red-500/20 border-2 border-red-500'
+                                                                                : 'bg-white/5'
+                                                                        }`}
+                                                                    >
+                                                                        <span className="text-white/90">{option}</span>
+                                                                        {optIndex === q.correct && (
+                                                                            <span className="ml-2 text-emerald-400 font-semibold text-xs">✓ Prawidłowa</span>
+                                                                        )}
+                                                                        {optIndex === userAnswer && !isCorrect && (
+                                                                            <span className="ml-2 text-red-400 font-semibold text-xs">✗ Twoja odpowiedź</span>
+                                                                        )}
+                                                                    </div>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+
+                                        <div className="grid md:grid-cols-2 gap-4">
+                                            <button
+                                                onClick={() => {
+                                                    setQuizAnswers({});
+                                                    setShowResults(false);
+                                                    window.scrollTo(0, 0);
+                                                }}
+                                                className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-bold text-base py-4 rounded-2xl hover:shadow-2xl transition-all"
+                                            >
+                                                🔄 Spróbuj ponownie
+                                            </button>
+                                            <button
+                                                onClick={() => setCurrentView('sections')}
+                                                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-base py-4 rounded-2xl hover:shadow-2xl transition-all"
+                                            >
+                                                📚 Wróć do nauki
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
+                                <Footer />
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Komponent Admin Panel
+            const AdminPanel = () => {
+                const AdminSidebar = () => (
+                    <div className={`${adminSidebarOpen ? 'w-64' : 'w-20'} admin-sidebar glass border-r border-white/10 min-h-screen fixed left-0 top-0 z-40`}>
+                        <div className="p-4">
+                            <div className="flex items-center justify-between mb-8">
+                                {adminSidebarOpen && (
+                                    <div className="flex items-center gap-3">
+                                        <Shield className="w-8 h-8 text-purple-400" />
+                                        <span className="text-white font-bold text-lg">Admin Panel</span>
+                                    </div>
+                                )}
+                                <button
+                                    onClick={() => setAdminSidebarOpen(!adminSidebarOpen)}
+                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                >
+                                    <Menu className="w-5 h-5 text-white" />
+                                </button>
+                            </div>
+
+                            <nav className="space-y-2">
+                                {[
+                                    { id: 'dashboard', icon: <BarChart className="w-5 h-5" />, label: 'Dashboard' },
+                                    { id: 'users', icon: <Users className="w-5 h-5" />, label: 'Użytkownicy' },
+                                    { id: 'purchases', icon: <ShoppingCart className="w-5 h-5" />, label: 'Zakupy' },
+                                    { id: 'access', icon: <Key className="w-5 h-5" />, label: 'Dostępy' },
+                                    { id: 'content', icon: <BookOpen className="w-5 h-5" />, label: 'Treści' },
+                                    { id: 'reports', icon: <FileText className="w-5 h-5" />, label: 'Raporty' },
+                                    { id: 'promotions', icon: <Tag className="w-5 h-5" />, label: 'Promocje' },
+                                    { id: 'communication', icon: <MessageSquare className="w-5 h-5" />, label: 'Komunikacja' },
+                                    { id: 'logs', icon: <Activity className="w-5 h-5" />, label: 'Logi' },
+                                    { id: 'settings', icon: <Settings className="w-5 h-5" />, label: 'Ustawienia' },
+                                ].map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setAdminView(item.id)}
+                                        className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
+                                            adminView === item.id
+                                                ? 'bg-purple-500/30 text-white'
+                                                : 'text-white/70 hover:bg-white/10 hover:text-white'
+                                        }`}
+                                        title={!adminSidebarOpen ? item.label : ''}
+                                    >
+                                        {item.icon}
+                                        {adminSidebarOpen && <span className="font-medium">{item.label}</span>}
+                                    </button>
+                                ))}
+                                
+                                <div className="pt-4 border-t border-white/10 mt-4">
+                                    <button
+                                        onClick={() => setCurrentView('home')}
+                                        className="w-full flex items-center gap-3 p-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-all"
+                                        title={!adminSidebarOpen ? 'Wróć do aplikacji' : ''}
+                                    >
+                                        <Home className="w-5 h-5" />
+                                        {adminSidebarOpen && <span className="font-medium">Wróć do aplikacji</span>}
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setIsLoggedIn(false);
+                                            setUserRole('user');
+                                            setCurrentView('home');
+                                            showToast('Wylogowano pomyślnie', 'success');
+                                        }}
+                                        className="w-full flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
+                                        title={!adminSidebarOpen ? 'Wyloguj' : ''}
+                                    >
+                                        <LogOut className="w-5 h-5" />
+                                        {adminSidebarOpen && <span className="font-medium">Wyloguj</span>}
+                                    </button>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                );
+
+                // Komponent przycisku Wyloguj dla panelu admina
+                const AdminLogoutButton = () => (
+                    <button
+                        onClick={() => {
+                            if (confirm('Czy na pewno chcesz się wylogować?')) {
+                                setIsLoggedIn(false);
+                                setUserRole('user');
+                                setCurrentView('home');
+                                showToast('Wylogowano pomyślnie', 'success');
+                            }
+                        }}
+                        className="flex items-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 rounded-xl transition-all border border-red-500/30 hover:border-red-500/50"
+                    >
+                        <LogOut className="w-5 h-5" />
+                        <span className="font-medium">Wyloguj</span>
+                    </button>
+                );
+
+                // Dashboard View
+                const DashboardView = () => {
+                    const totalUsers = mockUsers.length;
+                    const premiumUsers = mockUsers.filter(u => u.isPremium).length;
+                    const totalRevenue = mockPurchases.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0);
+                    const activeUsers = mockUsers.filter(u => u.status === 'active').length;
+                    const avgQuizScore = Math.round(mockUsers.reduce((sum, u) => sum + u.quizScore, 0) / mockUsers.length);
+
+                    return (
+                        <div className="space-y-6">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                                <div>
+                                    <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
+                                    <p className="text-white/60">Przegląd kluczowych statystyk</p>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <div className="text-white/60 text-sm hidden sm:block">
+                                        Ostatnia aktualizacja: {new Date().toLocaleString('pl-PL')}
+                                    </div>
+                                    <AdminLogoutButton />
+                                </div>
+                            </div>
+
+                            {/* Stat Cards */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                <div className="stat-card glass rounded-2xl p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="p-3 bg-blue-500/20 rounded-xl">
+                                            <Users className="w-6 h-6 text-blue-400" />
+                                        </div>
+                                        <span className="text-xs text-white/50">+12% vs poprz. miesiąc</span>
+                                    </div>
+                                    <div className="text-3xl font-bold text-white mb-1">{totalUsers}</div>
+                                    <div className="text-sm text-white/60">Wszystkich użytkowników</div>
+                                </div>
+
+                                <div className="stat-card glass rounded-2xl p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="p-3 bg-yellow-500/20 rounded-xl">
+                                            <Crown className="w-6 h-6 text-yellow-400" />
+                                        </div>
+                                        <span className="text-xs text-white/50">+8% vs poprz. miesiąc</span>
+                                    </div>
+                                    <div className="text-3xl font-bold text-white mb-1">{premiumUsers}</div>
+                                    <div className="text-sm text-white/60">Użytkowników Premium</div>
+                                </div>
+
+                                <div className="stat-card glass rounded-2xl p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="p-3 bg-green-500/20 rounded-xl">
+                                            <DollarSign className="w-6 h-6 text-green-400" />
+                                        </div>
+                                        <span className="text-xs text-white/50">+24% vs poprz. miesiąc</span>
+                                    </div>
+                                    <div className="text-3xl font-bold text-white mb-1">{totalRevenue.toFixed(2)} PLN</div>
+                                    <div className="text-sm text-white/60">Całkowity przychód</div>
+                                </div>
+
+                                <div className="stat-card glass rounded-2xl p-6">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div className="p-3 bg-purple-500/20 rounded-xl">
+                                            <TrendingUp className="w-6 h-6 text-purple-400" />
+                                        </div>
+                                        <span className="text-xs text-white/50">+5% vs poprz. miesiąc</span>
+                                    </div>
+                                    <div className="text-3xl font-bold text-white mb-1">{avgQuizScore}%</div>
+                                    <div className="text-sm text-white/60">Średni wynik quizów</div>
+                                </div>
+                            </div>
+
+                            {/* Charts and Recent Activity */}
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Recent Purchases */}
+                                <div className="glass rounded-2xl p-6">
+                                    <h2 className="text-xl font-bold text-white mb-4">Ostatnie zakupy</h2>
+                                    <div className="space-y-3">
+                                        {mockPurchases.slice(0, 5).map(purchase => (
+                                            <div key={purchase.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                                                <div className="flex-1">
+                                                    <div className="font-medium text-white text-sm">{purchase.userName}</div>
+                                                    <div className="text-xs text-white/50">{purchase.product}</div>
+                                                </div>
+                                                <div className="text-right">
+                                                    <div className="font-bold text-green-400">{purchase.amount} PLN</div>
+                                                    <div className={`text-xs ${
+                                                        purchase.status === 'completed' ? 'text-green-400' :
+                                                        purchase.status === 'pending' ? 'text-yellow-400' :
+                                                        'text-red-400'
+                                                    }`}>
+                                                        {purchase.status}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Recent Activity */}
+                                <div className="glass rounded-2xl p-6">
+                                    <h2 className="text-xl font-bold text-white mb-4">Ostatnia aktywność</h2>
+                                    <div className="space-y-3">
+                                        {mockActivityLogs.slice(0, 5).map(log => (
+                                            <div key={log.id} className="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
+                                                <Activity className="w-4 h-4 text-purple-400 flex-shrink-0 mt-1" />
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-medium text-white text-sm truncate">{log.userName}</div>
+                                                    <div className="text-xs text-white/70 truncate">{log.details}</div>
+                                                    <div className="text-xs text-white/40 mt-1">
+                                                        {new Date(log.timestamp).toLocaleString('pl-PL')}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                };
+
+                // Users Management View
+                const UsersView = () => {
+                    const filteredUsers = mockUsers.filter(user => {
+                        const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                            user.email.toLowerCase().includes(searchQuery.toLowerCase());
+                        const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
+                        return matchesSearch && matchesStatus;
+                    });
+
+                    return (
+                        <div className="space-y-6">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div>
+                                    <h1 className="text-3xl font-bold text-white mb-2">Zarządzanie użytkownikami</h1>
+                                    <p className="text-white/60">{filteredUsers.length} użytkowników</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                        <Plus className="w-5 h-5" />
+                                        Dodaj użytkownika
+                                    </button>
+                                    <AdminLogoutButton />
+                                </div>
+                            </div>
+
+                            {/* Search and Filter */}
+                            <div className="glass rounded-2xl p-4 flex flex-col sm:flex-row gap-4">
+                                <div className="flex-1 relative">
+                                    <Search className="w-5 h-5 text-white/50 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                    <input
+                                        type="text"
+                                        placeholder="Szukaj po nazwie lub email..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
+                                    />
+                                </div>
+                                <div className="relative">
+                                    <Filter className="w-5 h-5 text-white/50 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                    <select
+                                        value={filterStatus}
+                                        onChange={(e) => setFilterStatus(e.target.value)}
+                                        className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none cursor-pointer"
+                                    >
+                                        <option value="all">Wszystkie statusy</option>
+                                        <option value="active">Aktywni</option>
+                                        <option value="inactive">Nieaktywni</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Users Table */}
+                            <div className="glass rounded-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-white/5">
+                                            <tr>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Użytkownik</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Rola</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Status</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Premium</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Postęp</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Ostatnie logowanie</th>
+                                                <th className="text-center p-4 text-white/70 font-medium text-sm">Akcje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredUsers.map(user => (
+                                                <tr key={user.id} className="table-row-hover border-t border-white/5">
+                                                    <td className="p-4">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+                                                                <span className="text-white font-bold text-sm">
+                                                                    {user.name.split(' ').map(n => n[0]).join('')}
+                                                                </span>
+                                                            </div>
+                                                            <div>
+                                                                <div className="font-medium text-white text-sm">{user.name}</div>
+                                                                <div className="text-xs text-white/50">{user.email}</div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                            user.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
+                                                        }`}>
+                                                            {user.role === 'admin' ? 'Administrator' : 'Użytkownik'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                            user.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
+                                                        }`}>
+                                                            {user.status === 'active' ? 'Aktywny' : 'Nieaktywny'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        {user.isPremium ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <Crown className="w-4 h-4 text-yellow-400" />
+                                                                <span className="text-sm text-yellow-400">
+                                                                    Do {new Date(user.premiumExpiry).toLocaleDateString('pl-PL')}
+                                                                </span>
+                                                            </div>
+                                                        ) : (
+                                                            <span className="text-sm text-white/50">Brak</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="flex-1 bg-white/10 rounded-full h-2 max-w-24">
+                                                                <div 
+                                                                    className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                                                                    style={{ width: `${(user.completedSections / 18) * 100}%` }}
+                                                                />
+                                                            </div>
+                                                            <span className="text-xs text-white/70 whitespace-nowrap">
+                                                                {user.completedSections}/18
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className="text-sm text-white/70">
+                                                            {new Date(user.lastLogin).toLocaleDateString('pl-PL')}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <button 
+                                                                onClick={() => setSelectedUser(user)}
+                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                                                title="Edytuj"
+                                                            >
+                                                                <Edit className="w-4 h-4 text-blue-400" />
+                                                            </button>
+                                                            <button 
+                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                                                title="Usuń"
+                                                            >
+                                                                <Trash className="w-4 h-4 text-red-400" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                };
+
+                // Purchases View
+                const PurchasesView = () => {
+                    const filteredPurchases = mockPurchases.filter(purchase => {
+                        const matchesSearch = purchase.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                            purchase.userEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                            purchase.id.toLowerCase().includes(searchQuery.toLowerCase());
+                        return matchesSearch;
+                    });
+
+                    const totalRevenue = filteredPurchases.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0);
+                    const pendingRevenue = filteredPurchases.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0);
+
+                    return (
+                        <div className="space-y-6">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div>
+                                    <h1 className="text-3xl font-bold text-white mb-2">Historia zakupów</h1>
+                                    <p className="text-white/60">{filteredPurchases.length} transakcji</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                        <Download className="w-5 h-5" />
+                                        Eksportuj raport
+                                    </button>
+                                    <AdminLogoutButton />
+                                </div>
+                            </div>
+
+                            {/* Revenue Stats */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div className="glass rounded-2xl p-6">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-3 bg-green-500/20 rounded-xl">
+                                            <Check className="w-6 h-6 text-green-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-2xl font-bold text-white">{totalRevenue.toFixed(2)} PLN</div>
+                                            <div className="text-sm text-white/60">Zrealizowane przychody</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="glass rounded-2xl p-6">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-3 bg-yellow-500/20 rounded-xl">
+                                            <AlertCircle className="w-6 h-6 text-yellow-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-2xl font-bold text-white">{pendingRevenue.toFixed(2)} PLN</div>
+                                            <div className="text-sm text-white/60">Oczekujące płatności</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="glass rounded-2xl p-6">
+                                    <div className="flex items-center gap-3 mb-4">
+                                        <div className="p-3 bg-purple-500/20 rounded-xl">
+                                            <TrendingUp className="w-6 h-6 text-purple-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <div className="text-2xl font-bold text-white">{Math.round(totalRevenue / filteredPurchases.filter(p => p.status === 'completed').length || 0)} PLN</div>
+                                            <div className="text-sm text-white/60">Średnia wartość zamówienia</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Search */}
+                            <div className="glass rounded-2xl p-4">
+                                <div className="relative">
+                                    <Search className="w-5 h-5 text-white/50 absolute left-3 top-1/2 transform -translate-y-1/2" />
+                                    <input
+                                        type="text"
+                                        placeholder="Szukaj transakcji..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Purchases Table */}
+                            <div className="glass rounded-2xl overflow-hidden">
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead className="bg-white/5">
+                                            <tr>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">ID Transakcji</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Użytkownik</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Produkt</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Kwota</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Metoda płatności</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Status</th>
+                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Data</th>
+                                                <th className="text-center p-4 text-white/70 font-medium text-sm">Akcje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredPurchases.map(purchase => (
+                                                <tr key={purchase.id} className="table-row-hover border-t border-white/5">
+                                                    <td className="p-4">
+                                                        <span className="font-mono text-sm text-white/90">{purchase.id}</span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <div>
+                                                            <div className="font-medium text-white text-sm">{purchase.userName}</div>
+                                                            <div className="text-xs text-white/50">{purchase.userEmail}</div>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className="text-sm text-white/90">{purchase.product}</span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className="font-bold text-green-400">{purchase.amount} {purchase.currency}</span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <div className="flex items-center gap-2">
+                                                            {purchase.paymentMethod === 'BLIK' ? (
+                                                                <Smartphone className="w-4 h-4 text-blue-400" />
+                                                            ) : (
+                                                                <CreditCard className="w-4 h-4 text-yellow-400" />
+                                                            )}
+                                                            <span className="text-sm text-white/90">{purchase.paymentMethod}</span>
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                            purchase.status === 'completed' ? 'bg-green-500/20 text-green-400' :
+                                                            purchase.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
+                                                            'bg-red-500/20 text-red-400'
+                                                        }`}>
+                                                            {purchase.status === 'completed' ? 'Zrealizowana' :
+                                                             purchase.status === 'pending' ? 'Oczekująca' :
+                                                             'Anulowana'}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className="text-sm text-white/70">
+                                                            {new Date(purchase.date).toLocaleString('pl-PL')}
+                                                        </span>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <button 
+                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                                                title="Zobacz szczegóły"
+                                                            >
+                                                                <Eye className="w-4 h-4 text-blue-400" />
+                                                            </button>
+                                                            <button 
+                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                                                                title="Pobierz fakturę"
+                                                            >
+                                                                <Download className="w-4 h-4 text-green-400" />
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                };
+
+                // Access Management View
+                const AccessView = () => (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-2">Zarządzanie dostępami</h1>
+                                <p className="text-white/60">Przypisuj i zarządzaj dostępami Premium</p>
+                            </div>
+                            <AdminLogoutButton />
+                        </div>
+
+                        <div className="glass rounded-2xl p-6">
+                            <h2 className="text-xl font-bold text-white mb-4">Nadaj dostęp Premium</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <input
+                                    type="email"
+                                    placeholder="Email użytkownika"
+                                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
+                                />
+                                <select className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                    <option>3 miesiące</option>
+                                    <option>6 miesięcy</option>
+                                    <option>12 miesięcy</option>
+                                    <option>Lifetime</option>
+                                </select>
+                                <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
+                                    Przypisz dostęp
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="glass rounded-2xl p-6">
+                            <h2 className="text-xl font-bold text-white mb-4">Użytkownicy Premium</h2>
+                            <div className="space-y-3">
+                                {mockUsers.filter(u => u.isPremium).map(user => (
+                                    <div key={user.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
+                                        <div className="flex items-center gap-3">
+                                            <Crown className="w-5 h-5 text-yellow-400" />
+                                            <div>
+                                                <div className="font-medium text-white">{user.name}</div>
+                                                <div className="text-sm text-white/50">{user.email}</div>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <div className="text-right">
+                                                <div className="text-sm text-white/70">Wygasa:</div>
+                                                <div className="text-sm font-medium text-yellow-400">
+                                                    {new Date(user.premiumExpiry).toLocaleDateString('pl-PL')}
+                                                </div>
+                                            </div>
+                                            <button className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-medium">
+                                                Odbierz dostęp
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+                // Reports View
+                const ReportsView = () => {
+                    const monthlyRevenue = [
+                        { month: 'Sty', revenue: 1200 },
+                        { month: 'Lut', revenue: 1800 },
+                        { month: 'Mar', revenue: 2400 },
+                        { month: 'Kwi', revenue: 2100 },
+                        { month: 'Maj', revenue: 2800 },
+                        { month: 'Cze', revenue: 3200 },
+                        { month: 'Lip', revenue: 2900 },
+                        { month: 'Sie', revenue: 3500 },
+                        { month: 'Wrz', revenue: 3100 },
+                        { month: 'Paź', revenue: 3600 },
+                    ];
+
+                    return (
+                        <div className="space-y-6">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div>
+                                    <h1 className="text-3xl font-bold text-white mb-2">Raporty i Analityka</h1>
+                                    <p className="text-white/60">Szczegółowe statystyki i analizy</p>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                        <Download className="w-5 h-5" />
+                                        Eksportuj wszystkie raporty
+                                    </button>
+                                    <AdminLogoutButton />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                {/* Revenue Chart */}
+                                <div className="glass rounded-2xl p-6">
+                                    <h2 className="text-xl font-bold text-white mb-6">Przychody miesięczne</h2>
+                                    <div className="space-y-3">
+                                        {monthlyRevenue.map((item, index) => (
+                                            <div key={index} className="flex items-center gap-4">
+                                                <span className="text-sm text-white/70 w-12">{item.month}</span>
+                                                <div className="flex-1 bg-white/10 rounded-full h-8 relative overflow-hidden">
+                                                    <div 
+                                                        className="chart-bar bg-gradient-to-r from-green-500 to-emerald-500 h-8 rounded-full flex items-center justify-end pr-3"
+                                                        style={{ width: `${(item.revenue / 3600) * 100}%` }}
+                                                    >
+                                                        <span className="text-xs font-medium text-white">{item.revenue} PLN</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* User Activity */}
+                                <div className="glass rounded-2xl p-6">
+                                    <h2 className="text-xl font-bold text-white mb-6">Aktywność użytkowników</h2>
+                                    <div className="space-y-4">
+                                        <div className="p-4 bg-white/5 rounded-xl">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-white/70 text-sm">Aktywni dziś</span>
+                                                <span className="text-2xl font-bold text-green-400">156</span>
+                                            </div>
+                                            <div className="w-full bg-white/10 rounded-full h-2">
+                                                <div className="bg-green-500 h-2 rounded-full" style={{ width: '78%' }} />
+                                            </div>
+                                        </div>
+                                        <div className="p-4 bg-white/5 rounded-xl">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-white/70 text-sm">Ukończone sekcje</span>
+                                                <span className="text-2xl font-bold text-blue-400">892</span>
+                                            </div>
+                                            <div className="w-full bg-white/10 rounded-full h-2">
+                                                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '65%' }} />
+                                            </div>
+                                        </div>
+                                        <div className="p-4 bg-white/5 rounded-xl">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <span className="text-white/70 text-sm">Rozwiązane quizy</span>
+                                                <span className="text-2xl font-bold text-purple-400">1,243</span>
+                                            </div>
+                                            <div className="w-full bg-white/10 rounded-full h-2">
+                                                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '85%' }} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Most Popular Sections */}
+                                <div className="glass rounded-2xl p-6">
+                                    <h2 className="text-xl font-bold text-white mb-6">Najpopularniejsze sekcje</h2>
+                                    <div className="space-y-3">
+                                        {[
+                                            { name: 'Wprowadzenie do Analizy Biznesowej', views: 456, completion: 89 },
+                                            { name: 'Rola i Kompetencje BA', views: 423, completion: 85 },
+                                            { name: 'Proces Analizy Biznesowej', views: 398, completion: 82 },
+                                            { name: 'Techniki Elicitacji Wymagań', views: 345, completion: 78 },
+                                            { name: 'Modelowanie Procesów - BPMN', views: 312, completion: 75 },
+                                        ].map((section, index) => (
+                                            <div key={index} className="p-3 bg-white/5 rounded-xl">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="text-white text-sm font-medium">{section.name}</span>
+                                                    <span className="text-white/50 text-xs">{section.views} odsłon</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="flex-1 bg-white/10 rounded-full h-2">
+                                                        <div 
+                                                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                                                            style={{ width: `${section.completion}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="text-xs text-white/70">{section.completion}%</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Conversion Funnel */}
+                                <div className="glass rounded-2xl p-6">
+                                    <h2 className="text-xl font-bold text-white mb-6">Lejek konwersji</h2>
+                                    <div className="space-y-4">
+                                        {[
+                                            { stage: 'Odwiedziny strony', count: 10000, percentage: 100 },
+                                            { stage: 'Rejestracja', count: 2500, percentage: 25 },
+                                            { stage: 'Ukończona 1 sekcja', count: 1875, percentage: 75 },
+                                            { stage: 'Rozwiązany quiz', count: 1312, percentage: 70 },
+                                            { stage: 'Zakup Premium', count: 328, percentage: 25 },
+                                        ].map((stage, index) => (
+                                            <div key={index}>
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <span className="text-white text-sm">{stage.stage}</span>
+                                                    <span className="text-white/70 text-sm">{stage.count.toLocaleString()}</span>
+                                                </div>
+                                                <div className="w-full bg-white/10 rounded-full h-3">
+                                                    <div 
+                                                        className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full"
+                                                        style={{ width: `${stage.percentage}%` }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                };
+
+                // Promotions View
+                const PromotionsView = () => (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-2">Kody promocyjne</h1>
+                                <p className="text-white/60">Zarządzaj kodami rabatowymi</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <button className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                    <Plus className="w-5 h-5" />
+                                    Utwórz nowy kod
+                                </button>
+                                <AdminLogoutButton />
+                            </div>
+                        </div>
+
+                        <div className="glass rounded-2xl overflow-hidden">
+                            <div className="overflow-x-auto">
+                                <table className="w-full">
+                                    <thead className="bg-white/5">
+                                        <tr>
+                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Kod</th>
+                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Rabat</th>
+                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Typ</th>
+                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Status</th>
+                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Wykorzystanie</th>
+                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Ważność</th>
+                                            <th className="text-center p-4 text-white/70 font-medium text-sm">Akcje</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {mockPromoCodes.map(promo => (
+                                            <tr key={promo.id} className="table-row-hover border-t border-white/5">
+                                                <td className="p-4">
+                                                    <span className="font-mono font-bold text-yellow-400">{promo.code}</span>
+                                                </td>
+                                                <td className="p-4">
+                                                    <span className="text-white font-bold">
+                                                        {promo.type === 'percentage' ? `${promo.discount}%` : `${promo.discount} PLN`}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4">
+                                                    <span className="text-white/70 text-sm">
+                                                        {promo.type === 'percentage' ? 'Procentowy' : 'Kwotowy'}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4">
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                        promo.status === 'active' ? 'bg-green-500/20 text-green-400' :
+                                                        'bg-gray-500/20 text-gray-400'
+                                                    }`}>
+                                                        {promo.status === 'active' ? 'Aktywny' : 'Wygasły'}
+                                                    </span>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-white/90 text-sm">{promo.usageCount}</span>
+                                                        {promo.usageLimit && (
+                                                            <>
+                                                                <span className="text-white/30">/</span>
+                                                                <span className="text-white/50 text-sm">{promo.usageLimit}</span>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="text-sm">
+                                                        <div className="text-white/70">{new Date(promo.validFrom).toLocaleDateString('pl-PL')}</div>
+                                                        <div className="text-white/50">do {new Date(promo.validTo).toLocaleDateString('pl-PL')}</div>
+                                                    </div>
+                                                </td>
+                                                <td className="p-4">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Edytuj">
+                                                            <Edit className="w-4 h-4 text-blue-400" />
+                                                        </button>
+                                                        <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Usuń">
+                                                            <Trash className="w-4 h-4 text-red-400" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                );
+
+                // Activity Logs View
+                const LogsView = () => (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-2">Logi aktywności</h1>
+                                <p className="text-white/60">Historia działań w systemie</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <select className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition-colors">
+                                    <option>Wszystkie akcje</option>
+                                    <option>Login</option>
+                                    <option>Premium Purchase</option>
+                                    <option>Section Completed</option>
+                                    <option>Quiz Attempted</option>
+                                    <option>Admin Access</option>
+                                </select>
+                                <button className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2 text-sm">
+                                    <Download className="w-4 h-4" />
+                                    Eksportuj
+                                </button>
+                                <AdminLogoutButton />
+                            </div>
+                        </div>
+
+                        <div className="glass rounded-2xl p-6">
+                            <div className="space-y-3">
+                                {mockActivityLogs.map(log => (
+                                    <div key={log.id} className="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                        <div className={`p-3 rounded-xl flex-shrink-0 ${
+                                            log.action.includes('Login') ? 'bg-blue-500/20' :
+                                            log.action.includes('Purchase') ? 'bg-green-500/20' :
+                                            log.action.includes('Admin') ? 'bg-purple-500/20' :
+                                            'bg-gray-500/20'
+                                        }`}>
+                                            <Activity className={`w-5 h-5 ${
+                                                log.action.includes('Login') ? 'text-blue-400' :
+                                                log.action.includes('Purchase') ? 'text-green-400' :
+                                                log.action.includes('Admin') ? 'text-purple-400' :
+                                                'text-gray-400'
+                                            }`} />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-start justify-between gap-4 mb-1">
+                                                <div className="font-medium text-white">{log.userName}</div>
+                                                <div className="text-sm text-white/50 whitespace-nowrap">
+                                                    {new Date(log.timestamp).toLocaleString('pl-PL')}
+                                                </div>
+                                            </div>
+                                            <div className="text-sm text-white/70 mb-2">{log.details}</div>
+                                            <div className="flex items-center gap-4 text-xs text-white/40">
+                                                <span>IP: {log.ip}</span>
+                                                <span>•</span>
+                                                <span>{log.userAgent}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+
+                // Content Management View
+                const ContentView = () => (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-2">Zarządzanie treścią</h1>
+                                <p className="text-white/60">Edytuj sekcje edukacyjne i pytania quizowe</p>
+                            </div>
+                            <div className="flex gap-3">
+                                <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                    <Plus className="w-5 h-5" />
+                                    Dodaj sekcję
+                                </button>
+                                <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                    <Plus className="w-5 h-5" />
+                                    Dodaj pytanie
+                                </button>
+                                <AdminLogoutButton />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="glass rounded-2xl p-6">
+                                <h2 className="text-xl font-bold text-white mb-4">Sekcje edukacyjne</h2>
+                                <div className="space-y-3 max-h-96 overflow-y-auto">
+                                    {sections.slice(0, 8).map((section) => (
+                                        <div key={section.id} className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-3 flex-1">
+                                                    <span className="text-2xl">{section.icon}</span>
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="font-medium text-white text-sm truncate">{section.title}</div>
+                                                        <div className="flex items-center gap-2 mt-1">
+                                                            {section.isPremium && (
+                                                                <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">Premium</span>
+                                                            )}
+                                                            <span className="text-xs text-white/50">ID: {section.id}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex gap-2 flex-shrink-0">
+                                                    <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                                                        <Edit className="w-4 h-4 text-blue-400" />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="glass rounded-2xl p-6">
+                                <h2 className="text-xl font-bold text-white mb-4">Pytania quizowe</h2>
+                                <div className="space-y-3 max-h-96 overflow-y-auto">
+                                    {quizQuestions.slice(0, 8).map((question) => (
+                                        <div key={question.id} className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                                            <div className="flex items-start justify-between gap-3">
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-medium text-white text-sm line-clamp-2">{question.question}</div>
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        {question.isPremium && (
+                                                            <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">Premium</span>
+                                                        )}
+                                                        <span className="text-xs text-white/50">ID: {question.id}</span>
+                                                    </div>
+                                                </div>
+                                                <button className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0">
+                                                    <Edit className="w-4 h-4 text-blue-400" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="glass rounded-2xl p-6">
+                            <h2 className="text-xl font-bold text-white mb-4">Statystyki treści</h2>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-white mb-1">{sections.length}</div>
+                                    <div className="text-sm text-white/60">Wszystkie sekcje</div>
+                                    <div className="text-xs text-white/40 mt-1">
+                                        {sections.filter(s => s.isPremium).length} Premium
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-white mb-1">{quizQuestions.length}</div>
+                                    <div className="text-sm text-white/60">Pytania quizowe</div>
+                                    <div className="text-xs text-white/40 mt-1">
+                                        {quizQuestions.filter(q => q.isPremium).length} Premium
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-green-400 mb-1">892</div>
+                                    <div className="text-sm text-white/60">Ukończenia sekcji</div>
+                                    <div className="text-xs text-white/40 mt-1">Łącznie</div>
+                                </div>
+                                <div className="text-center">
+                                    <div className="text-3xl font-bold text-purple-400 mb-1">1,243</div>
+                                    <div className="text-sm text-white/60">Rozwiązane quizy</div>
+                                    <div className="text-xs text-white/40 mt-1">Łącznie</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                );
+
+                // Communication View
+                const CommunicationView = () => (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-2">Komunikacja</h1>
+                                <p className="text-white/60">Wysyłaj powiadomienia i emaile do użytkowników</p>
+                            </div>
+                            <AdminLogoutButton />
+                        </div>
+
+                        <div className="glass rounded-2xl p-6">
+                            <h2 className="text-xl font-bold text-white mb-6">Wyślij wiadomość</h2>
+                            <div className="space-y-4">
+                                <select className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors">
+                                    <option>Wszyscy użytkownicy</option>
+                                    <option>Tylko użytkownicy Premium</option>
+                                    <option>Tylko użytkownicy Free</option>
+                                </select>
+
+                                <input
+                                    type="text"
+                                    placeholder="Temat wiadomości..."
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
+                                />
+
+                                <textarea
+                                    placeholder="Treść wiadomości..."
+                                    rows={6}
+                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors resize-none"
+                                />
+
+                                <button className="w-full px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2">
+                                    <MessageSquare className="w-5 h-5" />
+                                    Wyślij wiadomość
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+
+                // Settings View
+                const SettingsView = () => (
+                    <div className="space-y-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-3xl font-bold text-white mb-2">Ustawienia aplikacji</h1>
+                                <p className="text-white/60">Konfiguruj parametry systemu</p>
+                            </div>
+                            <AdminLogoutButton />
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div className="glass rounded-2xl p-6">
+                                <h2 className="text-xl font-bold text-white mb-4">Ogólne</h2>
+                                <div className="space-y-4">
+                                    <input
+                                        type="text"
+                                        defaultValue="Analiza Biznesowa - Platforma Edukacyjna"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+                                    />
+                                    <input
+                                        type="email"
+                                        defaultValue="kontakt@akademia-ba.pl"
+                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="glass rounded-2xl p-6">
+                                <h2 className="text-xl font-bold text-white mb-4">Cennik Premium</h2>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="text-white/70 text-sm mb-2 block">3 miesiące</label>
+                                        <input
+                                            type="number"
+                                            defaultValue="99"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-white/70 text-sm mb-2 block">6 miesięcy</label>
+                                        <input
+                                            type="number"
+                                            defaultValue="199"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-white/70 text-sm mb-2 block">12 miesięcy</label>
+                                        <input
+                                            type="number"
+                                            defaultValue="299"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-3">
+                            <button className="px-6 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-medium hover:bg-white/10 transition-all">
+                                Anuluj
+                            </button>
+                            <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                                <Check className="w-5 h-5" />
+                                Zapisz zmiany
+                            </button>
+                        </div>
+                    </div>
+                );
+
+                // Main Admin Panel Return
+                return (
+                    <div className="min-h-screen">
+                        <AdminSidebar />
+                        <div className={`${adminSidebarOpen ? 'ml-64' : 'ml-20'} p-8 transition-all`}>
+                            {adminView === 'dashboard' && <DashboardView />}
+                            {adminView === 'users' && <UsersView />}
+                            {adminView === 'purchases' && <PurchasesView />}
+                            {adminView === 'access' && <AccessView />}
+                            {adminView === 'content' && <ContentView />}
+                            {adminView === 'reports' && <ReportsView />}
+                            {adminView === 'promotions' && <PromotionsView />}
+                            {adminView === 'communication' && <CommunicationView />}
+                            {adminView === 'logs' && <LogsView />}
+                            {adminView === 'settings' && <SettingsView />}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div>
+                    {toast && (
+                        <div className={`toast toast-${toast.type}`}>
+                            {toast.message}
+                        </div>
+                    )}
+                    {showTermsPage ? (
+                        <TermsPage />
+                    ) : showPrivacyPage ? (
+                        <PrivacyPage />
+                    ) : (
+                        <>
+                            {currentView === 'admin' && userRole === 'admin' && <AdminPanel />}
+                            {currentView === 'home' && <HomePage />}
+                            {currentView === 'sections' && <SectionsView />}
+                            {currentView === 'quiz' && <QuizView />}
+                            {showPremiumModal && <PremiumModal />}
+                            {showAuthModal && <AuthModal />}
+                        </>
+                    )}
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
