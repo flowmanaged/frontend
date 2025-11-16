@@ -53,6 +53,22 @@ const AlertCircle = ({ className }) => <i data-lucide="alert-circle" className={
 // 2. Główny Komponent Aplikacji
 // ----------------------------------------------------
 const App = () => {
+    const handleLogout = () => {
+        // 1. Usuń token z localStorage (najważniejsze)
+        localStorage.removeItem('token');
+
+        // 2. Zresetuj stany logowania
+        setIsLoggedIn(false);
+        setUserEmail(null);
+        setUserRole('user');
+        
+        // 3. Przełącz widok (opcjonalne)
+        setCurrentView('home');
+        
+        // 4. Wyświetl powiadomienie (opcjonalne)
+        showToast('Wylogowano pomyślnie!', 'success');
+    };
+
     // API Configuration
     const API_URL = 'http://localhost:5000/api';
 
@@ -84,6 +100,53 @@ const App = () => {
     useEffect(() => {
         lucide.createIcons();
     }, []);
+
+    // Funkcja pobierająca dane użytkownika po tokenie (KONIECZNA!)
+    const fetchUserData = async (token) => {
+        try {
+            const response = await fetch(`${API_URL}/users/me`, {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Wysyłanie tokena
+                }
+            });
+
+            if (!response.ok) {
+                // Token nieważny lub wygasły
+                throw new Error('Sesja wygasła');
+            }
+
+            const userData = await response.json();
+            
+            // Ustawienie stanów na podstawie danych z serwera
+            setIsLoggedIn(true);
+            setUserEmail(userData.email);
+            setUserRole(userData.role);
+            setIsPremium(userData.isPremium);
+            setCompletedSections(new Set(userData.completedSections));
+            setPremiumExpiryDate(userData.premiumExpiresAt);
+            
+        } catch (error) {
+            console.error('❌ Błąd hydratacji sesji:', error);
+            // Automatyczne wylogowanie, jeśli token jest zły
+            localStorage.removeItem('token');
+            setIsLoggedIn(false);
+            setUserEmail(null);
+            setUserRole('user');
+        }
+    };
+    
+    // 💡 NOWY useEffect DO HYDRATACJI SESJI
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            // Jeśli token istnieje, spróbuj pobrać dane użytkownika i uwierzytelnić go
+            fetchUserData(token); 
+        }
+    }, []); // Pusta tablica zależności: uruchamiane tylko raz przy starcie aplikacji
+
+// Funkcja do wyświetlania Toast'a
+    const showToast = (message, type = 'success', duration = 3000) => {
+// ...
 
     // Funkcja do wyświetlania Toast'a
     const showToast = (message, type = 'success', duration = 3000) => {
@@ -616,17 +679,20 @@ const App = () => {
                 const data = await response.json();
 
                 if (!response.ok) {
-                    setMessage(data.message || 'Nieprawidłowy email lub hasło.');
-                    setIsLoading(false);
-                    return;
-                }
+                    setMessage(data.message || 'Nieprawidłowy email lub hasło.');
+                    setIsLoading(false);
+                    return;
+                }
 
-                // Sukces
-                setIsLoggedIn(true);
-                setUserEmail(email);
-                setUserRole(data.userRole || 'user'); // Zakładając, że API zwraca rolę
-                showToast('Zalogowano pomyślnie!', 'success');
-                setShowAuthModal(false);
+               // Sukces
+                // 💡 DODAJ TĘ LINIĘ:
+                localStorage.setItem('token', data.token); 
+
+                setIsLoggedIn(true);
+                setUserEmail(email);
+                setUserRole(data.userRole || 'user'); // Zakładając, że API zwraca rolę
+                showToast('Zalogowano pomyślnie!', 'success');
+                setShowAuthModal(false);
             } catch (error) {
                 console.error('❌ Błąd logowania:', error);
                 setMessage('Błąd połączenia z serwerem. Spróbuj ponownie.');
