@@ -86,109 +86,13 @@
                 opacity: 1;
             }
         }
-
-        .payment-method-card {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .payment-method-card:hover {
-            transform: scale(1.02);
-        }
-
-        .payment-method-card.selected {
-            border-color: #8b5cf6 !important;
-            background: rgba(139, 92, 246, 0.15) !important;
-        }
-
-        .spinner {
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top: 3px solid white;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 16px 24px;
-            border-radius: 12px;
-            color: white;
-            font-weight: 500;
-            z-index: 2000;
-            animation: slideInRight 0.3s ease;
-            max-width: 400px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes slideInRight {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
-        }
-
-        .toast-success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .toast-error {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-
-        .admin-sidebar {
-            transition: all 0.3s ease;
-        }
-
-        .stat-card {
-            transition: all 0.2s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .table-row-hover:hover {
-            background: rgba(255, 255, 255, 0.05);
-            cursor: pointer;
-        }
-
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 20px rgba(139, 92, 246, 0.3); }
-            50% { box-shadow: 0 0 40px rgba(139, 92, 246, 0.6); }
-        }
-
-        .pulse-glow {
-            animation: pulse-glow 2s infinite;
-        }
-
-        .chart-bar {
-            transition: all 0.3s ease;
-        }
-
-        .chart-bar:hover {
-            opacity: 0.8;
-        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 min-h-screen">
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useRef } = React;
+        const { useState } = React;
 
         const BookOpen = ({ className }) => <i data-lucide="book-open" className={className}></i>;
         const Award = ({ className }) => <i data-lucide="award" className={className}></i>;
@@ -205,36 +109,6 @@
         const X = ({ className }) => <i data-lucide="x" className={className}></i>;
         const User = ({ className }) => <i data-lucide="user" className={className}></i>;
         const Mail = ({ className }) => <i data-lucide="mail" className={className}></i>;
-        const CreditCard = ({ className }) => <i data-lucide="credit-card" className={className}></i>;
-        const Smartphone = ({ className }) => <i data-lucide="smartphone" className={className}></i>;
-        const Youtube = ({ className }) => <i data-lucide="youtube" className={className}></i>;
-        const FileText = ({ className }) => <i data-lucide="file-text" className={className}></i>;
-        const Users = ({ className }) => <i data-lucide="users" className={className}></i>;
-        const ShoppingCart = ({ className }) => <i data-lucide="shopping-cart" className={className}></i>;
-        const Key = ({ className }) => <i data-lucide="key" className={className}></i>;
-        const BarChart = ({ className }) => <i data-lucide="bar-chart-2" className={className}></i>;
-        const Settings = ({ className }) => <i data-lucide="settings" className={className}></i>;
-        const Tag = ({ className }) => <i data-lucide="tag" className={className}></i>;
-        const Activity = ({ className }) => <i data-lucide="activity" className={className}></i>;
-        const MessageSquare = ({ className }) => <i data-lucide="message-square" className={className}></i>;
-        const Shield = ({ className }) => <i data-lucide="shield" className={className}></i>;
-        const Edit = ({ className }) => <i data-lucide="edit" className={className}></i>;
-        const Trash = ({ className }) => <i data-lucide="trash-2" className={className}></i>;
-        const Check = ({ className }) => <i data-lucide="check" className={className}></i>;
-        const Plus = ({ className }) => <i data-lucide="plus" className={className}></i>;
-        const Download = ({ className }) => <i data-lucide="download" className={className}></i>;
-        const Search = ({ className }) => <i data-lucide="search" className={className}></i>;
-        const Filter = ({ className }) => <i data-lucide="filter" className={className}></i>;
-        const ChevronDown = ({ className }) => <i data-lucide="chevron-down" className={className}></i>;
-        const ChevronRight = ({ className }) => <i data-lucide="chevron-right" className={className}></i>;
-        const Menu = ({ className }) => <i data-lucide="menu" className={className}></i>;
-        const LogOut = ({ className }) => <i data-lucide="log-out" className={className}></i>;
-        const DollarSign = ({ className }) => <i data-lucide="dollar-sign" className={className}></i>;
-        const TrendingUp = ({ className }) => <i data-lucide="trending-up" className={className}></i>;
-        const Package = ({ className }) => <i data-lucide="package" className={className}></i>;
-        const Eye = ({ className }) => <i data-lucide="eye" className={className}></i>;
-        const EyeOff = ({ className }) => <i data-lucide="eye-off" className={className}></i>;
-        const AlertCircle = ({ className }) => <i data-lucide="alert-circle" className={className}></i>;
 
         const App = () => {
             const [currentView, setCurrentView] = useState('home');
@@ -250,55 +124,10 @@
             const [authView, setAuthView] = useState('login'); // 'login', 'register', 'forgot'
             const [isLoggedIn, setIsLoggedIn] = useState(false);
             const [userEmail, setUserEmail] = useState('');
-            const [userRole, setUserRole] = useState('user'); // 'user' or 'admin'
             
             // Stany dla podstron informacyjnych
             const [showTermsPage, setShowTermsPage] = useState(false);
             const [showPrivacyPage, setShowPrivacyPage] = useState(false);
-
-            // Stany dla panelu administratora
-            const [adminView, setAdminView] = useState('dashboard'); // 'dashboard', 'users', 'purchases', 'access', 'content', 'reports', 'promotions', 'settings', 'logs', 'communication'
-            const [adminSidebarOpen, setAdminSidebarOpen] = useState(true);
-            const [selectedUser, setSelectedUser] = useState(null);
-            const [searchQuery, setSearchQuery] = useState('');
-            const [filterStatus, setFilterStatus] = useState('all');
-
-            // Nowe stany dla procesu płatności
-            const [paymentStep, setPaymentStep] = useState('overview'); // 'overview', 'payment', 'processing', 'success'
-            const [paymentMethod, setPaymentMethod] = useState('blik'); // 'blik', 'paypal'
-            const [processingPayment, setProcessingPayment] = useState(false);
-            const [toast, setToast] = useState(null);
-            const [premiumExpiryDate, setPremiumExpiryDate] = useState(null);
-
-            // Funkcja sprawdzająca czy Premium jest aktywne
-            const checkPremiumStatus = () => {
-                if (!isPremium) return false;
-                if (!premiumExpiryDate) return true; // Dla starych użytkowników bez daty wygaśnięcia
-                
-                const now = new Date();
-                const expiry = new Date(premiumExpiryDate);
-                
-                if (now > expiry) {
-                    setIsPremium(false);
-                    setPremiumExpiryDate(null);
-                    showToast('Twój dostęp Premium wygasł. Odnów aby kontynuować!', 'error');
-                    return false;
-                }
-                return true;
-            };
-
-            // Funkcja wyświetlająca toast
-            const showToast = (message, type = 'success') => {
-                setToast({ message, type });
-                setTimeout(() => setToast(null), 3000);
-            };
-
-            // Sprawdzanie statusu Premium przy każdej zmianie widoku
-            React.useEffect(() => {
-                if (isPremium) {
-                    checkPremiumStatus();
-                }
-            }, [currentView, isPremium]);
 
             React.useEffect(() => {
                 lucide.createIcons();
@@ -2932,64 +2761,8 @@ Best Case, Most Likely, Worst Case scenarios.
                 }
             ];
 
-            // Dane mockowe dla panelu administratora
-            const mockUsers = [
-                { id: 1, email: 'jan.kowalski@example.com', name: 'Jan Kowalski', role: 'user', isPremium: true, premiumExpiry: '2025-12-31', registeredDate: '2024-01-15', lastLogin: '2024-10-28', status: 'active', completedSections: 15, quizScore: 85 },
-                { id: 2, email: 'anna.nowak@example.com', name: 'Anna Nowak', role: 'user', isPremium: false, premiumExpiry: null, registeredDate: '2024-02-20', lastLogin: '2024-10-29', status: 'active', completedSections: 8, quizScore: 72 },
-                { id: 3, email: 'admin@example.com', name: 'Administrator', role: 'admin', isPremium: true, premiumExpiry: '2099-12-31', registeredDate: '2023-01-01', lastLogin: '2024-10-29', status: 'active', completedSections: 18, quizScore: 100 },
-                { id: 4, email: 'piotr.wisniewski@example.com', name: 'Piotr Wiśniewski', role: 'user', isPremium: true, premiumExpiry: '2025-06-30', registeredDate: '2024-03-10', lastLogin: '2024-10-25', status: 'active', completedSections: 12, quizScore: 78 },
-                { id: 5, email: 'maria.kowalczyk@example.com', name: 'Maria Kowalczyk', role: 'user', isPremium: false, premiumExpiry: null, registeredDate: '2024-04-05', lastLogin: '2024-10-29', status: 'active', completedSections: 5, quizScore: 65 },
-                { id: 6, email: 'tomasz.lewandowski@example.com', name: 'Tomasz Lewandowski', role: 'user', isPremium: true, premiumExpiry: '2025-11-15', registeredDate: '2024-05-12', lastLogin: '2024-10-20', status: 'active', completedSections: 18, quizScore: 92 },
-                { id: 7, email: 'katarzyna.wojcik@example.com', name: 'Katarzyna Wójcik', role: 'user', isPremium: false, premiumExpiry: null, registeredDate: '2024-06-18', lastLogin: '2024-09-15', status: 'inactive', completedSections: 3, quizScore: 55 },
-                { id: 8, email: 'michal.kaminski@example.com', name: 'Michał Kamiński', role: 'user', isPremium: true, premiumExpiry: '2026-01-10', registeredDate: '2024-07-22', lastLogin: '2024-10-28', status: 'active', completedSections: 14, quizScore: 88 },
-            ];
-
-            const mockPurchases = [
-                { id: 'TRX001', userId: 1, userName: 'Jan Kowalski', userEmail: 'jan.kowalski@example.com', product: 'Premium 12 miesięcy', amount: 299.00, currency: 'PLN', status: 'completed', paymentMethod: 'BLIK', date: '2024-01-15T10:30:00', transactionId: 'BLIK_20240115103045' },
-                { id: 'TRX002', userId: 4, userName: 'Piotr Wiśniewski', userEmail: 'piotr.wisniewski@example.com', product: 'Premium 6 miesięcy', amount: 199.00, currency: 'PLN', status: 'completed', paymentMethod: 'PayPal', date: '2024-03-10T14:20:00', transactionId: 'PAYPAL_20240310142015' },
-                { id: 'TRX003', userId: 6, userName: 'Tomasz Lewandowski', userEmail: 'tomasz.lewandowski@example.com', product: 'Premium 12 miesięcy', amount: 299.00, currency: 'PLN', status: 'completed', paymentMethod: 'BLIK', date: '2024-05-12T09:15:00', transactionId: 'BLIK_20240512091530' },
-                { id: 'TRX004', userId: 8, userName: 'Michał Kamiński', userEmail: 'michal.kaminski@example.com', product: 'Premium 12 miesięcy', amount: 299.00, currency: 'PLN', status: 'completed', paymentMethod: 'BLIK', date: '2024-07-22T16:45:00', transactionId: 'BLIK_20240722164520' },
-                { id: 'TRX005', userId: 2, userName: 'Anna Nowak', userEmail: 'anna.nowak@example.com', product: 'Premium 3 miesiące', amount: 99.00, currency: 'PLN', status: 'pending', paymentMethod: 'BLIK', date: '2024-10-29T11:00:00', transactionId: 'BLIK_20241029110045' },
-                { id: 'TRX006', userId: 5, userName: 'Maria Kowalczyk', userEmail: 'maria.kowalczyk@example.com', product: 'Premium 6 miesięcy', amount: 199.00, currency: 'PLN', status: 'failed', paymentMethod: 'PayPal', date: '2024-10-28T13:30:00', transactionId: 'PAYPAL_20241028133015' },
-            ];
-
-            const mockActivityLogs = [
-                { id: 1, userId: 1, userName: 'Jan Kowalski', action: 'Login', details: 'Użytkownik zalogował się do systemu', timestamp: '2024-10-28T08:30:00', ip: '192.168.1.100', userAgent: 'Chrome/Windows' },
-                { id: 2, userId: 2, userName: 'Anna Nowak', action: 'Section Completed', details: 'Ukończono sekcję: Wprowadzenie do Analizy Biznesowej', timestamp: '2024-10-29T09:15:00', ip: '192.168.1.105', userAgent: 'Safari/MacOS' },
-                { id: 3, userId: 4, userName: 'Piotr Wiśniewski', action: 'Quiz Attempted', details: 'Rozwiązano quiz: wynik 78%', timestamp: '2024-10-25T14:20:00', ip: '192.168.1.110', userAgent: 'Firefox/Linux' },
-                { id: 4, userId: 8, userName: 'Michał Kamiński', action: 'Premium Purchase', details: 'Zakupiono Premium 12 miesięcy za 299 PLN', timestamp: '2024-10-28T16:45:00', ip: '192.168.1.120', userAgent: 'Chrome/Windows' },
-                { id: 5, userId: 3, userName: 'Administrator', action: 'Admin Access', details: 'Dostęp do panelu administratora', timestamp: '2024-10-29T10:00:00', ip: '192.168.1.1', userAgent: 'Chrome/Windows' },
-                { id: 6, userId: 5, userName: 'Maria Kowalczyk', action: 'Login', details: 'Użytkownik zalogował się do systemu', timestamp: '2024-10-29T11:30:00', ip: '192.168.1.115', userAgent: 'Chrome/Android' },
-            ];
-
-            const mockPromoCodes = [
-                { id: 1, code: 'STARTUP2024', discount: 20, type: 'percentage', status: 'active', usageCount: 45, usageLimit: 100, validFrom: '2024-01-01', validTo: '2024-12-31', createdBy: 'Administrator' },
-                { id: 2, code: 'SUMMER50', discount: 50, type: 'fixed', status: 'active', usageCount: 23, usageLimit: 50, validFrom: '2024-06-01', validTo: '2024-08-31', createdBy: 'Administrator' },
-                { id: 3, code: 'WELCOME10', discount: 10, type: 'percentage', status: 'active', usageCount: 156, usageLimit: null, validFrom: '2024-01-01', validTo: '2025-12-31', createdBy: 'Administrator' },
-                { id: 4, code: 'BLACKFRIDAY', discount: 30, type: 'percentage', status: 'expired', usageCount: 89, usageLimit: 200, validFrom: '2023-11-20', validTo: '2023-11-30', createdBy: 'Administrator' },
-            ];
-
             const Footer = () => (
                 <div className="mt-12 text-center text-sm text-white/50 pb-8">
-                    <div className="flex items-center justify-center gap-6 mb-4">
-                        <a 
-                            href="https://www.youtube.com/@flowmanaged" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-2 hover:text-white/80 transition-colors"
-                        >
-                            <Youtube className="w-5 h-5" />
-                            <span>YouTube</span>
-                        </a>
-                        <span className="text-white/30">•</span>
-                        <button 
-                            onClick={() => setShowPrivacyPage(true)}
-                            className="flex items-center gap-2 hover:text-white/80 transition-colors"
-                        >
-                            <FileText className="w-5 h-5" />
-                            <span>Polityka Prywatności</span>
-                        </button>
-                    </div>
                     <p className="mb-2">© 2024 Platforma Edukacyjna Business Analysis</p>
                     <p>Wszystkie prawa zastrzeżone</p>
                 </div>
@@ -3209,178 +2982,118 @@ Best Case, Most Likely, Worst Case scenarios.
             );
 
             const AuthModal = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [acceptTerms, setAcceptTerms] = useState(false);
-    const [message, setMessage] = useState('');
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    
-    // Symulacja bazy zarejestrowanych użytkowników (w prawdziwej aplikacji to byłoby w backend)
-    const [registeredUsers, setRegisteredUsers] = useState([
-        { email: 'admin@example.com', password: 'admin123', role: 'admin' }
-    ]);
+                const [email, setEmail] = useState('');
+                const [password, setPassword] = useState('');
+                const [confirmPassword, setConfirmPassword] = useState('');
+                const [acceptTerms, setAcceptTerms] = useState(false);
+                const [message, setMessage] = useState('');
 
-    const handleLogin = (e) => {
-        e.preventDefault();
-        if (!email || !password) {
-            setMessage('Proszę wypełnić wszystkie pola');
-            return;
-        }
-        
-        // Sprawdź czy użytkownik istnieje w bazie
-        const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-        
-        if (!user) {
-            setMessage('Użytkownik o podanym adresie email nie istnieje. Zarejestruj się najpierw.');
-            return;
-        }
-        
-        if (user.password !== password) {
-            setMessage('Nieprawidłowe hasło');
-            return;
-        }
-        
-        // Logowanie pomyślne
-        console.log('Logowanie:', email);
-        setMessage('Logowanie pomyślne!');
-        setTimeout(() => {
-            setIsLoggedIn(true);
-            setUserEmail(email);
-            setUserRole(user.role || 'user');
-            if (user.role === 'admin') {
-                showToast('Zalogowano jako Administrator', 'success');
-            } else {
-                showToast('Zalogowano pomyślnie', 'success');
-            }
-            setShowAuthModal(false);
-            setMessage('');
-        }, 1000);
-    };
+                const handleLogin = (e) => {
+                    e.preventDefault();
+                    if (!email || !password) {
+                        setMessage('Proszę wypełnić wszystkie pola');
+                        return;
+                    }
+                    // Symulacja logowania
+                    console.log('Logowanie:', email);
+                    setMessage('Logowanie pomyślne!');
+                    setTimeout(() => {
+                        setIsLoggedIn(true);
+                        setUserEmail(email);
+                        setShowAuthModal(false);
+                        setMessage('');
+                    }, 1000);
+                };
 
-    const handleRegister = (e) => {
-        e.preventDefault();
-        if (!email || !password || !confirmPassword) {
-            setMessage('Proszę wypełnić wszystkie pola');
-            return;
-        }
-        if (password !== confirmPassword) {
-            setMessage('Hasła nie są zgodne');
-            return;
-        }
-        if (password.length < 6) {
-            setMessage('Hasło musi mieć co najmniej 6 znaków');
-            return;
-        }
-        if (!acceptTerms) {
-            setMessage('Musisz zaakceptować regulamin');
-            return;
-        }
-        
-        // Sprawdź czy email już istnieje
-        const existingUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (existingUser) {
-            setMessage('Użytkownik o tym adresie email już istnieje. Zaloguj się.');
-            return;
-        }
-        
-        // Dodaj nowego użytkownika do bazy
-        const newUser = {
-            email: email,
-            password: password,
-            role: 'user'
-        };
-        setRegisteredUsers([...registeredUsers, newUser]);
-        
-        // Symulacja wysłania maila
-        console.log('Rejestracja:', email);
-        console.log('Wysyłanie maila potwierdzającego na:', email);
-        console.log('Mail zawiera link: https://twojserwis.pl/confirm?token=abc123');
-        
-        setMessage('Konto utworzone! Sprawdź swoją skrzynkę email w celu potwierdzenia. Możesz się już zalogować.');
-        setTimeout(() => {
-            setAuthView('login');
-            setMessage('');
-            setEmail('');
-            setPassword('');
-            setConfirmPassword('');
-            setAcceptTerms(false);
-        }, 3000);
-    };
+                const handleRegister = (e) => {
+                    e.preventDefault();
+                    if (!email || !password || !confirmPassword) {
+                        setMessage('Proszę wypełnić wszystkie pola');
+                        return;
+                    }
+                    if (password !== confirmPassword) {
+                        setMessage('Hasła nie są zgodne');
+                        return;
+                    }
+                    if (!acceptTerms) {
+                        setMessage('Musisz zaakceptować regulamin');
+                        return;
+                    }
+                    // Symulacja rejestracji i wysłania maila
+                    console.log('Rejestracja:', email);
+                    console.log('Wysyłanie maila potwierdzającego na:', email);
+                    console.log('Mail zawiera link: https://twojserwis.pl/confirm?token=abc123');
+                    setMessage('Konto utworzone! Sprawdź swoją skrzynkę email w celu potwierdzenia.');
+                    setTimeout(() => {
+                        setAuthView('login');
+                        setMessage('');
+                    }, 3000);
+                };
 
-    const handleForgotPassword = (e) => {
-        e.preventDefault();
-        if (!email) {
-            setMessage('Proszę podać adres email');
-            return;
-        }
-        
-        // Sprawdź czy użytkownik istnieje
-        const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (!user) {
-            setMessage('Nie znaleziono użytkownika o podanym adresie email');
-            return;
-        }
-        
-        // Symulacja wysłania maila z linkiem do resetu hasła
-        console.log('Wysyłanie maila resetującego hasło na:', email);
-        console.log('Mail zawiera link: https://twojserwis.pl/reset-password?token=xyz789');
-        setMessage('Link do resetowania hasła został wysłany na Twój email.');
-        setTimeout(() => {
-            setAuthView('login');
-            setMessage('');
-         }, 3000);
-        }
+                const handleForgotPassword = (e) => {
+                    e.preventDefault();
+                    if (!email) {
+                        setMessage('Proszę podać adres email');
+                        return;
+                    }
+                    // Symulacja wysłania maila z linkiem do resetu hasła
+                    console.log('Wysyłanie maila resetującego hasło na:', email);
+                    console.log('Mail zawiera link: https://twojserwis.pl/reset-password?token=xyz789');
+                    setMessage('Link do resetowania hasła został wysłany na Twój email.');
+                    setTimeout(() => {
+                        setAuthView('login');
+                        setMessage('');
+                    }, 3000);
+                };
 
                 return (
                     <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
-                        <div className="auth-modal-content glass rounded-2xl p-4 sm:p-6 md:p-8 max-w-sm sm:max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex justify-between items-center mb-4 sm:mb-6">
-                                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                        <div className="auth-modal-content glass rounded-3xl p-8 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
+                            <div className="flex justify-between items-center mb-6">
+                                <h2 className="text-2xl font-bold text-white">
                                     {authView === 'login' && 'Logowanie'}
                                     {authView === 'register' && 'Rejestracja'}
                                     {authView === 'forgot' && 'Resetowanie hasła'}
                                 </h2>
                                 <button 
                                     onClick={() => setShowAuthModal(false)}
-                                    className="text-white/70 hover:text-white transition-colors flex-shrink-0"
+                                    className="text-white/70 hover:text-white transition-colors"
                                 >
-                                    <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                                    <X className="w-6 h-6" />
                                 </button>
                             </div>
 
                             {message && (
-                                <div className={`mb-3 sm:mb-4 p-2 sm:p-3 rounded-lg text-xs sm:text-sm ${message.includes('pomyślne') || message.includes('utworzone') || message.includes('wysłany') ? 'bg-green-500/20 border border-green-500' : 'bg-red-500/20 border border-red-500'}`}>
-                                    <p className="text-white">{message}</p>
+                                <div className={`mb-4 p-3 rounded-lg ${message.includes('pomyślne') || message.includes('utworzone') || message.includes('wysłany') ? 'bg-green-500/20 border border-green-500' : 'bg-red-500/20 border border-red-500'}`}>
+                                    <p className="text-white text-sm">{message}</p>
                                 </div>
                             )}
 
                             {authView === 'login' && (
-                                <form onSubmit={handleLogin} className="space-y-3 sm:space-y-4">
+                                <form onSubmit={handleLogin} className="space-y-4">
                                     <div>
-                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Email</label>
+                                        <label className="block text-white/90 mb-2 text-sm font-medium">Email</label>
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
                                             placeholder="twoj@email.com"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Hasło</label>
+                                        <label className="block text-white/90 mb-2 text-sm font-medium">Hasło</label>
                                         <input
                                             type="password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
                                             placeholder="••••••••"
                                         />
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 sm:py-3 rounded-xl text-sm sm:text-base hover:shadow-lg transition-all"
+                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all"
                                     >
                                         Zaloguj się
                                     </button>
@@ -3404,34 +3117,34 @@ Best Case, Most Likely, Worst Case scenarios.
                             )}
 
                             {authView === 'register' && (
-                                <form onSubmit={handleRegister} className="space-y-3 sm:space-y-4">
+                                <form onSubmit={handleRegister} className="space-y-4">
                                     <div>
-                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Email</label>
+                                        <label className="block text-white/90 mb-2 text-sm font-medium">Email</label>
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
                                             placeholder="twoj@email.com"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Hasło</label>
+                                        <label className="block text-white/90 mb-2 text-sm font-medium">Hasło</label>
                                         <input
                                             type="password"
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
                                             placeholder="••••••••"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Powtórz hasło</label>
+                                        <label className="block text-white/90 mb-2 text-sm font-medium">Powtórz hasło</label>
                                         <input
                                             type="password"
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
                                             placeholder="••••••••"
                                         />
                                     </div>
@@ -3481,7 +3194,7 @@ Best Case, Most Likely, Worst Case scenarios.
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 sm:py-3 rounded-xl text-sm sm:text-base hover:shadow-lg transition-all"
+                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all"
                                     >
                                         Zarejestruj się
                                     </button>
@@ -3498,23 +3211,23 @@ Best Case, Most Likely, Worst Case scenarios.
                             )}
 
                             {authView === 'forgot' && (
-                                <form onSubmit={handleForgotPassword} className="space-y-3 sm:space-y-4">
+                                <form onSubmit={handleForgotPassword} className="space-y-4">
                                     <p className="text-white/70 text-sm mb-4">
                                         Podaj swój adres email, a wyślemy Ci link do ustawienia nowego hasła.
                                     </p>
                                     <div>
-                                        <label className="block text-white/90 mb-1 sm:mb-2 text-xs sm:text-sm font-medium">Email</label>
+                                        <label className="block text-white/90 mb-2 text-sm font-medium">Email</label>
                                         <input
                                             type="email"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-xl bg-white/10 text-sm sm:text-base border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
+                                            className="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-purple-500 transition-colors"
                                             placeholder="twoj@email.com"
                                         />
                                     </div>
                                     <button
                                         type="submit"
-                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-2 sm:py-3 rounded-xl text-sm sm:text-base hover:shadow-lg transition-all"
+                                        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold py-3 rounded-xl hover:shadow-lg transition-all"
                                     >
                                         Wyślij link resetujący
                                     </button>
@@ -3534,328 +3247,95 @@ Best Case, Most Likely, Worst Case scenarios.
                 );
             };
 
-            const PremiumModal = () => {
-                const [blikCode, setBlikCode] = useState('');
-
-                const handlePaymentSubmit = async (e) => {
-                    e.preventDefault();
-                    
-                    // Walidacja
-                    if (paymentMethod === 'blik') {
-                        const cleanCode = blikCode.replace(/\s/g, '');
-                        if (cleanCode.length !== 6 || !/^\d+$/.test(cleanCode)) {
-                            showToast('Kod BLIK musi składać się z 6 cyfr', 'error');
-                            return;
-                        }
-                    }
-
-                    setProcessingPayment(true);
-                    setPaymentStep('processing');
-
-                    // Symulacja przetwarzania płatności (2 sekundy)
-                    setTimeout(() => {
-                        // Ustawienie daty wygaśnięcia Premium (90 dni od teraz)
-                        const expiryDate = new Date();
-                        expiryDate.setDate(expiryDate.getDate() + 90);
+            const PremiumModal = () => (
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowPremiumModal(false)}>
+                    <div className="glass rounded-3xl p-8 max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+                        <div className="flex justify-between items-start mb-6">
+                            <div>
+                                <h2 className="text-3xl font-bold text-white mb-2">🌟 Przejdź na Premium</h2>
+                                <p className="text-white/70">Odblokuj pełną moc platformy edukacyjnej</p>
+                            </div>
+                            <button onClick={() => setShowPremiumModal(false)} className="text-white/70 hover:text-white transition-colors">
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
                         
-                        setIsPremium(true);
-                        setPremiumExpiryDate(expiryDate.toISOString());
-                        setProcessingPayment(false);
-                        setPaymentStep('success');
-                        
-                        showToast('🎉 Gratulacje! Masz dostęp Premium na 90 dni!', 'success');
-                        
-                        // Automatyczne zamknięcie po 3 sekundach
-                        setTimeout(() => {
-                            setShowPremiumModal(false);
-                            setPaymentStep('overview');
-                            setBlikCode('');
-                        }, 3000);
-                    }, 2000);
-                };
-
-                const formatBlikCode = (value) => {
-                    const cleaned = value.replace(/\D/g, '');
-                    const limited = cleaned.slice(0, 6);
-                    if (limited.length > 3) {
-                        return limited.slice(0, 3) + ' ' + limited.slice(3);
-                    }
-                    return limited;
-                };
-
-                const getRemainingDays = () => {
-                    if (!premiumExpiryDate) return 90;
-                    const now = new Date();
-                    const expiry = new Date(premiumExpiryDate);
-                    const diffTime = expiry - now;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    return Math.max(0, diffDays);
-                };
-
-                return (
-                    <div 
-                        className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4" 
-                        onClick={() => !processingPayment && setShowPremiumModal(false)}
-                    >
-                        <div 
-                            className="glass rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-y-auto" 
-                            onClick={(e) => e.stopPropagation()}
-                        >
-                            {/* KROK 1: Przegląd oferty */}
-                            {paymentStep === 'overview' && (
-                                <>
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div>
-                                            <h2 className="text-3xl font-bold text-white mb-2">🌟 Przejdź na Premium</h2>
-                                            <p className="text-white/70">Odblokuj pełną moc platformy edukacyjnej</p>
-                                        </div>
-                                        <button 
-                                            onClick={() => setShowPremiumModal(false)} 
-                                            className="text-white/70 hover:text-white transition-colors"
-                                        >
-                                            <X className="w-6 h-6" />
-                                        </button>
-                                    </div>
-                                    
-                                    <div className="grid md:grid-cols-2 gap-6 mb-8">
-                                        <div className="bg-white/5 rounded-2xl p-6">
-                                            <h3 className="text-xl font-bold text-white mb-4">Wersja Darmowa</h3>
-                                            <ul className="space-y-3">
-                                                <li className="flex items-start gap-2 text-white/70">
-                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                                    <span>3 podstawowe sekcje</span>
-                                                </li>
-                                                <li className="flex items-start gap-2 text-white/70">
-                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                                    <span>3 pytania quizowe</span>
-                                                </li>
-                                                <li className="flex items-start gap-2 text-white/70">
-                                                    <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                                                    <span>Brak zaawansowanych tematów</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        
-                                        <div className="bg-gradient-to-br from-yellow-400/20 to-orange-500/20 border-2 border-yellow-400 rounded-2xl p-6">
-                                            <div className="flex items-center gap-2 mb-4">
-                                                <Crown className="w-6 h-6 text-yellow-400" />
-                                                <h3 className="text-xl font-bold text-white">Premium</h3>
-                                            </div>
-                                            <div className="bg-gradient-to-r from-yellow-400/30 to-orange-500/30 rounded-xl p-4 mb-4 border border-yellow-400/50">
-                                                <div className="text-center">
-                                                    <div className="text-4xl font-bold text-white mb-1">299 PLN</div>
-                                                    <div className="text-yellow-200 font-medium text-sm">Dostęp na 90 dni</div>
-                                                </div>
-                                            </div>
-                                            <ul className="space-y-3 mb-6">
-                                                <li className="flex items-start gap-2 text-white">
-                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                                    <span className="font-medium">15 kompleksowych sekcji</span>
-                                                </li>
-                                                <li className="flex items-start gap-2 text-white">
-                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                                    <span className="font-medium">19 dodatkowych pytań</span>
-                                                </li>
-                                                <li className="flex items-start gap-2 text-white">
-                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                                    <span className="font-medium">Zaawansowane techniki i narzędzia</span>
-                                                </li>
-                                                <li className="flex items-start gap-2 text-white">
-                                                    <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
-                                                    <span className="font-medium">Case studies i przykłady</span>
-                                                </li>
-                                            </ul>
-                                            {isLoggedIn ? (
-                                                <button 
-                                                    onClick={() => setPaymentStep('payment')}
-                                                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 rounded-xl hover:shadow-2xl transition-all"
-                                                >
-                                                    🚀 Przejdź do płatności
-                                                </button>
-                                            ) : (
-                                                <button 
-                                                    onClick={() => {
-                                                        setShowPremiumModal(false);
-                                                        setShowAuthModal(true);
-                                                    }}
-                                                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 rounded-xl hover:shadow-2xl transition-all"
-                                                >
-                                                    🔐 Zaloguj się aby kupić
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    <div className="bg-white/5 rounded-2xl p-6">
-                                        <h3 className="text-lg font-bold text-white mb-3">📚 Co zyskujesz w Premium:</h3>
-                                        <div className="grid md:grid-cols-2 gap-3 text-sm text-white/70">
-                                            <div>• BPMN i modelowanie procesów</div>
-                                            <div>• API i dokumentacja techniczna</div>
-                                            <div>• Zarządzanie stakeholderami</div>
-                                            <div>• Analiza finansowa projektów</div>
-                                            <div>• Change Management</div>
-                                            <div>• User Research metodyki</div>
-                                            <div>• Agile vs Waterfall</div>
-                                            <div>• Risk Management</div>
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-
-                            {/* KROK 2: Wybór metody płatności i formularz */}
-                            {paymentStep === 'payment' && (
-                                <>
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h2 className="text-2xl font-bold text-white">Płatność</h2>
-                                        <button 
-                                            onClick={() => setPaymentStep('overview')} 
-                                            className="text-white/60 hover:text-white transition-colors"
-                                        >
-                                            ← Powrót
-                                        </button>
-                                    </div>
-
-                                    {/* Wybór metody płatności */}
-                                    <div className="grid grid-cols-2 gap-4 mb-6">
-                                        <button
-                                            onClick={() => setPaymentMethod('blik')}
-                                            className={`payment-method-card p-6 rounded-xl border-2 transition-all ${
-                                                paymentMethod === 'blik' 
-                                                    ? 'selected border-purple-500 bg-purple-500/15' 
-                                                    : 'border-white/20 bg-white/5'
-                                            }`}
-                                        >
-                                            <Smartphone className="w-10 h-10 text-white mx-auto mb-3" />
-                                            <div className="text-white font-medium text-center">BLIK</div>
-                                            <div className="text-white/60 text-xs text-center mt-1">Kod z aplikacji</div>
-                                        </button>
-
-                                        <button
-                                            onClick={() => setPaymentMethod('paypal')}
-                                            className={`payment-method-card p-6 rounded-xl border-2 transition-all ${
-                                                paymentMethod === 'paypal' 
-                                                    ? 'selected border-purple-500 bg-purple-500/15' 
-                                                    : 'border-white/20 bg-white/5'
-                                            }`}
-                                        >
-                                            <div className="text-4xl mb-3 text-center">💳</div>
-                                            <div className="text-white font-medium text-center">PayPal</div>
-                                            <div className="text-white/60 text-xs text-center mt-1">Szybka płatność</div>
-                                        </button>
-                                    </div>
-
-                                    {/* Formularz płatności */}
-                                    <form onSubmit={handlePaymentSubmit} className="space-y-6">
-                                        {paymentMethod === 'blik' && (
-                                            <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                                                <label className="block text-white/90 mb-3 text-lg font-semibold text-center">
-                                                    Wprowadź kod BLIK
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={blikCode}
-                                                    onChange={(e) => setBlikCode(formatBlikCode(e.target.value))}
-                                                    placeholder="000 000"
-                                                    required
-                                                    maxLength="7"
-                                                    className="w-full px-6 py-4 bg-white/10 border-2 border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-purple-500 text-center text-3xl tracking-widest font-mono"
-                                                />
-                                                <p className="text-white/60 text-sm mt-3 text-center">
-                                                    📱 Wygeneruj kod w aplikacji bankowej
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {paymentMethod === 'paypal' && (
-                                            <div className="bg-white/5 rounded-2xl p-8 border border-white/10 text-center">
-                                                <div className="text-6xl mb-4">💳</div>
-                                                <h3 className="text-white text-lg font-semibold mb-2">
-                                                    Przekierowanie do PayPal
-                                                </h3>
-                                                <p className="text-white/70 text-sm mb-4">
-                                                    Po kliknięciu przycisku zostaniesz przekierowany do bezpiecznej strony płatności PayPal
-                                                </p>
-                                            </div>
-                                        )}
-
-                                        {/* Podsumowanie */}
-                                        <div className="border-t border-white/20 pt-6">
-                                            <div className="flex justify-between text-white mb-3">
-                                                <span className="text-lg">Dostęp Premium (90 dni)</span>
-                                                <span className="font-bold text-xl">299 PLN</span>
-                                            </div>
-                                            <div className="flex justify-between text-white/60 text-sm mb-4">
-                                                <span>VAT (23%)</span>
-                                                <span>55,88 PLN</span>
-                                            </div>
-                                            <div className="bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-lg p-3 mb-4">
-                                                <div className="flex justify-between text-white font-bold">
-                                                    <span>Do zapłaty:</span>
-                                                    <span className="text-xl">299 PLN</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <button
-                                            type="submit"
-                                            className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-bold py-4 rounded-xl hover:shadow-2xl transition-all text-lg"
-                                        >
-                                            {paymentMethod === 'blik' ? '💳 Zapłać BLIK - 299 PLN' : '🔐 Zapłać przez PayPal - 299 PLN'}
-                                        </button>
-
-                                        <p className="text-white/40 text-xs text-center">
-                                            🔒 Płatność jest bezpieczna i szyfrowana
-                                        </p>
-                                    </form>
-                                </>
-                            )}
-
-                            {/* KROK 3: Przetwarzanie płatności */}
-                            {paymentStep === 'processing' && (
-                                <div className="text-center py-16">
-                                    <div className="spinner mx-auto mb-6"></div>
-                                    <h3 className="text-2xl font-bold text-white mb-3">
-                                        Przetwarzanie płatności...
-                                    </h3>
-                                    <p className="text-white/60 text-lg">
-                                        Proszę czekać, nie zamykaj okna
-                                    </p>
-                                    {paymentMethod === 'blik' && (
-                                        <p className="text-white/80 text-sm mt-4">
-                                            📱 Potwierdź płatność w aplikacji bankowej
-                                        </p>
-                                    )}
+                        <div className="grid md:grid-cols-2 gap-6 mb-8">
+                            <div className="bg-white/5 rounded-2xl p-6">
+                                <h3 className="text-xl font-bold text-white mb-4">Wersja Darmowa</h3>
+                                <ul className="space-y-3">
+                                    <li className="flex items-start gap-2 text-white/70">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <span>3 podstawowe sekcje</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-white/70">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <span>3 pytania quizowe</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-white/70">
+                                        <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+                                        <span>Brak zaawansowanych tematów</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div className="bg-gradient-to-br from-yellow-400/20 to-orange-500/20 border-2 border-yellow-400 rounded-2xl p-6">
+                                <div className="flex items-center gap-2 mb-4">
+                                    <Crown className="w-6 h-6 text-yellow-400" />
+                                    <h3 className="text-xl font-bold text-white">Premium</h3>
                                 </div>
-                            )}
-
-                            {/* KROK 4: Sukces */}
-                            {paymentStep === 'success' && (
-                                <div className="text-center py-16">
-                                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center mx-auto mb-6 animate-pulse">
-                                        <CheckCircle className="w-12 h-12 text-white" />
-                                    </div>
-                                    <h3 className="text-3xl font-bold text-white mb-3">
-                                        🎉 Gratulacje!
-                                    </h3>
-                                    <p className="text-white/80 text-lg mb-2">
-                                        Masz teraz dostęp Premium!
-                                    </p>
-                                    <p className="text-white/60 mb-6">
-                                        Dostęp aktywny przez <span className="text-yellow-400 font-bold">90 dni</span>
-                                    </p>
-                                    <div className="inline-block bg-white/10 rounded-xl px-6 py-3 border border-white/20">
-                                        <div className="text-white/70 text-sm mb-1">Dostęp wygasa:</div>
-                                        <div className="text-white font-bold">
-                                            {premiumExpiryDate && new Date(premiumExpiryDate).toLocaleDateString('pl-PL')}
-                                        </div>
+                                <div className="bg-gradient-to-r from-yellow-400/30 to-orange-500/30 rounded-xl p-4 mb-4 border border-yellow-400/50">
+                                    <div className="text-center">
+                                        <div className="text-4xl font-bold text-white mb-1">399 PLN</div>
+                                        <div className="text-yellow-200 font-medium text-sm">Dostęp na 90 dni</div>
                                     </div>
                                 </div>
-                            )}
+                                <ul className="space-y-3 mb-6">
+                                    <li className="flex items-start gap-2 text-white">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <span className="font-medium">15 kompleksowych sekcji</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-white">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <span className="font-medium">19 dodatkowych pytań</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-white">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <span className="font-medium">Zaawansowane techniki i narzędzia</span>
+                                    </li>
+                                    <li className="flex items-start gap-2 text-white">
+                                        <CheckCircle className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+                                        <span className="font-medium">Case studies i przykłady</span>
+                                    </li>
+                                </ul>
+                                <button 
+                                    onClick={() => {
+                                        setIsPremium(true);
+                                        setShowPremiumModal(false);
+                                    }}
+                                    className="w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-bold py-3 rounded-xl hover:shadow-2xl transition-all"
+                                >
+                                    Kup dostęp Premium - 399 PLN
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 rounded-2xl p-6">
+                            <h3 className="text-lg font-bold text-white mb-3">📚 Co zyskujesz w Premium:</h3>
+                            <div className="grid md:grid-cols-2 gap-3 text-sm text-white/70">
+                                <div>• BPMN i modelowanie procesów</div>
+                                <div>• API i dokumentacja techniczna</div>
+                                <div>• Zarządzanie stakeholderami</div>
+                                <div>• Analiza finansowa projektów</div>
+                                <div>• Change Management</div>
+                                <div>• User Research metodyki</div>
+                                <div>• Agile vs Waterfall</div>
+                                <div>• Risk Management</div>
+                            </div>
                         </div>
                     </div>
-                );
-            };
-
+                </div>
+            );
 
             const HomePage = () => (
                 <div className="min-h-screen p-6">
@@ -3877,20 +3357,10 @@ Best Case, Most Likely, Worst Case scenarios.
                             ) : (
                                 <div className="flex items-center gap-4">
                                     <span className="text-white/70 text-sm">Zalogowany: {userEmail}</span>
-                                    {userRole === 'admin' && (
-                                        <button
-                                            onClick={() => setCurrentView('admin')}
-                                            className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl hover:shadow-lg transition-all text-sm font-medium pulse-glow"
-                                        >
-                                            <Shield className="w-4 h-4" />
-                                            Panel Admina
-                                        </button>
-                                    )}
                                     <button
                                         onClick={() => {
                                             setIsLoggedIn(false);
                                             setUserEmail('');
-                                            setUserRole('user');
                                         }}
                                         className="px-4 py-2 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all text-sm"
                                     >
@@ -3910,23 +3380,7 @@ Best Case, Most Likely, Worst Case scenarios.
                             <p className="text-xl text-white/70 max-w-2xl mx-auto mb-8">
                                 Kompleksowy przewodnik po świecie Business Analysis - od podstaw po zaawansowane techniki
                             </p>
-                            {isPremium ? (
-                                <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border-2 border-yellow-400 rounded-full mb-8">
-                                    <Crown className="w-5 h-5 text-yellow-400" />
-                                    <span className="text-yellow-100 font-bold">Premium Active</span>
-                                    {premiumExpiryDate && (
-                                        <span className="text-yellow-200 text-sm ml-2">
-                                            • {(() => {
-                                                const now = new Date();
-                                                const expiry = new Date(premiumExpiryDate);
-                                                const diffTime = expiry - now;
-                                                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                                return diffDays > 0 ? `${diffDays} dni pozostało` : 'Wygasł';
-                                            })()} dni
-                                        </span>
-                                    )}
-                                </div>
-                            ) : (
+                            {!isPremium && (
                                 <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 border border-yellow-400 rounded-full mb-8">
                                     <Crown className="w-5 h-5 text-yellow-400" />
                                     <span className="text-yellow-100 font-medium">Dostępne: 3 sekcje darmowe + 15 Premium</span>
@@ -4029,19 +3483,8 @@ Best Case, Most Likely, Worst Case scenarios.
             );
 
             const SectionsView = () => {
-                const contentRef = useRef(null);
                 const availableSections = sections.filter(s => !s.isPremium || isPremium);
                 const lockedCount = sections.filter(s => s.isPremium && !isPremium).length;
-
-                const handleSectionClick = (index) => {
-                    setCurrentSection(index);
-                    // Scroll do zawartości po krótkiej chwili
-                    setTimeout(() => {
-                        if (contentRef.current) {
-                            contentRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }
-                    }, 100);
-                };
 
                 return (
                     <div className="min-h-screen p-6">
@@ -4100,7 +3543,7 @@ Best Case, Most Likely, Worst Case scenarios.
                                     {availableSections.map((section, index) => (
                                         <button
                                             key={section.id}
-                                            onClick={() => handleSectionClick(index)}
+                                            onClick={() => setCurrentSection(index)}
                                             className={`text-left p-6 rounded-2xl transition-all ${
                                                 currentSection === index
                                                     ? `bg-gradient-to-r ${section.color} shadow-2xl scale-[1.02]`
@@ -4150,7 +3593,7 @@ Best Case, Most Likely, Worst Case scenarios.
                             </div>
 
                             {availableSections[currentSection] && (
-                                <div ref={contentRef} className="glass rounded-3xl p-8 mb-8 scroll-mt-8">
+                                <div className="glass rounded-3xl p-8 mb-8">
                                     <div className="flex items-center gap-4 mb-6">
                                         <div className="text-5xl">{availableSections[currentSection].icon}</div>
                                         <div>
@@ -4173,7 +3616,7 @@ Best Case, Most Likely, Worst Case scenarios.
                                     <div className="mt-8 pt-6 border-t border-white/10 flex justify-between">
                                         <button
                                             onClick={() => {
-                                                if (currentSection > 0) handleSectionClick(currentSection - 1);
+                                                if (currentSection > 0) setCurrentSection(currentSection - 1);
                                             }}
                                             disabled={currentSection === 0}
                                             className="glass px-6 py-3 rounded-xl text-white font-medium hover:bg-white/20 transition-all disabled:opacity-30 disabled:cursor-not-allowed"
@@ -4196,7 +3639,7 @@ Best Case, Most Likely, Worst Case scenarios.
                                         <button
                                             onClick={() => {
                                                 if (currentSection < availableSections.length - 1) {
-                                                    handleSectionClick(currentSection + 1);
+                                                    setCurrentSection(currentSection + 1);
                                                 }
                                             }}
                                             disabled={currentSection === availableSections.length - 1}
@@ -4347,7 +3790,7 @@ Best Case, Most Likely, Worst Case scenarios.
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="space-y-3 sm:space-y-4">
+                                    <div className="space-y-4">
                                         <div className={`glass rounded-2xl p-8 text-center`}>
                                             <div className={`inline-block w-16 h-16 rounded-full bg-gradient-to-br ${scoreData.bg} flex items-center justify-center mb-4`}>
                                                 <Trophy className="w-8 h-8 text-white" />
@@ -4447,1156 +3890,14 @@ Best Case, Most Likely, Worst Case scenarios.
                 );
             };
 
-            // Komponent Admin Panel
-            const AdminPanel = () => {
-                const AdminSidebar = () => (
-                    <div className={`${adminSidebarOpen ? 'w-64' : 'w-20'} admin-sidebar glass border-r border-white/10 min-h-screen fixed left-0 top-0 z-40`}>
-                        <div className="p-4">
-                            <div className="flex items-center justify-between mb-8">
-                                {adminSidebarOpen && (
-                                    <div className="flex items-center gap-3">
-                                        <Shield className="w-8 h-8 text-purple-400" />
-                                        <span className="text-white font-bold text-lg">Admin Panel</span>
-                                    </div>
-                                )}
-                                <button
-                                    onClick={() => setAdminSidebarOpen(!adminSidebarOpen)}
-                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                                >
-                                    <Menu className="w-5 h-5 text-white" />
-                                </button>
-                            </div>
-
-                            <nav className="space-y-2">
-                                {[
-                                    { id: 'dashboard', icon: <BarChart className="w-5 h-5" />, label: 'Dashboard' },
-                                    { id: 'users', icon: <Users className="w-5 h-5" />, label: 'Użytkownicy' },
-                                    { id: 'purchases', icon: <ShoppingCart className="w-5 h-5" />, label: 'Zakupy' },
-                                    { id: 'access', icon: <Key className="w-5 h-5" />, label: 'Dostępy' },
-                                    { id: 'content', icon: <BookOpen className="w-5 h-5" />, label: 'Treści' },
-                                    { id: 'reports', icon: <FileText className="w-5 h-5" />, label: 'Raporty' },
-                                    { id: 'promotions', icon: <Tag className="w-5 h-5" />, label: 'Promocje' },
-                                    { id: 'communication', icon: <MessageSquare className="w-5 h-5" />, label: 'Komunikacja' },
-                                    { id: 'logs', icon: <Activity className="w-5 h-5" />, label: 'Logi' },
-                                    { id: 'settings', icon: <Settings className="w-5 h-5" />, label: 'Ustawienia' },
-                                ].map(item => (
-                                    <button
-                                        key={item.id}
-                                        onClick={() => setAdminView(item.id)}
-                                        className={`w-full flex items-center gap-3 p-3 rounded-lg transition-all ${
-                                            adminView === item.id
-                                                ? 'bg-purple-500/30 text-white'
-                                                : 'text-white/70 hover:bg-white/10 hover:text-white'
-                                        }`}
-                                        title={!adminSidebarOpen ? item.label : ''}
-                                    >
-                                        {item.icon}
-                                        {adminSidebarOpen && <span className="font-medium">{item.label}</span>}
-                                    </button>
-                                ))}
-                                
-                                <div className="pt-4 border-t border-white/10 mt-4">
-                                    <button
-                                        onClick={() => setCurrentView('home')}
-                                        className="w-full flex items-center gap-3 p-3 rounded-lg text-white/70 hover:bg-white/10 hover:text-white transition-all"
-                                        title={!adminSidebarOpen ? 'Wróć do aplikacji' : ''}
-                                    >
-                                        <Home className="w-5 h-5" />
-                                        {adminSidebarOpen && <span className="font-medium">Wróć do aplikacji</span>}
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setIsLoggedIn(false);
-                                            setUserRole('user');
-                                            setCurrentView('home');
-                                            showToast('Wylogowano pomyślnie', 'success');
-                                        }}
-                                        className="w-full flex items-center gap-3 p-3 rounded-lg text-red-400 hover:bg-red-500/10 transition-all"
-                                        title={!adminSidebarOpen ? 'Wyloguj' : ''}
-                                    >
-                                        <LogOut className="w-5 h-5" />
-                                        {adminSidebarOpen && <span className="font-medium">Wyloguj</span>}
-                                    </button>
-                                </div>
-                            </nav>
-                        </div>
-                    </div>
-                );
-
-                // Komponent przycisku Wyloguj dla panelu admina
-                const AdminLogoutButton = () => (
-                    <button
-                        onClick={() => {
-                            if (confirm('Czy na pewno chcesz się wylogować?')) {
-                                setIsLoggedIn(false);
-                                setUserRole('user');
-                                setCurrentView('home');
-                                showToast('Wylogowano pomyślnie', 'success');
-                            }
-                        }}
-                        className="flex items-center gap-2 px-6 py-3 bg-red-500/20 hover:bg-red-500/30 text-red-400 hover:text-red-300 rounded-xl transition-all border border-red-500/30 hover:border-red-500/50"
-                    >
-                        <LogOut className="w-5 h-5" />
-                        <span className="font-medium">Wyloguj</span>
-                    </button>
-                );
-
-                // Dashboard View
-                const DashboardView = () => {
-                    const totalUsers = mockUsers.length;
-                    const premiumUsers = mockUsers.filter(u => u.isPremium).length;
-                    const totalRevenue = mockPurchases.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0);
-                    const activeUsers = mockUsers.filter(u => u.status === 'active').length;
-                    const avgQuizScore = Math.round(mockUsers.reduce((sum, u) => sum + u.quizScore, 0) / mockUsers.length);
-
-                    return (
-                        <div className="space-y-6">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-                                    <p className="text-white/60">Przegląd kluczowych statystyk</p>
-                                </div>
-                                <div className="flex items-center gap-4">
-                                    <div className="text-white/60 text-sm hidden sm:block">
-                                        Ostatnia aktualizacja: {new Date().toLocaleString('pl-PL')}
-                                    </div>
-                                    <AdminLogoutButton />
-                                </div>
-                            </div>
-
-                            {/* Stat Cards */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                <div className="stat-card glass rounded-2xl p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-blue-500/20 rounded-xl">
-                                            <Users className="w-6 h-6 text-blue-400" />
-                                        </div>
-                                        <span className="text-xs text-white/50">+12% vs poprz. miesiąc</span>
-                                    </div>
-                                    <div className="text-3xl font-bold text-white mb-1">{totalUsers}</div>
-                                    <div className="text-sm text-white/60">Wszystkich użytkowników</div>
-                                </div>
-
-                                <div className="stat-card glass rounded-2xl p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-yellow-500/20 rounded-xl">
-                                            <Crown className="w-6 h-6 text-yellow-400" />
-                                        </div>
-                                        <span className="text-xs text-white/50">+8% vs poprz. miesiąc</span>
-                                    </div>
-                                    <div className="text-3xl font-bold text-white mb-1">{premiumUsers}</div>
-                                    <div className="text-sm text-white/60">Użytkowników Premium</div>
-                                </div>
-
-                                <div className="stat-card glass rounded-2xl p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-green-500/20 rounded-xl">
-                                            <DollarSign className="w-6 h-6 text-green-400" />
-                                        </div>
-                                        <span className="text-xs text-white/50">+24% vs poprz. miesiąc</span>
-                                    </div>
-                                    <div className="text-3xl font-bold text-white mb-1">{totalRevenue.toFixed(2)} PLN</div>
-                                    <div className="text-sm text-white/60">Całkowity przychód</div>
-                                </div>
-
-                                <div className="stat-card glass rounded-2xl p-6">
-                                    <div className="flex items-center justify-between mb-4">
-                                        <div className="p-3 bg-purple-500/20 rounded-xl">
-                                            <TrendingUp className="w-6 h-6 text-purple-400" />
-                                        </div>
-                                        <span className="text-xs text-white/50">+5% vs poprz. miesiąc</span>
-                                    </div>
-                                    <div className="text-3xl font-bold text-white mb-1">{avgQuizScore}%</div>
-                                    <div className="text-sm text-white/60">Średni wynik quizów</div>
-                                </div>
-                            </div>
-
-                            {/* Charts and Recent Activity */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Recent Purchases */}
-                                <div className="glass rounded-2xl p-6">
-                                    <h2 className="text-xl font-bold text-white mb-4">Ostatnie zakupy</h2>
-                                    <div className="space-y-3">
-                                        {mockPurchases.slice(0, 5).map(purchase => (
-                                            <div key={purchase.id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                                                <div className="flex-1">
-                                                    <div className="font-medium text-white text-sm">{purchase.userName}</div>
-                                                    <div className="text-xs text-white/50">{purchase.product}</div>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="font-bold text-green-400">{purchase.amount} PLN</div>
-                                                    <div className={`text-xs ${
-                                                        purchase.status === 'completed' ? 'text-green-400' :
-                                                        purchase.status === 'pending' ? 'text-yellow-400' :
-                                                        'text-red-400'
-                                                    }`}>
-                                                        {purchase.status}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Recent Activity */}
-                                <div className="glass rounded-2xl p-6">
-                                    <h2 className="text-xl font-bold text-white mb-4">Ostatnia aktywność</h2>
-                                    <div className="space-y-3">
-                                        {mockActivityLogs.slice(0, 5).map(log => (
-                                            <div key={log.id} className="flex items-start gap-3 p-3 bg-white/5 rounded-xl">
-                                                <Activity className="w-4 h-4 text-purple-400 flex-shrink-0 mt-1" />
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="font-medium text-white text-sm truncate">{log.userName}</div>
-                                                    <div className="text-xs text-white/70 truncate">{log.details}</div>
-                                                    <div className="text-xs text-white/40 mt-1">
-                                                        {new Date(log.timestamp).toLocaleString('pl-PL')}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                };
-
-                // Users Management View
-                const UsersView = () => {
-                    const filteredUsers = mockUsers.filter(user => {
-                        const matchesSearch = user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                            user.email.toLowerCase().includes(searchQuery.toLowerCase());
-                        const matchesStatus = filterStatus === 'all' || user.status === filterStatus;
-                        return matchesSearch && matchesStatus;
-                    });
-
-                    return (
-                        <div className="space-y-6">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white mb-2">Zarządzanie użytkownikami</h1>
-                                    <p className="text-white/60">{filteredUsers.length} użytkowników</p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                        <Plus className="w-5 h-5" />
-                                        Dodaj użytkownika
-                                    </button>
-                                    <AdminLogoutButton />
-                                </div>
-                            </div>
-
-                            {/* Search and Filter */}
-                            <div className="glass rounded-2xl p-4 flex flex-col sm:flex-row gap-4">
-                                <div className="flex-1 relative">
-                                    <Search className="w-5 h-5 text-white/50 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                    <input
-                                        type="text"
-                                        placeholder="Szukaj po nazwie lub email..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
-                                    />
-                                </div>
-                                <div className="relative">
-                                    <Filter className="w-5 h-5 text-white/50 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                    <select
-                                        value={filterStatus}
-                                        onChange={(e) => setFilterStatus(e.target.value)}
-                                        className="pl-10 pr-8 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors appearance-none cursor-pointer"
-                                    >
-                                        <option value="all">Wszystkie statusy</option>
-                                        <option value="active">Aktywni</option>
-                                        <option value="inactive">Nieaktywni</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            {/* Users Table */}
-                            <div className="glass rounded-2xl overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead className="bg-white/5">
-                                            <tr>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Użytkownik</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Rola</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Status</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Premium</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Postęp</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Ostatnie logowanie</th>
-                                                <th className="text-center p-4 text-white/70 font-medium text-sm">Akcje</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredUsers.map(user => (
-                                                <tr key={user.id} className="table-row-hover border-t border-white/5">
-                                                    <td className="p-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-                                                                <span className="text-white font-bold text-sm">
-                                                                    {user.name.split(' ').map(n => n[0]).join('')}
-                                                                </span>
-                                                            </div>
-                                                            <div>
-                                                                <div className="font-medium text-white text-sm">{user.name}</div>
-                                                                <div className="text-xs text-white/50">{user.email}</div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                            user.role === 'admin' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
-                                                        }`}>
-                                                            {user.role === 'admin' ? 'Administrator' : 'Użytkownik'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                            user.status === 'active' ? 'bg-green-500/20 text-green-400' : 'bg-gray-500/20 text-gray-400'
-                                                        }`}>
-                                                            {user.status === 'active' ? 'Aktywny' : 'Nieaktywny'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        {user.isPremium ? (
-                                                            <div className="flex items-center gap-2">
-                                                                <Crown className="w-4 h-4 text-yellow-400" />
-                                                                <span className="text-sm text-yellow-400">
-                                                                    Do {new Date(user.premiumExpiry).toLocaleDateString('pl-PL')}
-                                                                </span>
-                                                            </div>
-                                                        ) : (
-                                                            <span className="text-sm text-white/50">Brak</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <div className="flex items-center gap-2">
-                                                            <div className="flex-1 bg-white/10 rounded-full h-2 max-w-24">
-                                                                <div 
-                                                                    className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                                                                    style={{ width: `${(user.completedSections / 18) * 100}%` }}
-                                                                />
-                                                            </div>
-                                                            <span className="text-xs text-white/70 whitespace-nowrap">
-                                                                {user.completedSections}/18
-                                                            </span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className="text-sm text-white/70">
-                                                            {new Date(user.lastLogin).toLocaleDateString('pl-PL')}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <div className="flex items-center justify-center gap-2">
-                                                            <button 
-                                                                onClick={() => setSelectedUser(user)}
-                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                                                                title="Edytuj"
-                                                            >
-                                                                <Edit className="w-4 h-4 text-blue-400" />
-                                                            </button>
-                                                            <button 
-                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                                                                title="Usuń"
-                                                            >
-                                                                <Trash className="w-4 h-4 text-red-400" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                };
-
-                // Purchases View
-                const PurchasesView = () => {
-                    const filteredPurchases = mockPurchases.filter(purchase => {
-                        const matchesSearch = purchase.userName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                            purchase.userEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                            purchase.id.toLowerCase().includes(searchQuery.toLowerCase());
-                        return matchesSearch;
-                    });
-
-                    const totalRevenue = filteredPurchases.filter(p => p.status === 'completed').reduce((sum, p) => sum + p.amount, 0);
-                    const pendingRevenue = filteredPurchases.filter(p => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0);
-
-                    return (
-                        <div className="space-y-6">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white mb-2">Historia zakupów</h1>
-                                    <p className="text-white/60">{filteredPurchases.length} transakcji</p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <button className="px-6 py-3 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                        <Download className="w-5 h-5" />
-                                        Eksportuj raport
-                                    </button>
-                                    <AdminLogoutButton />
-                                </div>
-                            </div>
-
-                            {/* Revenue Stats */}
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="glass rounded-2xl p-6">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="p-3 bg-green-500/20 rounded-xl">
-                                            <Check className="w-6 h-6 text-green-400" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="text-2xl font-bold text-white">{totalRevenue.toFixed(2)} PLN</div>
-                                            <div className="text-sm text-white/60">Zrealizowane przychody</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="glass rounded-2xl p-6">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="p-3 bg-yellow-500/20 rounded-xl">
-                                            <AlertCircle className="w-6 h-6 text-yellow-400" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="text-2xl font-bold text-white">{pendingRevenue.toFixed(2)} PLN</div>
-                                            <div className="text-sm text-white/60">Oczekujące płatności</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="glass rounded-2xl p-6">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <div className="p-3 bg-purple-500/20 rounded-xl">
-                                            <TrendingUp className="w-6 h-6 text-purple-400" />
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="text-2xl font-bold text-white">{Math.round(totalRevenue / filteredPurchases.filter(p => p.status === 'completed').length || 0)} PLN</div>
-                                            <div className="text-sm text-white/60">Średnia wartość zamówienia</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Search */}
-                            <div className="glass rounded-2xl p-4">
-                                <div className="relative">
-                                    <Search className="w-5 h-5 text-white/50 absolute left-3 top-1/2 transform -translate-y-1/2" />
-                                    <input
-                                        type="text"
-                                        placeholder="Szukaj transakcji..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Purchases Table */}
-                            <div className="glass rounded-2xl overflow-hidden">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead className="bg-white/5">
-                                            <tr>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">ID Transakcji</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Użytkownik</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Produkt</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Kwota</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Metoda płatności</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Status</th>
-                                                <th className="text-left p-4 text-white/70 font-medium text-sm">Data</th>
-                                                <th className="text-center p-4 text-white/70 font-medium text-sm">Akcje</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredPurchases.map(purchase => (
-                                                <tr key={purchase.id} className="table-row-hover border-t border-white/5">
-                                                    <td className="p-4">
-                                                        <span className="font-mono text-sm text-white/90">{purchase.id}</span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <div>
-                                                            <div className="font-medium text-white text-sm">{purchase.userName}</div>
-                                                            <div className="text-xs text-white/50">{purchase.userEmail}</div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className="text-sm text-white/90">{purchase.product}</span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className="font-bold text-green-400">{purchase.amount} {purchase.currency}</span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <div className="flex items-center gap-2">
-                                                            {purchase.paymentMethod === 'BLIK' ? (
-                                                                <Smartphone className="w-4 h-4 text-blue-400" />
-                                                            ) : (
-                                                                <CreditCard className="w-4 h-4 text-yellow-400" />
-                                                            )}
-                                                            <span className="text-sm text-white/90">{purchase.paymentMethod}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                            purchase.status === 'completed' ? 'bg-green-500/20 text-green-400' :
-                                                            purchase.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' :
-                                                            'bg-red-500/20 text-red-400'
-                                                        }`}>
-                                                            {purchase.status === 'completed' ? 'Zrealizowana' :
-                                                             purchase.status === 'pending' ? 'Oczekująca' :
-                                                             'Anulowana'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <span className="text-sm text-white/70">
-                                                            {new Date(purchase.date).toLocaleString('pl-PL')}
-                                                        </span>
-                                                    </td>
-                                                    <td className="p-4">
-                                                        <div className="flex items-center justify-center gap-2">
-                                                            <button 
-                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                                                                title="Zobacz szczegóły"
-                                                            >
-                                                                <Eye className="w-4 h-4 text-blue-400" />
-                                                            </button>
-                                                            <button 
-                                                                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                                                                title="Pobierz fakturę"
-                                                            >
-                                                                <Download className="w-4 h-4 text-green-400" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                };
-
-                // Access Management View
-                const AccessView = () => (
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">Zarządzanie dostępami</h1>
-                                <p className="text-white/60">Przypisuj i zarządzaj dostępami Premium</p>
-                            </div>
-                            <AdminLogoutButton />
-                        </div>
-
-                        <div className="glass rounded-2xl p-6">
-                            <h2 className="text-xl font-bold text-white mb-4">Nadaj dostęp Premium</h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                <input
-                                    type="email"
-                                    placeholder="Email użytkownika"
-                                    className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
-                                />
-                                <select className="px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors">
-                                    <option>3 miesiące</option>
-                                    <option>6 miesięcy</option>
-                                    <option>12 miesięcy</option>
-                                    <option>Lifetime</option>
-                                </select>
-                                <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all">
-                                    Przypisz dostęp
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="glass rounded-2xl p-6">
-                            <h2 className="text-xl font-bold text-white mb-4">Użytkownicy Premium</h2>
-                            <div className="space-y-3">
-                                {mockUsers.filter(u => u.isPremium).map(user => (
-                                    <div key={user.id} className="flex items-center justify-between p-4 bg-white/5 rounded-xl">
-                                        <div className="flex items-center gap-3">
-                                            <Crown className="w-5 h-5 text-yellow-400" />
-                                            <div>
-                                                <div className="font-medium text-white">{user.name}</div>
-                                                <div className="text-sm text-white/50">{user.email}</div>
-                                            </div>
-                                        </div>
-                                        <div className="flex items-center gap-4">
-                                            <div className="text-right">
-                                                <div className="text-sm text-white/70">Wygasa:</div>
-                                                <div className="text-sm font-medium text-yellow-400">
-                                                    {new Date(user.premiumExpiry).toLocaleDateString('pl-PL')}
-                                                </div>
-                                            </div>
-                                            <button className="px-4 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors text-sm font-medium">
-                                                Odbierz dostęp
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                );
-
-                // Reports View
-                const ReportsView = () => {
-                    const monthlyRevenue = [
-                        { month: 'Sty', revenue: 1200 },
-                        { month: 'Lut', revenue: 1800 },
-                        { month: 'Mar', revenue: 2400 },
-                        { month: 'Kwi', revenue: 2100 },
-                        { month: 'Maj', revenue: 2800 },
-                        { month: 'Cze', revenue: 3200 },
-                        { month: 'Lip', revenue: 2900 },
-                        { month: 'Sie', revenue: 3500 },
-                        { month: 'Wrz', revenue: 3100 },
-                        { month: 'Paź', revenue: 3600 },
-                    ];
-
-                    return (
-                        <div className="space-y-6">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <div>
-                                    <h1 className="text-3xl font-bold text-white mb-2">Raporty i Analityka</h1>
-                                    <p className="text-white/60">Szczegółowe statystyki i analizy</p>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                        <Download className="w-5 h-5" />
-                                        Eksportuj wszystkie raporty
-                                    </button>
-                                    <AdminLogoutButton />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Revenue Chart */}
-                                <div className="glass rounded-2xl p-6">
-                                    <h2 className="text-xl font-bold text-white mb-6">Przychody miesięczne</h2>
-                                    <div className="space-y-3">
-                                        {monthlyRevenue.map((item, index) => (
-                                            <div key={index} className="flex items-center gap-4">
-                                                <span className="text-sm text-white/70 w-12">{item.month}</span>
-                                                <div className="flex-1 bg-white/10 rounded-full h-8 relative overflow-hidden">
-                                                    <div 
-                                                        className="chart-bar bg-gradient-to-r from-green-500 to-emerald-500 h-8 rounded-full flex items-center justify-end pr-3"
-                                                        style={{ width: `${(item.revenue / 3600) * 100}%` }}
-                                                    >
-                                                        <span className="text-xs font-medium text-white">{item.revenue} PLN</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* User Activity */}
-                                <div className="glass rounded-2xl p-6">
-                                    <h2 className="text-xl font-bold text-white mb-6">Aktywność użytkowników</h2>
-                                    <div className="space-y-4">
-                                        <div className="p-4 bg-white/5 rounded-xl">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-white/70 text-sm">Aktywni dziś</span>
-                                                <span className="text-2xl font-bold text-green-400">156</span>
-                                            </div>
-                                            <div className="w-full bg-white/10 rounded-full h-2">
-                                                <div className="bg-green-500 h-2 rounded-full" style={{ width: '78%' }} />
-                                            </div>
-                                        </div>
-                                        <div className="p-4 bg-white/5 rounded-xl">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-white/70 text-sm">Ukończone sekcje</span>
-                                                <span className="text-2xl font-bold text-blue-400">892</span>
-                                            </div>
-                                            <div className="w-full bg-white/10 rounded-full h-2">
-                                                <div className="bg-blue-500 h-2 rounded-full" style={{ width: '65%' }} />
-                                            </div>
-                                        </div>
-                                        <div className="p-4 bg-white/5 rounded-xl">
-                                            <div className="flex items-center justify-between mb-2">
-                                                <span className="text-white/70 text-sm">Rozwiązane quizy</span>
-                                                <span className="text-2xl font-bold text-purple-400">1,243</span>
-                                            </div>
-                                            <div className="w-full bg-white/10 rounded-full h-2">
-                                                <div className="bg-purple-500 h-2 rounded-full" style={{ width: '85%' }} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Most Popular Sections */}
-                                <div className="glass rounded-2xl p-6">
-                                    <h2 className="text-xl font-bold text-white mb-6">Najpopularniejsze sekcje</h2>
-                                    <div className="space-y-3">
-                                        {[
-                                            { name: 'Wprowadzenie do Analizy Biznesowej', views: 456, completion: 89 },
-                                            { name: 'Rola i Kompetencje BA', views: 423, completion: 85 },
-                                            { name: 'Proces Analizy Biznesowej', views: 398, completion: 82 },
-                                            { name: 'Techniki Elicitacji Wymagań', views: 345, completion: 78 },
-                                            { name: 'Modelowanie Procesów - BPMN', views: 312, completion: 75 },
-                                        ].map((section, index) => (
-                                            <div key={index} className="p-3 bg-white/5 rounded-xl">
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <span className="text-white text-sm font-medium">{section.name}</span>
-                                                    <span className="text-white/50 text-xs">{section.views} odsłon</span>
-                                                </div>
-                                                <div className="flex items-center gap-2">
-                                                    <div className="flex-1 bg-white/10 rounded-full h-2">
-                                                        <div 
-                                                            className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                                                            style={{ width: `${section.completion}%` }}
-                                                        />
-                                                    </div>
-                                                    <span className="text-xs text-white/70">{section.completion}%</span>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Conversion Funnel */}
-                                <div className="glass rounded-2xl p-6">
-                                    <h2 className="text-xl font-bold text-white mb-6">Lejek konwersji</h2>
-                                    <div className="space-y-4">
-                                        {[
-                                            { stage: 'Odwiedziny strony', count: 10000, percentage: 100 },
-                                            { stage: 'Rejestracja', count: 2500, percentage: 25 },
-                                            { stage: 'Ukończona 1 sekcja', count: 1875, percentage: 75 },
-                                            { stage: 'Rozwiązany quiz', count: 1312, percentage: 70 },
-                                            { stage: 'Zakup Premium', count: 328, percentage: 25 },
-                                        ].map((stage, index) => (
-                                            <div key={index}>
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <span className="text-white text-sm">{stage.stage}</span>
-                                                    <span className="text-white/70 text-sm">{stage.count.toLocaleString()}</span>
-                                                </div>
-                                                <div className="w-full bg-white/10 rounded-full h-3">
-                                                    <div 
-                                                        className="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 rounded-full"
-                                                        style={{ width: `${stage.percentage}%` }}
-                                                    />
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    );
-                };
-
-                // Promotions View
-                const PromotionsView = () => (
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">Kody promocyjne</h1>
-                                <p className="text-white/60">Zarządzaj kodami rabatowymi</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <button className="px-6 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                    <Plus className="w-5 h-5" />
-                                    Utwórz nowy kod
-                                </button>
-                                <AdminLogoutButton />
-                            </div>
-                        </div>
-
-                        <div className="glass rounded-2xl overflow-hidden">
-                            <div className="overflow-x-auto">
-                                <table className="w-full">
-                                    <thead className="bg-white/5">
-                                        <tr>
-                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Kod</th>
-                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Rabat</th>
-                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Typ</th>
-                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Status</th>
-                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Wykorzystanie</th>
-                                            <th className="text-left p-4 text-white/70 font-medium text-sm">Ważność</th>
-                                            <th className="text-center p-4 text-white/70 font-medium text-sm">Akcje</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {mockPromoCodes.map(promo => (
-                                            <tr key={promo.id} className="table-row-hover border-t border-white/5">
-                                                <td className="p-4">
-                                                    <span className="font-mono font-bold text-yellow-400">{promo.code}</span>
-                                                </td>
-                                                <td className="p-4">
-                                                    <span className="text-white font-bold">
-                                                        {promo.type === 'percentage' ? `${promo.discount}%` : `${promo.discount} PLN`}
-                                                    </span>
-                                                </td>
-                                                <td className="p-4">
-                                                    <span className="text-white/70 text-sm">
-                                                        {promo.type === 'percentage' ? 'Procentowy' : 'Kwotowy'}
-                                                    </span>
-                                                </td>
-                                                <td className="p-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                                                        promo.status === 'active' ? 'bg-green-500/20 text-green-400' :
-                                                        'bg-gray-500/20 text-gray-400'
-                                                    }`}>
-                                                        {promo.status === 'active' ? 'Aktywny' : 'Wygasły'}
-                                                    </span>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="text-white/90 text-sm">{promo.usageCount}</span>
-                                                        {promo.usageLimit && (
-                                                            <>
-                                                                <span className="text-white/30">/</span>
-                                                                <span className="text-white/50 text-sm">{promo.usageLimit}</span>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="text-sm">
-                                                        <div className="text-white/70">{new Date(promo.validFrom).toLocaleDateString('pl-PL')}</div>
-                                                        <div className="text-white/50">do {new Date(promo.validTo).toLocaleDateString('pl-PL')}</div>
-                                                    </div>
-                                                </td>
-                                                <td className="p-4">
-                                                    <div className="flex items-center justify-center gap-2">
-                                                        <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Edytuj">
-                                                            <Edit className="w-4 h-4 text-blue-400" />
-                                                        </button>
-                                                        <button className="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Usuń">
-                                                            <Trash className="w-4 h-4 text-red-400" />
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                );
-
-                // Activity Logs View
-                const LogsView = () => (
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">Logi aktywności</h1>
-                                <p className="text-white/60">Historia działań w systemie</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <select className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-purple-500 transition-colors">
-                                    <option>Wszystkie akcje</option>
-                                    <option>Login</option>
-                                    <option>Premium Purchase</option>
-                                    <option>Section Completed</option>
-                                    <option>Quiz Attempted</option>
-                                    <option>Admin Access</option>
-                                </select>
-                                <button className="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2 text-sm">
-                                    <Download className="w-4 h-4" />
-                                    Eksportuj
-                                </button>
-                                <AdminLogoutButton />
-                            </div>
-                        </div>
-
-                        <div className="glass rounded-2xl p-6">
-                            <div className="space-y-3">
-                                {mockActivityLogs.map(log => (
-                                    <div key={log.id} className="flex items-start gap-4 p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                        <div className={`p-3 rounded-xl flex-shrink-0 ${
-                                            log.action.includes('Login') ? 'bg-blue-500/20' :
-                                            log.action.includes('Purchase') ? 'bg-green-500/20' :
-                                            log.action.includes('Admin') ? 'bg-purple-500/20' :
-                                            'bg-gray-500/20'
-                                        }`}>
-                                            <Activity className={`w-5 h-5 ${
-                                                log.action.includes('Login') ? 'text-blue-400' :
-                                                log.action.includes('Purchase') ? 'text-green-400' :
-                                                log.action.includes('Admin') ? 'text-purple-400' :
-                                                'text-gray-400'
-                                            }`} />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-start justify-between gap-4 mb-1">
-                                                <div className="font-medium text-white">{log.userName}</div>
-                                                <div className="text-sm text-white/50 whitespace-nowrap">
-                                                    {new Date(log.timestamp).toLocaleString('pl-PL')}
-                                                </div>
-                                            </div>
-                                            <div className="text-sm text-white/70 mb-2">{log.details}</div>
-                                            <div className="flex items-center gap-4 text-xs text-white/40">
-                                                <span>IP: {log.ip}</span>
-                                                <span>•</span>
-                                                <span>{log.userAgent}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                );
-
-                // Content Management View
-                const ContentView = () => (
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">Zarządzanie treścią</h1>
-                                <p className="text-white/60">Edytuj sekcje edukacyjne i pytania quizowe</p>
-                            </div>
-                            <div className="flex gap-3">
-                                <button className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                    <Plus className="w-5 h-5" />
-                                    Dodaj sekcję
-                                </button>
-                                <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                    <Plus className="w-5 h-5" />
-                                    Dodaj pytanie
-                                </button>
-                                <AdminLogoutButton />
-                            </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div className="glass rounded-2xl p-6">
-                                <h2 className="text-xl font-bold text-white mb-4">Sekcje edukacyjne</h2>
-                                <div className="space-y-3 max-h-96 overflow-y-auto">
-                                    {sections.slice(0, 8).map((section) => (
-                                        <div key={section.id} className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                            <div className="flex items-center justify-between">
-                                                <div className="flex items-center gap-3 flex-1">
-                                                    <span className="text-2xl">{section.icon}</span>
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="font-medium text-white text-sm truncate">{section.title}</div>
-                                                        <div className="flex items-center gap-2 mt-1">
-                                                            {section.isPremium && (
-                                                                <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">Premium</span>
-                                                            )}
-                                                            <span className="text-xs text-white/50">ID: {section.id}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-2 flex-shrink-0">
-                                                    <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                                                        <Edit className="w-4 h-4 text-blue-400" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="glass rounded-2xl p-6">
-                                <h2 className="text-xl font-bold text-white mb-4">Pytania quizowe</h2>
-                                <div className="space-y-3 max-h-96 overflow-y-auto">
-                                    {quizQuestions.slice(0, 8).map((question) => (
-                                        <div key={question.id} className="p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-                                            <div className="flex items-start justify-between gap-3">
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="font-medium text-white text-sm line-clamp-2">{question.question}</div>
-                                                    <div className="flex items-center gap-2 mt-2">
-                                                        {question.isPremium && (
-                                                            <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 rounded text-xs">Premium</span>
-                                                        )}
-                                                        <span className="text-xs text-white/50">ID: {question.id}</span>
-                                                    </div>
-                                                </div>
-                                                <button className="p-2 hover:bg-white/10 rounded-lg transition-colors flex-shrink-0">
-                                                    <Edit className="w-4 h-4 text-blue-400" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="glass rounded-2xl p-6">
-                            <h2 className="text-xl font-bold text-white mb-4">Statystyki treści</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white mb-1">{sections.length}</div>
-                                    <div className="text-sm text-white/60">Wszystkie sekcje</div>
-                                    <div className="text-xs text-white/40 mt-1">
-                                        {sections.filter(s => s.isPremium).length} Premium
-                                    </div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-white mb-1">{quizQuestions.length}</div>
-                                    <div className="text-sm text-white/60">Pytania quizowe</div>
-                                    <div className="text-xs text-white/40 mt-1">
-                                        {quizQuestions.filter(q => q.isPremium).length} Premium
-                                    </div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-green-400 mb-1">892</div>
-                                    <div className="text-sm text-white/60">Ukończenia sekcji</div>
-                                    <div className="text-xs text-white/40 mt-1">Łącznie</div>
-                                </div>
-                                <div className="text-center">
-                                    <div className="text-3xl font-bold text-purple-400 mb-1">1,243</div>
-                                    <div className="text-sm text-white/60">Rozwiązane quizy</div>
-                                    <div className="text-xs text-white/40 mt-1">Łącznie</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                );
-
-                // Communication View
-                const CommunicationView = () => (
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">Komunikacja</h1>
-                                <p className="text-white/60">Wysyłaj powiadomienia i emaile do użytkowników</p>
-                            </div>
-                            <AdminLogoutButton />
-                        </div>
-
-                        <div className="glass rounded-2xl p-6">
-                            <h2 className="text-xl font-bold text-white mb-6">Wyślij wiadomość</h2>
-                            <div className="space-y-4">
-                                <select className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors">
-                                    <option>Wszyscy użytkownicy</option>
-                                    <option>Tylko użytkownicy Premium</option>
-                                    <option>Tylko użytkownicy Free</option>
-                                </select>
-
-                                <input
-                                    type="text"
-                                    placeholder="Temat wiadomości..."
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors"
-                                />
-
-                                <textarea
-                                    placeholder="Treść wiadomości..."
-                                    rows={6}
-                                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-purple-500 transition-colors resize-none"
-                                />
-
-                                <button className="w-full px-6 py-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center justify-center gap-2">
-                                    <MessageSquare className="w-5 h-5" />
-                                    Wyślij wiadomość
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                );
-
-                // Settings View
-                const SettingsView = () => (
-                    <div className="space-y-6">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <h1 className="text-3xl font-bold text-white mb-2">Ustawienia aplikacji</h1>
-                                <p className="text-white/60">Konfiguruj parametry systemu</p>
-                            </div>
-                            <AdminLogoutButton />
-                        </div>
-
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div className="glass rounded-2xl p-6">
-                                <h2 className="text-xl font-bold text-white mb-4">Ogólne</h2>
-                                <div className="space-y-4">
-                                    <input
-                                        type="text"
-                                        defaultValue="Analiza Biznesowa - Platforma Edukacyjna"
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                    />
-                                    <input
-                                        type="email"
-                                        defaultValue="kontakt@akademia-ba.pl"
-                                        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="glass rounded-2xl p-6">
-                                <h2 className="text-xl font-bold text-white mb-4">Cennik Premium</h2>
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="text-white/70 text-sm mb-2 block">3 miesiące</label>
-                                        <input
-                                            type="number"
-                                            defaultValue="99"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-white/70 text-sm mb-2 block">6 miesięcy</label>
-                                        <input
-                                            type="number"
-                                            defaultValue="199"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-white/70 text-sm mb-2 block">12 miesięcy</label>
-                                        <input
-                                            type="number"
-                                            defaultValue="299"
-                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="flex justify-end gap-3">
-                            <button className="px-6 py-3 bg-white/5 border border-white/10 text-white rounded-xl font-medium hover:bg-white/10 transition-all">
-                                Anuluj
-                            </button>
-                            <button className="px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                                <Check className="w-5 h-5" />
-                                Zapisz zmiany
-                            </button>
-                        </div>
-                    </div>
-                );
-
-                // Main Admin Panel Return
-                return (
-                    <div className="min-h-screen">
-                        <AdminSidebar />
-                        <div className={`${adminSidebarOpen ? 'ml-64' : 'ml-20'} p-8 transition-all`}>
-                            {adminView === 'dashboard' && <DashboardView />}
-                            {adminView === 'users' && <UsersView />}
-                            {adminView === 'purchases' && <PurchasesView />}
-                            {adminView === 'access' && <AccessView />}
-                            {adminView === 'content' && <ContentView />}
-                            {adminView === 'reports' && <ReportsView />}
-                            {adminView === 'promotions' && <PromotionsView />}
-                            {adminView === 'communication' && <CommunicationView />}
-                            {adminView === 'logs' && <LogsView />}
-                            {adminView === 'settings' && <SettingsView />}
-                        </div>
-                    </div>
-                );
-            };
-
             return (
                 <div>
-                    {toast && (
-                        <div className={`toast toast-${toast.type}`}>
-                            {toast.message}
-                        </div>
-                    )}
                     {showTermsPage ? (
                         <TermsPage />
                     ) : showPrivacyPage ? (
                         <PrivacyPage />
                     ) : (
                         <>
-                            {currentView === 'admin' && userRole === 'admin' && <AdminPanel />}
                             {currentView === 'home' && <HomePage />}
                             {currentView === 'sections' && <SectionsView />}
                             {currentView === 'quiz' && <QuizView />}
