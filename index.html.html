@@ -3209,77 +3209,130 @@ Best Case, Most Likely, Worst Case scenarios.
             );
 
             const AuthModal = () => {
-                const [email, setEmail] = useState('');
-                const [password, setPassword] = useState('');
-                const [confirmPassword, setConfirmPassword] = useState('');
-                const [acceptTerms, setAcceptTerms] = useState(false);
-                const [message, setMessage] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [acceptTerms, setAcceptTerms] = useState(false);
+    const [message, setMessage] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    
+    // Symulacja bazy zarejestrowanych użytkowników (w prawdziwej aplikacji to byłoby w backend)
+    const [registeredUsers, setRegisteredUsers] = useState([
+        { email: 'admin@example.com', password: 'admin123', role: 'admin' }
+    ]);
 
-                const handleLogin = (e) => {
-                    e.preventDefault();
-                    if (!email || !password) {
-                        setMessage('Proszę wypełnić wszystkie pola');
-                        return;
-                    }
-                    // Symulacja logowania - sprawdzanie czy to admin
-                    console.log('Logowanie:', email);
-                    setMessage('Logowanie pomyślne!');
-                    setTimeout(() => {
-                        setIsLoggedIn(true);
-                        setUserEmail(email);
-                        // Sprawdź czy to konto admina
-                        if (email.toLowerCase() === 'admin@example.com') {
-                            setUserRole('admin');
-                            showToast('Zalogowano jako Administrator', 'success');
-                        } else {
-                            setUserRole('user');
-                            showToast('Zalogowano pomyślnie', 'success');
-                        }
-                        setShowAuthModal(false);
-                        setMessage('');
-                    }, 1000);
-                };
+    const handleLogin = (e) => {
+        e.preventDefault();
+        if (!email || !password) {
+            setMessage('Proszę wypełnić wszystkie pola');
+            return;
+        }
+        
+        // Sprawdź czy użytkownik istnieje w bazie
+        const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+        
+        if (!user) {
+            setMessage('Użytkownik o podanym adresie email nie istnieje. Zarejestruj się najpierw.');
+            return;
+        }
+        
+        if (user.password !== password) {
+            setMessage('Nieprawidłowe hasło');
+            return;
+        }
+        
+        // Logowanie pomyślne
+        console.log('Logowanie:', email);
+        setMessage('Logowanie pomyślne!');
+        setTimeout(() => {
+            setIsLoggedIn(true);
+            setUserEmail(email);
+            setUserRole(user.role || 'user');
+            if (user.role === 'admin') {
+                showToast('Zalogowano jako Administrator', 'success');
+            } else {
+                showToast('Zalogowano pomyślnie', 'success');
+            }
+            setShowAuthModal(false);
+            setMessage('');
+        }, 1000);
+    };
 
-                const handleRegister = (e) => {
-                    e.preventDefault();
-                    if (!email || !password || !confirmPassword) {
-                        setMessage('Proszę wypełnić wszystkie pola');
-                        return;
-                    }
-                    if (password !== confirmPassword) {
-                        setMessage('Hasła nie są zgodne');
-                        return;
-                    }
-                    if (!acceptTerms) {
-                        setMessage('Musisz zaakceptować regulamin');
-                        return;
-                    }
-                    // Symulacja rejestracji i wysłania maila
-                    console.log('Rejestracja:', email);
-                    console.log('Wysyłanie maila potwierdzającego na:', email);
-                    console.log('Mail zawiera link: https://twojserwis.pl/confirm?token=abc123');
-                    setMessage('Konto utworzone! Sprawdź swoją skrzynkę email w celu potwierdzenia.');
-                    setTimeout(() => {
-                        setAuthView('login');
-                        setMessage('');
-                    }, 3000);
-                };
+    const handleRegister = (e) => {
+        e.preventDefault();
+        if (!email || !password || !confirmPassword) {
+            setMessage('Proszę wypełnić wszystkie pola');
+            return;
+        }
+        if (password !== confirmPassword) {
+            setMessage('Hasła nie są zgodne');
+            return;
+        }
+        if (password.length < 6) {
+            setMessage('Hasło musi mieć co najmniej 6 znaków');
+            return;
+        }
+        if (!acceptTerms) {
+            setMessage('Musisz zaakceptować regulamin');
+            return;
+        }
+        
+        // Sprawdź czy email już istnieje
+        const existingUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+        if (existingUser) {
+            setMessage('Użytkownik o tym adresie email już istnieje. Zaloguj się.');
+            return;
+        }
+        
+        // Dodaj nowego użytkownika do bazy
+        const newUser = {
+            email: email,
+            password: password,
+            role: 'user'
+        };
+        setRegisteredUsers([...registeredUsers, newUser]);
+        
+        // Symulacja wysłania maila
+        console.log('Rejestracja:', email);
+        console.log('Wysyłanie maila potwierdzającego na:', email);
+        console.log('Mail zawiera link: https://twojserwis.pl/confirm?token=abc123');
+        
+        setMessage('Konto utworzone! Sprawdź swoją skrzynkę email w celu potwierdzenia. Możesz się już zalogować.');
+        setTimeout(() => {
+            setAuthView('login');
+            setMessage('');
+            setEmail('');
+            setPassword('');
+            setConfirmPassword('');
+            setAcceptTerms(false);
+        }, 3000);
+    };
 
-                const handleForgotPassword = (e) => {
-                    e.preventDefault();
-                    if (!email) {
-                        setMessage('Proszę podać adres email');
-                        return;
-                    }
-                    // Symulacja wysłania maila z linkiem do resetu hasła
-                    console.log('Wysyłanie maila resetującego hasło na:', email);
-                    console.log('Mail zawiera link: https://twojserwis.pl/reset-password?token=xyz789');
-                    setMessage('Link do resetowania hasła został wysłany na Twój email.');
-                    setTimeout(() => {
-                        setAuthView('login');
-                        setMessage('');
-                    }, 3000);
-                };
+    const handleForgotPassword = (e) => {
+        e.preventDefault();
+        if (!email) {
+            setMessage('Proszę podać adres email');
+            return;
+        }
+        
+        // Sprawdź czy użytkownik istnieje
+        const user = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase());
+        if (!user) {
+            setMessage('Nie znaleziono użytkownika o podanym adresie email');
+            return;
+        }
+        
+        // Symulacja wysłania maila z linkiem do resetu hasła
+        console.log('Wysyłanie maila resetującego hasło na:', email);
+        console.log('Mail zawiera link: https://twojserwis.pl/reset-password?token=xyz789');
+        setMessage('Link do resetowania hasła został wysłany na Twój email.');
+        setTimeout(() => {
+            setAuthView('login');
+            setMessage('');
+        3000);
+        }, 
+
 
                 return (
                     <div className="auth-modal-overlay" onClick={() => setShowAuthModal(false)}>
